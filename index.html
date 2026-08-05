@@ -217,6 +217,17 @@
       transition: transform .25s;
       flex-shrink: 0;
     }
+    .article .more {
+      color: var(--accent);
+      font-size: .88rem;
+      font-weight: 500;
+      margin-left: auto;
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .article .more:hover { text-decoration: underline; }
+    .article .arrow { margin-left: 0; }
     .article.open .arrow { transform: rotate(180deg); color: var(--accent); }
     .article .body {
       display: none;
@@ -624,6 +635,7 @@
           <span class="tag">${p.tag}</span>
           <p class="date">${p.date}</p>
           <h3>${p.title}</h3>
+          <span class="more">戳我查看</span>
           <span class="arrow">▼</span>
         </div>
         <div class="body"><p>${p.body}</p></div>
@@ -633,6 +645,7 @@
       const card = e.target.closest('.article');
       if (!card) return;
       card.classList.toggle('open');
+      card.querySelector('.more').textContent = card.classList.contains('open') ? '收起' : '戳我查看';
     });
 
     // 便签书签（Edge + Chrome 合并，内嵌数据）
