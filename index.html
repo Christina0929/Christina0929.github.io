@@ -117,6 +117,39 @@
     }
     .contact a:hover { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.04); }
 
+    /* 留言表单 */
+    .form-wrap { margin-top: 40px; max-width: 560px; }
+    .form-wrap form { display: flex; flex-direction: column; gap: 16px; }
+    .form-wrap input, .form-wrap textarea {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-wrap input:focus, .form-wrap textarea:focus { border-color: rgba(255,255,255,.3); }
+    .form-wrap textarea { min-height: 140px; resize: vertical; }
+    .form-wrap button {
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      color: #0d0d0d;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      align-self: flex-start;
+      min-width: 140px;
+      transition: opacity .2s;
+    }
+    .form-wrap button:hover { opacity: .85; }
+    .form-wrap button:disabled { opacity: .5; cursor: not-allowed; }
+    .form-msg { margin-top: 12px; font-size: .95rem; color: var(--accent); }
+
     footer {
       text-align: center;
       padding: 48px 24px;
@@ -178,8 +211,45 @@
         <a href="https://github.com/Christina0929" target="_blank">GitHub</a>
         <a href="https://weixin.qq.com" target="_blank">微信</a>
       </div>
+      <div class="form-wrap">
+        <form id="contact-form">
+          <input type="text" name="name" placeholder="你的名字" required>
+          <input type="email" name="email" placeholder="你的邮箱" required>
+          <textarea name="message" placeholder="想说的话…" required></textarea>
+          <button type="submit">发送留言</button>
+        </form>
+        <p class="form-msg" id="form-msg"></p>
+      </div>
     </section>
   </main>
+
+  <script>
+    const form = document.getElementById('contact-form');
+    const msg = document.getElementById('form-msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = '发送中…';
+      try {
+        const res = await fetch('https://formspree.io/f/xrpzgzao', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (res.ok) {
+          msg.textContent = '发送成功！我会尽快回复你～';
+          form.reset();
+        } else {
+          msg.textContent = '发送失败，请稍后再试。';
+        }
+      } catch (err) {
+        msg.textContent = '网络错误，请稍后再试。';
+      }
+      btn.disabled = false;
+      btn.textContent = '发送留言';
+    });
+  </script>
 
   <footer>© 2026 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
 </body>
