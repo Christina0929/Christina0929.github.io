@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的个人网站</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --card: #151515;
+      --border: rgba(255,255,255,.1);
+      --text: #f5f5f4;
+      --muted: rgba(245,245,244,.55);
+      --accent: #10a37f;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* 顶部导航 */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,13,.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+    nav .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .logo { font-size: 1.1rem; font-weight: 600; letter-spacing: .02em; }
+    nav .menu { display: flex; gap: 8px; }
+    nav .menu a {
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .95rem;
+      transition: color .2s, background .2s;
+    }
+    nav .menu a:hover { color: var(--text); background: rgba(255,255,255,.06); }
+
+    /* 主体 */
+    main { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+    section { margin-top: 96px; }
+
+    /* 英雄区（个人简介） */
+    .hero {
+      padding: 120px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero h1 {
+      font-size: 3.4rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+    .hero .tagline {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .hero .desc {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 640px;
+    }
+
+    /* 板块标题 */
+    .section-label {
+      font-size: .85rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 24px;
+    }
+
+    /* 博客文章卡片 */
+    .articles { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .article {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color .2s, transform .2s;
+    }
+    .article:hover { border-color: rgba(255,255,255,.2); transform: translateY(-2px); }
+    .article .date { font-size: .85rem; color: var(--muted); margin-bottom: 12px; }
+    .article h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+    .article h3 a:hover { color: var(--accent); }
+    .article p { color: var(--muted); font-size: .95rem; }
+
+    /* 联系方式 */
+    .contact { display: flex; gap: 12px; flex-wrap: wrap; }
+    .contact a {
+      padding: 12px 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: .95rem;
+      transition: border-color .2s, background .2s;
+    }
+    .contact a:hover { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.04); }
+
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2.4rem; }
+      .hero .tagline { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <nav>
+    <div class="inner">
+      <a class="logo" href="#top">我的网站</a>
+      <div class="menu">
+        <a href="#about">关于我</a>
+        <a href="#blog">博客</a>
+        <a href="#contact">联系我</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 正文 -->
+  <main id="top">
+    <!-- 个人简介 -->
+    <section class="hero" id="about">
+      <h1>晴天小站</h1>
+      <p class="tagline">晴天好心情desuwa</p>
+      <p class="desc">永远是深夜有多好</p>
+    </section>
+
+    <!-- 博客/文章 -->
+    <section id="blog">
+      <h2 class="section-label">博客文章</h2>
+      <div class="articles">
+        <article class="article">
+          <p class="date">2026年8月5日</p>
+          <h3><a href="#">我的第一篇文章</a></h3>
+          <p>这里是文章摘要。以后想加新文章，复制这一整块 <code>&lt;article&gt;</code> 再改内容即可。</p>
+        </article>
+        <article class="article">
+          <p class="date">2026年8月5日</p>
+          <h3><a href="#">我的第二篇文章</a></h3>
+          <p>这里是第二篇文章的摘要。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact">
+      <h2 class="section-label">联系我</h2>
+      <div class="contact">
+        <a href="mailto:1343336241@qq.com">邮箱</a>
+        <a href="https://github.com/Christina0929" target="_blank">GitHub</a>
+        <a href="https://weixin.qq.com" target="_blank">微信</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
+</body>
+</html>
