@@ -225,9 +225,11 @@
       flex-shrink: 0;
       cursor: pointer;
       user-select: none;
+      white-space: nowrap;
     }
     .article .more:hover { text-decoration: underline; }
     .article .arrow { margin-left: 0; }
+    .article .head { cursor: pointer; }
     .article.open .arrow { transform: rotate(180deg); color: var(--accent); }
     .article .body {
       display: none;
@@ -622,11 +624,11 @@
     // 动态年份
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 博客文章（点击展开，无跳转）
+    // 博客文章（点击进入文章页）
     const posts = [
-      { tag: '新文章', date: '2026年8月5日', title: "开站大吉 '◡'", body: '重生之我是HTML高手。' },
-      { tag: '收藏', date: '2026年8月5日', title: '网页便笺', body: '悄咪咪地查看，声张滴不要。' },
-      { tag: '最新留言', date: '2026年8月5日', title: '正在开发', body: '仍在test中，敬请期待…' }
+      { tag: '新文章', date: '2026年8月5日', title: "开站大吉 '◡'", href: 'post1.html', body: '重生之我是HTML高手。' },
+      { tag: '收藏', date: '2026年8月5日', title: '网页便笺', href: 'post2.html', body: '悄咪咪地查看，声张滴不要。' },
+      { tag: '最新留言', date: '2026年8月5日', title: '正在开发', href: 'post3.html', body: '仍在test中，敬请期待…' }
     ];
     const articleBox = document.getElementById('articles');
     articleBox.innerHTML = posts.map((p, i) => `
@@ -635,8 +637,7 @@
           <span class="tag">${p.tag}</span>
           <p class="date">${p.date}</p>
           <h3>${p.title}</h3>
-          <span class="more">戳我查看</span>
-          <span class="arrow">▼</span>
+          <span class="more">戳我查看 <span class="arrow">→</span></span>
         </div>
         <div class="body"><p>${p.body}</p></div>
       </article>
@@ -644,8 +645,8 @@
     articleBox.addEventListener('click', (e) => {
       const card = e.target.closest('.article');
       if (!card) return;
-      card.classList.toggle('open');
-      card.querySelector('.more').textContent = card.classList.contains('open') ? '收起' : '戳我查看';
+      const p = posts[card.dataset.i];
+      window.location.href = p.href;
     });
 
     // 便签书签（Edge + Chrome 合并，内嵌数据）

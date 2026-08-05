@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>正在开发 · 晴天小站</title>
+  <style>
+    :root {
+      --accent: #10a37f;
+      --bg: #0d0d0d;
+      --bg-soft: #141414;
+      --card: #171717;
+      --border: rgba(255,255,255,.1);
+      --text: #f5f5f4;
+      --muted: rgba(245,245,244,.55);
+      --glow: rgba(16,163,127,.16);
+      --shadow: rgba(0,0,0,.4);
+      color-scheme: dark;
+    }
+    html.light {
+      --bg: #fafafa;
+      --bg-soft: #f0f0f0;
+      --card: #ffffff;
+      --border: rgba(0,0,0,.09);
+      --text: #1a1a1a;
+      --muted: rgba(0,0,0,.55);
+      --glow: rgba(16,163,127,.14);
+      --shadow: rgba(0,0,0,.08);
+      color-scheme: light;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      transition: background .35s, color .35s;
+    }
+    a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--accent); color: #fff; }
+
+    nav {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+    nav .inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .logo { font-size: 1.15rem; font-weight: 700; letter-spacing: .02em; }
+    nav .logo span { color: var(--accent); }
+    nav .back { font-size: .92rem; color: var(--muted); padding: 8px 14px; border-radius: 8px; transition: color .2s, background .2s; }
+    nav .back:hover { color: var(--text); background: color-mix(in srgb, var(--text) 6%, transparent); }
+
+    main { max-width: 860px; margin: 0 auto; padding: 0 24px 90px; }
+
+    .post-head { padding: 64px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 36px; }
+    .post-tag {
+      display: inline-block;
+      font-size: .75rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .post-head h1 {
+      font-size: clamp(1.9rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      background: linear-gradient(120deg, var(--text) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .post-date { color: var(--muted); font-size: .9rem; }
+
+    .post-body { font-size: 1.05rem; color: var(--muted); }
+    .post-body p { margin-bottom: 18px; }
+    .post-body strong { color: var(--text); font-weight: 600; }
+    .post-body a { color: var(--accent); border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+    .post-body a:hover { border-bottom-color: var(--accent); }
+
+    .post-nav {
+      margin-top: 48px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .92rem;
+    }
+    .post-nav a { color: var(--accent); font-weight: 500; }
+    .post-nav a:hover { text-decoration: underline; }
+    .post-nav .prev { color: var(--muted); }
+    .post-nav .prev:hover { color: var(--text); }
+
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer .heart { color: var(--accent); }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html">晴天<span>小站</span></a>
+      <a class="back" href="index.html#blog">← 返回博客</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="post-head reveal">
+      <span class="post-tag">最新留言</span>
+      <h1>正在开发</h1>
+      <p class="post-date">2026年8月5日</p>
+    </header>
+    <article class="post-body reveal">
+      <p>仍在test中，敬请期待…</p><p>留言功能已经接入，想找我聊天或给小站提建议，直接去「联系我」板块留言就行，我会尽快收到。</p>
+    </article>
+    <nav class="post-nav reveal">
+      <a class="prev" href="post2.html">← 上一篇</a>
+      <a href="index.html#blog">返回博客 ↑</a>
+    </nav>
+  </main>
+
+  <footer>© <span id="year"></span> 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
+
+  <script>
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') document.documentElement.classList.add('light');
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: .1 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
