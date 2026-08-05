@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网页便笺 - 晴天小站</title>
+  <style>
+    :root {
+      --accent: #10a37f;
+      --bg: #0d0d0d;
+      --card: #171717;
+      --border: rgba(255,255,255,.1);
+      --text: #f5f5f4;
+      --muted: rgba(245,245,244,.55);
+      color-scheme: dark;
+    }
+    html.light {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --border: rgba(0,0,0,.09);
+      --text: #1a1a1a;
+      --muted: rgba(0,0,0,.55);
+      color-scheme: light;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      -webkit-font-smoothing: antialiased;
+      transition: background .35s, color .35s;
+    }
+    a { text-decoration: none; color: var(--accent); }
+    nav {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+    nav .inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .logo { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    nav .back { font-size: .9rem; color: var(--muted); }
+    nav .back:hover { color: var(--accent); }
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: .75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.3; margin-bottom: 12px; }
+    .date { color: var(--muted); font-size: .9rem; margin-bottom: 36px; }
+    .content { color: var(--text); }
+    .content p { margin-bottom: 20px; color: var(--muted); }
+    .content p strong { color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+    .next { color: var(--muted); font-size: .95rem; }
+    .next:hover { color: var(--accent); }
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html">晴天小站</a>
+      <a class="back" href="index.html#blog">← 返回博客</a>
+    </div>
+  </nav>
+  <main>
+    <span class="tag">随笔</span>
+    <h1>网页便笺</h1>
+    <p class="date">2026年8月5日</p>
+    <div class="content">
+      <p><strong>悄咪咪地查看，声张滴不要。</strong></p>
+      <p>这份便笺藏在网页里，记录我的书签收藏和常用站点。</p>
+      <p>以后就在这里慢慢积累好东西吧。</p>
+    </div>
+    <hr class="divider">
+    <a class="next" href="post3.html">下一篇：今天就到这里 →</a>
+  </main>
+  <footer>© 2026 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
+</body>
+</html>

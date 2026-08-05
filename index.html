@@ -189,55 +189,50 @@
     .about-card .stats span { font-size: .8rem; color: var(--muted); }
 
     /* 博客文章卡片 */
-    .blog-stack {
-      position: relative;
-      height: 320px;
-      perspective: 1000px;
-      max-width: 640px;
-      margin: 0 auto 60px;
-    }
-    .stack-card {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    .articles { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .article {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 30px;
+      padding: 26px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      cursor: pointer;
-      user-select: none;
-      will-change: transform;
-      box-shadow: 0 12px 40px var(--shadow);
-      transition: transform .15s ease-out;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
     }
-    .stack-card .idx { position: absolute; top: 20px; right: 24px; font-size: 2.2rem; font-weight: 800; color: color-mix(in srgb, var(--text) 8%, transparent); }
-    .stack-card .tag { align-self: flex-start; font-size: .75rem; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
-    .stack-card .date { font-size: .85rem; color: var(--muted); }
-    .stack-card h3 { font-size: 1.5rem; font-weight: 700; }
-    .stack-card h3 a { transition: color .2s; }
-    .stack-card h3 a:hover { color: var(--accent); }
-    .stack-card p { color: var(--muted); font-size: .95rem; flex: 1; }
-    .stack-card .more { color: var(--accent); font-size: .9rem; font-weight: 500; }
-    .stack-hint { text-align: center; color: var(--muted); font-size: .85rem; margin-bottom: 32px; }
-    .stack-nav { display: flex; justify-content: center; gap: 10px; }
-    .stack-nav button {
-      padding: 10px 22px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--card);
+    .article:hover { transform: translateY(-4px); box-shadow: 0 16px 40px var(--shadow); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+    .article .tag {
+      align-self: flex-start;
+      font-size: .75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      color: var(--accent);
+    }
+    .article .date { font-size: .85rem; color: var(--muted); }
+    .article h3 { font-size: 1.25rem; font-weight: 700; }
+    .article h3 a { transition: color .2s; }
+    .article h3 a:hover { color: var(--accent); }
+    .article p { color: var(--muted); font-size: .95rem; flex: 1; }
+    .article .more { color: var(--accent); font-size: .9rem; font-weight: 500; }
+    .article .more:hover { text-decoration: underline; }
+
+    /* 博客内便签子区块 */
+    .blog-sub {
+      margin-top: 72px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .blog-sub-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 20px;
       color: var(--text);
-      font-size: .95rem;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all .2s;
     }
-    .stack-nav button:hover { border-color: var(--accent); color: var(--accent); }
-    .stack-nav button:disabled { opacity: .35; cursor: not-allowed; }
+    .blog-sub-title small { color: var(--muted); font-weight: 400; font-size: .85rem; }
 
     /* 便签/书签 */
     .bm-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
@@ -435,7 +430,6 @@
         <div class="menu">
           <a href="#about">关于我</a>
           <a href="#blog">博客</a>
-          <a href="#bookmarks">便签</a>
           <a href="#contact">联系我</a>
         </div>
         <button class="theme-btn" id="theme-btn" aria-label="切换深浅色">
@@ -485,25 +479,18 @@
       <div class="section-head">
         <h2 class="section-label">博客文章 <small>Blog</small></h2>
       </div>
-      <p class="stack-hint">移动鼠标，卡片会跟着动 👆</p>
-      <div class="blog-stack" id="blog-stack"></div>
-      <div class="stack-nav">
-        <button id="stack-prev">← 上一篇</button>
-        <button id="stack-next">下一篇 →</button>
-      </div>
-    </section>
+      <div class="articles" id="articles"></div>
 
-    <!-- 便签/书签 -->
-    <section class="reveal" id="bookmarks">
-      <div class="section-head">
-        <h2 class="section-label">便签 <small>书签收藏</small></h2>
+      <!-- 便签（并入博客） -->
+      <div class="blog-sub">
+        <h3 class="blog-sub-title">📌 便签 <small>我的书签收藏</small></h3>
+        <div class="bm-toolbar" id="bm-toolbar">
+          <button class="active" data-filter="all">全部</button>
+          <button data-filter="Edge">Edge</button>
+          <button data-filter="Chrome">Chrome</button>
+        </div>
+        <div class="bm-groups" id="bm-groups"></div>
       </div>
-      <div class="bm-toolbar" id="bm-toolbar">
-        <button class="active" data-filter="all">全部</button>
-        <button data-filter="Edge">Edge</button>
-        <button data-filter="Chrome">Chrome</button>
-      </div>
-      <div class="bm-groups" id="bm-groups"></div>
     </section>
 
     <!-- 联系方式 -->
@@ -593,52 +580,21 @@
     // 动态年份
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 堆叠博客卡片
+    // 博客文章（卡片网格）
     const posts = [
-      { tag: '新文章', date: '2026年8月5日', title: "开站大吉 '◡'", desc: '这是正文哦' },
-      { tag: '随笔', date: '2026年8月5日', title: '网页便笺', desc: '悄咪咪地查看，声张滴不要' },
-      { tag: '碎碎念', date: '2026年8月5日', title: '今天就到这里', desc: '欢迎下次光临 =ω=' }
+      { tag: '新文章', date: '2026年8月5日', title: "开站大吉 '◡'", desc: '这是正文哦', link: 'post1.html' },
+      { tag: '随笔', date: '2026年8月5日', title: '网页便笺', desc: '悄咪咪地查看，声张滴不要', link: 'post2.html' },
+      { tag: '碎碎念', date: '2026年8月5日', title: '今天就到这里', desc: '欢迎下次光临 =ω=', link: 'post3.html' }
     ];
-    const stack = document.getElementById('blog-stack');
-    let cur = 0;
-    function renderStack() {
-      stack.innerHTML = '';
-      const count = posts.length;
-      for (let i = count - 1; i >= 0; i--) {
-        const offset = (i - cur + count) % count;
-        const p = posts[i];
-        const card = document.createElement('div');
-        card.className = 'stack-card';
-        card.style.transform = offset === 0
-          ? 'translateX(0) rotateY(0) translateY(0) scale(1)'
-          : `translateX(${offset * -46}px) translateY(${offset * 10}px) scale(${1 - offset * .05}) rotateY(${offset * 10}deg)`;
-        card.style.zIndex = count - offset;
-        card.innerHTML = `
-          <span class="idx">${String(i + 1).padStart(2, '0')}</span>
-          <span class="tag">${p.tag}</span>
-          <p class="date">${p.date}</p>
-          <h3><a href="#">${p.title}</a></h3>
-          <p>${p.desc}</p>
-          <a class="more" href="#">戳我查看 →</a>
-        `;
-        card.addEventListener('click', () => { cur = i; renderStack(); });
-        stack.appendChild(card);
-      }
-      document.getElementById('stack-prev').disabled = count <= 1;
-      document.getElementById('stack-next').disabled = count <= 1;
-    }
-    // 鼠标移动带动卡片倾斜
-    stack.addEventListener('mousemove', (e) => {
-      const r = stack.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - .5;
-      const y = (e.clientY - r.top) / r.height - .5;
-      stack.style.transform = `rotateX(${y * -6}deg) rotateY(${x * 10}deg)`;
-      stack.style.transformStyle = 'preserve-3d';
-    });
-    stack.addEventListener('mouseleave', () => { stack.style.transform = ''; });
-    document.getElementById('stack-prev').addEventListener('click', () => { cur = (cur - 1 + posts.length) % posts.length; renderStack(); });
-    document.getElementById('stack-next').addEventListener('click', () => { cur = (cur + 1) % posts.length; renderStack(); });
-    renderStack();
+    document.getElementById('articles').innerHTML = posts.map((p, i) => `
+      <article class="article">
+        <span class="tag">${p.tag}</span>
+        <p class="date">${p.date}</p>
+        <h3><a href="${p.link}">${p.title}</a></h3>
+        <p>${p.desc}</p>
+        <a class="more" href="${p.link}">查看内容 →</a>
+      </article>
+    `).join('');
 
     // 便签书签
     let allBookmarks = [];
