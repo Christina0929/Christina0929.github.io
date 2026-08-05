@@ -3,15 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的个人网站</title>
+  <title>晴天小站</title>
   <style>
     :root {
+      --accent: #10a37f;
       --bg: #0d0d0d;
-      --card: #151515;
+      --bg-soft: #141414;
+      --card: #171717;
       --border: rgba(255,255,255,.1);
       --text: #f5f5f4;
       --muted: rgba(245,245,244,.55);
-      --accent: #10a37f;
+      --glow: rgba(16,163,127,.16);
+      --shadow: rgba(0,0,0,.4);
+      color-scheme: dark;
+    }
+    html.light {
+      --bg: #fafafa;
+      --bg-soft: #f0f0f0;
+      --card: #ffffff;
+      --border: rgba(0,0,0,.09);
+      --text: #1a1a1a;
+      --muted: rgba(0,0,0,.55);
+      --glow: rgba(16,163,127,.14);
+      --shadow: rgba(0,0,0,.08);
+      color-scheme: light;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -21,15 +36,18 @@
       color: var(--text);
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
+      transition: background .35s, color .35s;
     }
     a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--accent); color: #fff; }
 
     /* 顶部导航 */
     nav {
       position: sticky;
       top: 0;
-      background: rgba(13,13,13,.8);
-      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       z-index: 100;
     }
@@ -42,8 +60,10 @@
       justify-content: space-between;
       align-items: center;
     }
-    nav .logo { font-size: 1.1rem; font-weight: 600; letter-spacing: .02em; }
-    nav .menu { display: flex; gap: 8px; }
+    nav .logo { font-size: 1.15rem; font-weight: 700; letter-spacing: .02em; }
+    nav .logo span { color: var(--accent); }
+    nav .right { display: flex; align-items: center; gap: 6px; }
+    nav .menu { display: flex; gap: 4px; }
     nav .menu a {
       padding: 8px 14px;
       border-radius: 8px;
@@ -51,104 +71,343 @@
       font-size: .95rem;
       transition: color .2s, background .2s;
     }
-    nav .menu a:hover { color: var(--text); background: rgba(255,255,255,.06); }
+    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 6%, transparent); }
+
+    /* 主题切换按钮 */
+    .theme-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: border-color .2s, background .2s;
+    }
+    .theme-btn:hover { border-color: color-mix(in srgb, var(--text) 30%, transparent); background: color-mix(in srgb, var(--text) 5%, transparent); }
+    .theme-btn .sun { display: none; }
+    html.light .theme-btn .sun { display: block; }
+    html.light .theme-btn .moon { display: none; }
 
     /* 主体 */
     main { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
-    section { margin-top: 96px; }
+    section { margin-top: 110px; scroll-margin-top: 80px; }
 
-    /* 英雄区（个人简介） */
+    /* 英雄区 */
     .hero {
-      padding: 120px 0 40px;
-      border-bottom: 1px solid var(--border);
+      position: relative;
+      padding: 130px 0 70px;
+      text-align: center;
+      overflow: hidden;
     }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 720px;
+      height: 420px;
+      background: radial-gradient(ellipse at center, var(--glow), transparent 70%);
+      pointer-events: none;
+    }
+    .hero .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .hero .badge span { color: var(--accent); }
     .hero h1 {
-      font-size: 3.4rem;
-      font-weight: 700;
-      letter-spacing: -.02em;
-      line-height: 1.15;
-      margin-bottom: 24px;
+      font-size: clamp(2.6rem, 6vw, 4.4rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.12;
+      margin-bottom: 20px;
+      background: linear-gradient(120deg, var(--text) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .hero .tagline {
-      font-size: 1.5rem;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
       font-weight: 500;
-      color: var(--text);
-      margin-bottom: 16px;
-    }
-    .hero .desc {
-      font-size: 1.15rem;
       color: var(--muted);
-      max-width: 640px;
+      margin-bottom: 14px;
+      min-height: 2em;
+    }
+    .hero .tagline .cursor { color: var(--accent); animation: blink .8s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .hero .desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
     }
 
     /* 板块标题 */
+    .section-head { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+    .section-head::after { content: ""; flex: 1; height: 1px; background: var(--border); }
     .section-label {
-      font-size: .85rem;
-      color: var(--muted);
+      font-size: .9rem;
+      color: var(--text);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: .12em;
-      margin-bottom: 24px;
+      letter-spacing: .14em;
+      white-space: nowrap;
     }
+    .section-label small { color: var(--muted); font-weight: 400; margin-left: 8px; letter-spacing: 0; text-transform: none; }
+
+    /* 关于我 */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    .about-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+    }
+    .about-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px var(--shadow); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+    .about-card .emoji { font-size: 2.6rem; margin-bottom: 14px; }
+    .about-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+    .about-card p { color: var(--muted); font-size: .95rem; }
+    .about-card .stats { display: flex; gap: 24px; margin-top: 18px; }
+    .about-card .stats div { text-align: center; }
+    .about-card .stats strong { display: block; font-size: 1.3rem; color: var(--text); }
+    .about-card .stats span { font-size: .8rem; color: var(--muted); }
 
     /* 博客文章卡片 */
-    .articles { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-    .article {
+    .blog-stack {
+      position: relative;
+      height: 320px;
+      perspective: 1000px;
+      max-width: 640px;
+      margin: 0 auto 60px;
+    }
+    .stack-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      will-change: transform;
+      box-shadow: 0 12px 40px var(--shadow);
+      transition: transform .15s ease-out;
+    }
+    .stack-card .idx { position: absolute; top: 20px; right: 24px; font-size: 2.2rem; font-weight: 800; color: color-mix(in srgb, var(--text) 8%, transparent); }
+    .stack-card .tag { align-self: flex-start; font-size: .75rem; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+    .stack-card .date { font-size: .85rem; color: var(--muted); }
+    .stack-card h3 { font-size: 1.5rem; font-weight: 700; }
+    .stack-card h3 a { transition: color .2s; }
+    .stack-card h3 a:hover { color: var(--accent); }
+    .stack-card p { color: var(--muted); font-size: .95rem; flex: 1; }
+    .stack-card .more { color: var(--accent); font-size: .9rem; font-weight: 500; }
+    .stack-hint { text-align: center; color: var(--muted); font-size: .85rem; margin-bottom: 32px; }
+    .stack-nav { display: flex; justify-content: center; gap: 10px; }
+    .stack-nav button {
+      padding: 10px 22px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 24px;
-      transition: border-color .2s, transform .2s;
-    }
-    .article:hover { border-color: rgba(255,255,255,.2); transform: translateY(-2px); }
-    .article .date { font-size: .85rem; color: var(--muted); margin-bottom: 12px; }
-    .article h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
-    .article h3 a:hover { color: var(--accent); }
-    .article p { color: var(--muted); font-size: .95rem; }
-
-    /* 联系方式 */
-    .contact { display: flex; gap: 12px; flex-wrap: wrap; }
-    .contact a {
-      padding: 12px 24px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background: var(--card);
       color: var(--text);
       font-size: .95rem;
-      transition: border-color .2s, background .2s;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
     }
-    .contact a:hover { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.04); }
+    .stack-nav button:hover { border-color: var(--accent); color: var(--accent); }
+    .stack-nav button:disabled { opacity: .35; cursor: not-allowed; }
 
-    /* 留言表单 */
-    .form-wrap { margin-top: 40px; max-width: 560px; }
-    .form-wrap form { display: flex; flex-direction: column; gap: 16px; }
-    .form-wrap input, .form-wrap textarea {
+    /* 便签/书签 */
+    .bm-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .bm-toolbar button {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: .85rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+    .bm-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+    .bm-toolbar button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .bm-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .bm-group {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 16px;
+      padding: 20px;
+      transition: border-color .2s, transform .2s;
+    }
+    .bm-group:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+    .bm-group h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bm-group h3 .count {
+      font-size: .75rem;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--text) 8%, transparent);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .bm-group ul { list-style: none; }
+    .bm-group li { margin-bottom: 4px; }
+    .bm-group a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .88rem;
+      transition: color .15s, background .15s;
+    }
+    .bm-group a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 6%, transparent); }
+    .bm-group .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; opacity: .7; }
+    .bm-group .tag-src {
+      font-size: .68rem;
+      margin-left: auto;
+      color: var(--muted);
+      opacity: .6;
+      flex-shrink: 0;
+    }
+    .bm-group a:hover .tag-src { opacity: 1; }
+    .bm-empty { color: var(--muted); text-align: center; padding: 40px 0; }
+
+    /* 联系方式 */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    .contact-left { display: flex; flex-direction: column; gap: 14px; }
+    .contact-intro { color: var(--muted); font-size: .95rem; margin-bottom: 4px; }
+    .social-list { display: flex; flex-direction: column; gap: 12px; }
+    .social-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+    }
+    .social-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px var(--shadow); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+    .social-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .social-icon.gh { background: var(--text); color: var(--bg); }
+    .social-icon.bili { background: #fb7299; color: #fff; }
+    .social-card h3 { font-size: 1.02rem; font-weight: 700; }
+    .social-card p { font-size: .85rem; color: var(--muted); }
+    .social-card .arrow { margin-left: auto; color: var(--muted); font-size: 1.1rem; transition: transform .2s, color .2s; }
+    .social-card:hover .arrow { color: var(--accent); transform: translate(2px, -2px); }
+
+    /* 留言表单卡片 */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .form-card .form-hint { color: var(--muted); font-size: .88rem; margin-bottom: 20px; }
+    .form-card form { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+    .form-card input, .form-card textarea {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 14px 16px;
       color: var(--text);
       font-size: 1rem;
       font-family: inherit;
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .2s, box-shadow .2s;
     }
-    .form-wrap input:focus, .form-wrap textarea:focus { border-color: rgba(255,255,255,.3); }
-    .form-wrap textarea { min-height: 140px; resize: vertical; }
-    .form-wrap button {
+    .form-card input:focus, .form-card textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+    .form-card textarea { min-height: 120px; resize: vertical; flex: 1; }
+    .form-card button {
       background: var(--accent);
       border: none;
-      border-radius: 10px;
-      padding: 14px 20px;
-      color: #0d0d0d;
+      border-radius: 12px;
+      padding: 14px 24px;
+      color: #fff;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       align-self: flex-start;
       min-width: 140px;
-      transition: opacity .2s;
+      transition: opacity .2s, transform .2s;
     }
-    .form-wrap button:hover { opacity: .85; }
-    .form-wrap button:disabled { opacity: .5; cursor: not-allowed; }
-    .form-msg { margin-top: 12px; font-size: .95rem; color: var(--accent); }
+    .form-card button:hover { opacity: .88; transform: translateY(-1px); }
+    .form-card button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .form-msg { margin-top: 12px; font-size: .95rem; color: var(--accent); font-weight: 500; }
+
+    /* 回到顶部 */
+    .to-top {
+      position: fixed;
+      right: 28px;
+      bottom: 28px;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 90;
+    }
+    .to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .to-top:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* 滚动出现动画 */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     footer {
       text-align: center;
@@ -157,10 +416,13 @@
       color: var(--muted);
       font-size: .85rem;
     }
+    footer .heart { color: var(--accent); }
 
-    @media (max-width: 640px) {
-      .hero h1 { font-size: 2.4rem; }
-      .hero .tagline { font-size: 1.2rem; }
+    @media (max-width: 760px) {
+      nav .menu a { padding: 8px 10px; font-size: .88rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .hero { padding: 90px 0 50px; }
     }
   </style>
 </head>
@@ -168,11 +430,18 @@
   <!-- 顶部导航 -->
   <nav>
     <div class="inner">
-      <a class="logo" href="#top">我的网站</a>
-      <div class="menu">
-        <a href="#about">关于我</a>
-        <a href="#blog">博客</a>
-        <a href="#contact">联系我</a>
+      <a class="logo" href="#top">晴天<span>小站</span></a>
+      <div class="right">
+        <div class="menu">
+          <a href="#about">关于我</a>
+          <a href="#blog">博客</a>
+          <a href="#bookmarks">便签</a>
+          <a href="#contact">联系我</a>
+        </div>
+        <button class="theme-btn" id="theme-btn" aria-label="切换深浅色">
+          <span class="moon">🌙</span>
+          <span class="sun">☀️</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -180,50 +449,237 @@
   <!-- 正文 -->
   <main id="top">
     <!-- 个人简介 -->
-    <section class="hero" id="about">
+    <section class="hero reveal" id="about">
+      <div class="badge">欢迎来到 <span>晴天小站</span> ☀️</div>
       <h1>晴天小站</h1>
-      <p class="tagline">晴天好心情desuwa</p>
+      <p class="tagline" id="typing"></p>
       <p class="desc">永远是深夜有多好</p>
     </section>
 
-    <!-- 博客/文章 -->
-    <section id="blog">
-      <h2 class="section-label">博客文章</h2>
-      <div class="articles">
-        <article class="article">
-          <p class="date">2026年8月5日</p>
-          <h3><a href="#">我的第一篇文章</a></h3>
-          <p>这里是文章摘要。以后想加新文章，复制这一整块 <code>&lt;article&gt;</code> 再改内容即可。</p>
-        </article>
-        <article class="article">
-          <p class="date">2026年8月5日</p>
-          <h3><a href="#">我的第二篇文章</a></h3>
-          <p>这里是第二篇文章的摘要。</p>
-        </article>
+    <!-- 关于我 -->
+    <section class="reveal">
+      <div class="section-head">
+        <h2 class="section-label">关于我 <small>About</small></h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="emoji">🌤️</div>
+          <h3>晴天好心情 desuwa</h3>
+          <p>最尊重token、最礼貌ai、it最精通ai最趁手之人(以上均属实=ω=）</p>
+          <p>不想起床懒得睡觉<br>早餐吃什么呢/午餐吃什么呢/晚餐吃什么呢<br>今天听点啥歌呢</p>
+        </div>
+        <div class="about-card">
+          <h3>或许你想知道…</h3>
+          <p>此站由本人扎实雄厚的IT编程基础，以及一点opencode的deepseek-v4-flash 0731 & glm-5.2模型参考支持完成</p>
+          <div class="stats">
+            <div><strong>3</strong><span>板块</span></div>
+            <div><strong>1</strong><span>已发布文章</span></div>
+            <div><strong>∞</strong><span>好心情</span></div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 联系方式 -->
-    <section id="contact">
-      <h2 class="section-label">联系我</h2>
-      <div class="contact">
-        <a href="mailto:1343336241@qq.com">邮箱</a>
-        <a href="https://github.com/Christina0929" target="_blank">GitHub</a>
-        <a href="https://weixin.qq.com" target="_blank">微信</a>
+    <!-- 博客/文章 -->
+    <section class="reveal" id="blog">
+      <div class="section-head">
+        <h2 class="section-label">博客文章 <small>Blog</small></h2>
       </div>
-      <div class="form-wrap">
-        <form id="contact-form">
-          <input type="text" name="name" placeholder="你的名字" required>
-          <input type="email" name="email" placeholder="你的邮箱" required>
-          <textarea name="message" placeholder="想说的话…" required></textarea>
-          <button type="submit">发送留言</button>
-        </form>
-        <p class="form-msg" id="form-msg"></p>
+      <p class="stack-hint">移动鼠标，卡片会跟着动 👆</p>
+      <div class="blog-stack" id="blog-stack"></div>
+      <div class="stack-nav">
+        <button id="stack-prev">← 上一篇</button>
+        <button id="stack-next">下一篇 →</button>
+      </div>
+    </section>
+
+    <!-- 便签/书签 -->
+    <section class="reveal" id="bookmarks">
+      <div class="section-head">
+        <h2 class="section-label">便签 <small>书签收藏</small></h2>
+      </div>
+      <div class="bm-toolbar" id="bm-toolbar">
+        <button class="active" data-filter="all">全部</button>
+        <button data-filter="Edge">Edge</button>
+        <button data-filter="Chrome">Chrome</button>
+      </div>
+      <div class="bm-groups" id="bm-groups"></div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section class="reveal" id="contact">
+      <div class="section-head">
+        <h2 class="section-label">联系我 <small>Contact</small></h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-left">
+          <p class="contact-intro">想找我聊聊天，或者对小站有想法？欢迎到我的社交主页逛逛，或直接给我留言。</p>
+          <div class="social-list">
+            <a class="social-card" href="https://github.com/Christina0929" target="_blank">
+              <div class="social-icon gh">⌘</div>
+              <div>
+                <h3>GitHub</h3>
+                <p>@Christina0929 · 代码与项目</p>
+              </div>
+              <span class="arrow">↗</span>
+            </a>
+            <a class="social-card" href="https://space.bilibili.com/168675992" target="_blank">
+              <div class="social-icon bili">b</div>
+              <div>
+                <h3>Bilibili</h3>
+                <p>我的主页 · 不定期更新</p>
+              </div>
+              <span class="arrow">↗</span>
+            </a>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>给我留言</h3>
+          <p class="form-hint">留下你想说的话，我会尽快收到并回复</p>
+          <form id="contact-form">
+            <input type="text" name="name" placeholder="你的名字" required>
+            <input type="email" name="email" placeholder="你的邮箱" required>
+            <textarea name="message" placeholder="想说的话…" required></textarea>
+            <button type="submit">发送留言</button>
+          </form>
+          <p class="form-msg" id="form-msg"></p>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- 回到顶部 -->
+  <button class="to-top" id="to-top" aria-label="回到顶部">↑</button>
+
+  <footer>© <span id="year"></span> 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
+
   <script>
+    // 深浅色切换
+    const themeBtn = document.getElementById('theme-btn');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') document.documentElement.classList.add('light');
+    themeBtn.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    // 打字机效果
+    const words = ['晴天好心情 desuwa', '欢迎光临小站= =', '永远是深夜有多好'];
+    let wi = 0, ci = 0, deleting = false;
+    const el = document.getElementById('typing');
+    function type() {
+      const word = words[wi];
+      el.textContent = deleting ? word.slice(0, ci--) : word.slice(0, ci++);
+      let delay = deleting ? 40 : 90;
+      if (!deleting && ci === word.length + 1) { deleting = true; delay = 1500; }
+      else if (deleting && ci === 0) { deleting = false; wi = (wi + 1) % words.length; delay = 400; }
+      setTimeout(type, delay);
+    }
+    type();
+
+    // 滚动显示动画
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // 回到顶部
+    const toTop = document.getElementById('to-top');
+    window.addEventListener('scroll', () => {
+      toTop.classList.toggle('show', window.scrollY > 400);
+    });
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // 动态年份
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 堆叠博客卡片
+    const posts = [
+      { tag: '新文章', date: '2026年8月5日', title: "开站大吉 '◡'", desc: '这是正文哦' },
+      { tag: '随笔', date: '2026年8月5日', title: '网页便笺', desc: '悄咪咪地查看，声张滴不要' },
+      { tag: '碎碎念', date: '2026年8月5日', title: '今天就到这里', desc: '欢迎下次光临 =ω=' }
+    ];
+    const stack = document.getElementById('blog-stack');
+    let cur = 0;
+    function renderStack() {
+      stack.innerHTML = '';
+      const count = posts.length;
+      for (let i = count - 1; i >= 0; i--) {
+        const offset = (i - cur + count) % count;
+        const p = posts[i];
+        const card = document.createElement('div');
+        card.className = 'stack-card';
+        card.style.transform = offset === 0
+          ? 'translateX(0) rotateY(0) translateY(0) scale(1)'
+          : `translateX(${offset * -46}px) translateY(${offset * 10}px) scale(${1 - offset * .05}) rotateY(${offset * 10}deg)`;
+        card.style.zIndex = count - offset;
+        card.innerHTML = `
+          <span class="idx">${String(i + 1).padStart(2, '0')}</span>
+          <span class="tag">${p.tag}</span>
+          <p class="date">${p.date}</p>
+          <h3><a href="#">${p.title}</a></h3>
+          <p>${p.desc}</p>
+          <a class="more" href="#">戳我查看 →</a>
+        `;
+        card.addEventListener('click', () => { cur = i; renderStack(); });
+        stack.appendChild(card);
+      }
+      document.getElementById('stack-prev').disabled = count <= 1;
+      document.getElementById('stack-next').disabled = count <= 1;
+    }
+    // 鼠标移动带动卡片倾斜
+    stack.addEventListener('mousemove', (e) => {
+      const r = stack.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      stack.style.transform = `rotateX(${y * -6}deg) rotateY(${x * 10}deg)`;
+      stack.style.transformStyle = 'preserve-3d';
+    });
+    stack.addEventListener('mouseleave', () => { stack.style.transform = ''; });
+    document.getElementById('stack-prev').addEventListener('click', () => { cur = (cur - 1 + posts.length) % posts.length; renderStack(); });
+    document.getElementById('stack-next').addEventListener('click', () => { cur = (cur + 1) % posts.length; renderStack(); });
+    renderStack();
+
+    // 便签书签
+    let allBookmarks = [];
+    let curFilter = 'all';
+    function renderBookmarks() {
+      const data = curFilter === 'all' ? allBookmarks : allBookmarks.filter(b => b.src === curFilter);
+      const groups = {};
+      data.forEach(b => {
+        const key = b.folder || '未分类';
+        (groups[key] = groups[key] || []).push(b);
+      });
+      const container = document.getElementById('bm-groups');
+      const keys = Object.keys(groups);
+      if (!keys.length) {
+        container.innerHTML = '<p class="bm-empty">这个来源下没有书签</p>';
+        return;
+      }
+      container.innerHTML = keys.map(k => `
+        <div class="bm-group">
+          <h3>📌 ${k} <span class="count">${groups[k].length}</span></h3>
+          <ul>
+            ${groups[k].map(b => `<li><a href="${b.url}" target="_blank"><span class="dot"></span><span class="bm-name">${b.name}</span><span class="tag-src">${b.src}</span></a></li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+    document.getElementById('bm-toolbar').addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('#bm-toolbar button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      curFilter = e.target.dataset.filter;
+      renderBookmarks();
+    });
+    fetch('bookmarks.json').then(r => r.json()).then(data => {
+      allBookmarks = data;
+      renderBookmarks();
+    }).catch(() => {
+      document.getElementById('bm-groups').innerHTML = '<p class="bm-empty">书签加载失败</p>';
+    });
+
+    // 联系表单
     const form = document.getElementById('contact-form');
     const msg = document.getElementById('form-msg');
     form.addEventListener('submit', async (e) => {
@@ -250,7 +706,5 @@
       btn.textContent = '发送留言';
     });
   </script>
-
-  <footer>© 2026 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
 </body>
 </html>
