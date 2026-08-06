@@ -116,6 +116,7 @@
       font-size: .85rem;
     }
     footer .heart { color: var(--accent); }
+    footer .brand { color: var(--accent); }
 
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -124,7 +125,7 @@
 <body>
   <nav>
     <div class="inner">
-      <a class="logo" href="index.html">晴天<span>小站</span></a>
+      <a class="logo" href="index.html"><span>晴天</span>小站</a>
       <a class="back" href="index.html#blog">← 返回博客</a>
     </div>
   </nav>
@@ -144,7 +145,7 @@
     </nav>
   </main>
 
-  <footer>© <span id="year"></span> 晴天小站 · Ciallo～(∠・ω< )⌒☆</footer>
+  <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
   <script>
     const saved = localStorage.getItem('theme');
