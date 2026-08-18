@@ -6,155 +6,261 @@
   <title>开站大吉 '◡' · 晴天小站</title>
   <style>
     :root {
-      --accent: #10a37f;
-      --bg: #0d0d0d;
-      --bg-soft: #141414;
-      --card: #171717;
-      --border: rgba(255,255,255,.1);
-      --text: #f5f5f4;
-      --muted: rgba(245,245,244,.55);
-      --glow: rgba(16,163,127,.16);
-      --shadow: rgba(0,0,0,.4);
-      color-scheme: dark;
-    }
-    html.light {
-      --bg: #fafafa;
-      --bg-soft: #f0f0f0;
-      --card: #ffffff;
-      --border: rgba(0,0,0,.09);
-      --text: #1a1a1a;
-      --muted: rgba(0,0,0,.55);
-      --glow: rgba(16,163,127,.14);
-      --shadow: rgba(0,0,0,.08);
+      --accent: #5d7a4e;
+      --accent-ink: #46643a;
+      --bg: #f2eee4;
+      --card: #fffdf7;
+      --line: rgba(58, 50, 42, .13);
+      --line-strong: rgba(58, 50, 42, .34);
+      --text: #35302a;
+      --muted: rgba(53, 48, 42, .6);
+      --shadow: rgba(58, 50, 42, .08);
       color-scheme: light;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.8;
+      line-height: 1.9;
       -webkit-font-smoothing: antialiased;
       transition: background .35s, color .35s;
     }
     a { text-decoration: none; color: inherit; }
     ::selection { background: var(--accent); color: #fff; }
 
+    /* 统一导航（四页一致） */
     nav {
       position: sticky;
       top: 0;
-      background: color-mix(in srgb, var(--bg) 78%, transparent);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
       z-index: 100;
     }
     nav .inner {
-      max-width: 860px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 0 24px;
-      height: 64px;
+      height: 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    nav .logo { font-size: 1.15rem; font-weight: 700; letter-spacing: .02em; }
-    nav .logo span { color: var(--accent); }
-    nav .back { font-size: .92rem; color: var(--muted); padding: 8px 14px; border-radius: 8px; transition: color .2s, background .2s; }
-    nav .back:hover { color: var(--text); background: color-mix(in srgb, var(--text) 6%, transparent); }
+    nav .logo { font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
+    nav .logo span { color: var(--accent-ink); }
+    nav .right { display: flex; align-items: center; gap: 12px; }
+    nav .menu { display: flex; gap: 2px; }
+    nav .menu a {
+      padding: 7px 14px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .93rem;
+      transition: color .2s, background .2s;
+    }
+    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
+    nav .menu a.active {
+      color: #fff;
+      font-weight: 600;
+      background: var(--accent-ink);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-ink) 30%, transparent);
+    }
 
-    main { max-width: 860px; margin: 0 auto; padding: 0 24px 90px; }
+    .container { max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 26px;
+      align-items: start;
+    }
+    .l-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+    .l-side { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 84px; }
 
-    .post-head { padding: 64px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 36px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 30px;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+
+    /* 面包屑：首页 / 博客 / 文章标题 */
+    .crumbs {
+      font-size: .84rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .crumbs a { color: var(--muted); transition: color .2s; }
+    .crumbs a:hover { color: var(--accent-ink); }
+    .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
+    .crumbs .cur { color: var(--text); font-weight: 600; }
+
+    /* 文章头 */
     .post-tag {
       display: inline-block;
-      font-size: .75rem;
-      padding: 4px 12px;
+      font-size: .74rem;
+      letter-spacing: .06em;
+      color: var(--accent-ink);
+      border: 1px solid var(--line-strong);
       border-radius: 999px;
-      background: color-mix(in srgb, var(--accent) 12%, transparent);
-      color: var(--accent);
-      margin-bottom: 18px;
+      padding: 3px 13px;
+      margin-bottom: 16px;
     }
     .post-head h1 {
-      font-size: clamp(1.9rem, 5vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -.02em;
-      line-height: 1.2;
-      margin-bottom: 14px;
-      background: linear-gradient(120deg, var(--text) 30%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -.01em;
+      line-height: 1.25;
+      margin-bottom: 12px;
     }
-    .post-date { color: var(--muted); font-size: .9rem; }
+    .post-meta { color: var(--muted); font-size: .86rem; }
+    .post-meta .sep { margin: 0 8px; color: var(--line-strong); }
 
-    .post-body { font-size: 1.05rem; color: var(--muted); }
+    .post-body { font-size: 1rem; color: var(--muted); margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
     .post-body p { margin-bottom: 18px; }
     .post-body strong { color: var(--text); font-weight: 600; }
-    .post-body a { color: var(--accent); border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
-    .post-body a:hover { border-bottom-color: var(--accent); }
+    .post-body a { color: var(--accent-ink); border-bottom: 1px solid var(--line-strong); }
+    .post-body a:hover { border-bottom-color: var(--accent-ink); }
 
+    /* 继续阅读 */
+    .other { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .other-title { font-size: 1rem; font-weight: 800; margin-bottom: 12px; }
+    .other-list { display: flex; flex-direction: column; }
+    .other-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 8px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 8px;
+      transition: background .18s, padding-left .2s;
+    }
+    .other-item:last-child { border-bottom: none; }
+    .other-item:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); padding-left: 14px; }
+    .other-item .o-name { font-size: .95rem; font-weight: 600; flex: 1; }
+    .other-item .o-date { font-size: .78rem; color: var(--muted); flex-shrink: 0; }
+    .other-item .o-arrow { color: var(--muted); flex-shrink: 0; transition: color .2s; }
+    .other-item:hover .o-arrow { color: var(--accent-ink); }
+
+    /* 上一篇 / 下一篇（无多余返回链接） */
     .post-nav {
-      margin-top: 48px;
-      padding-top: 28px;
-      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: .92rem;
+      font-size: .9rem;
     }
-    .post-nav a { color: var(--accent); font-weight: 500; }
-    .post-nav a:hover { text-decoration: underline; }
-    .post-nav .prev { color: var(--muted); }
+    .post-nav a { color: var(--accent-ink); font-weight: 600; }
+    .post-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .post-nav .prev { color: var(--muted); font-weight: 400; }
     .post-nav .prev:hover { color: var(--text); }
+
+    /* 侧栏作者卡 */
+    .side-author { text-align: center; }
+    .side-author .ava {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      border: 1px solid var(--line-strong);
+    }
+    .side-author h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+    .side-author p { color: var(--muted); font-size: .82rem; line-height: 1.7; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     footer {
       text-align: center;
-      padding: 40px 24px;
-      border-top: 1px solid var(--border);
+      padding: 36px 24px 44px;
+      border-top: 1px solid var(--line);
       color: var(--muted);
       font-size: .85rem;
     }
-    footer .heart { color: var(--accent); }
-    footer .brand { color: var(--accent); }
+    footer .brand { color: var(--accent-ink); }
 
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .l-side { position: static; }
+    }
+    @media (max-width: 640px) {
+      nav .menu a { padding: 7px 8px; font-size: .88rem; }
+      .container { padding: 18px 14px 50px; }
+      .card { padding: 22px; }
+    }
   </style>
 </head>
 <body>
   <nav>
     <div class="inner">
       <a class="logo" href="index.html"><span>晴天</span>小站</a>
-      <a class="back" href="index.html#blog">← 返回博客</a>
+      <div class="right">
+        <div class="menu">
+          <a href="index.html">首页</a>
+          <a href="blog.html" class="active">博客</a>
+          <a href="index.html#about">关于我</a>
+          <a href="contact.html">联系我</a>
+        </div>
+      </div>
     </div>
   </nav>
 
-  <main>
-    <header class="post-head reveal">
-      <span class="post-tag">新文章</span>
-      <h1>开站大吉 '◡'</h1>
-      <p class="post-date">2026年8月5日</p>
-    </header>
-    <article class="post-body reveal">
-      <p>重生之我是HTML高手。</p><p>从零开始，一路摸爬滚打，终于把 <strong>晴天小站</strong> 搭起来了！以后这里会陆续记录一些想说的话、踩过的坑，还有收藏的好东西。</p><p>Ciallo～(∠・ω&lt; )⌒☆</p>
-    </article>
-    <nav class="post-nav reveal">
-      <a class="prev" href="post3.html">← 上一篇</a>
-      <a href="index.html#blog">返回博客 ↑</a>
-    </nav>
-  </main>
+  <div class="container">
+    <div class="layout">
+      <div class="l-main">
+        <article class="card reveal">
+          <nav class="crumbs" aria-label="面包屑">
+            <a href="index.html">首页</a><span class="sep">/</span>
+            <a href="blog.html">博客</a><span class="sep">/</span>
+            <span class="cur">开站大吉 '◡'</span>
+          </nav>
+
+          <header class="post-head">
+            <span class="post-tag">新文章</span>
+            <h1>开站大吉 '◡'</h1>
+            <p class="post-meta">2026年8月5日 <span class="sep">/</span> 开站</p>
+          </header>
+
+          <div class="post-body">
+            <p>重生之我是HTML高手。</p><p>广阔天地，大有作为。倘若我没作为，说明天地不够广阔(bushi</p><p>Ciallo～(∠・ω&lt; )⌒☆</p>
+          </div>
+
+          <section class="other">
+            <h3 class="other-title">继续阅读</h3>
+            <div class="other-list">
+              <a class="other-item" href="post2.html"><span class="o-name">网页便笺</span><span class="o-date">2026年8月5日</span><span class="o-arrow">→</span></a>
+              <a class="other-item" href="post3.html"><span class="o-name">正在开发</span><span class="o-date">2026年8月5日</span><span class="o-arrow">→</span></a>
+            </div>
+          </section>
+
+          <nav class="post-nav">
+            <a href="post2.html">下一篇 →</a>
+          </nav>
+        </article>
+      </div>
+
+      </aside>
+    </div>
+  </div>
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
   <script>
-    const saved = localStorage.getItem('theme');
-    if (saved === 'light') document.documentElement.classList.add('light');
     document.getElementById('year').textContent = new Date().getFullYear();
     const io = new IntersectionObserver((es) => {
       es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
     }, { threshold: .1 });
     document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
   </script>
+  <!-- Live2D 看板娘 -->
+  <script type="module" src="live2d/kandao.js"></script>
 </body>
 </html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>联系我 · 晴天小站</title>
+  <style>
+    :root {
+      /* 暖纸·晴天 */
+      --accent: #5d7a4e;
+      --accent-ink: #46643a;
+      --bg: #f2eee4;
+      --card: #fffdf7;
+      --line: rgba(58, 50, 42, .13);
+      --line-strong: rgba(58, 50, 42, .34);
+      --text: #35302a;
+      --muted: rgba(53, 48, 42, .6);
+      --shadow: rgba(58, 50, 42, .08);
+      color-scheme: light;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--accent); color: #fff; }
+
+    /* 顶部导航（全站统一） */
+    nav {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+      z-index: 100;
+    }
+    nav .inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .logo { font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
+    nav .logo span { color: var(--accent-ink); }
+    nav .right { display: flex; align-items: center; gap: 12px; }
+    nav .menu { display: flex; gap: 2px; }
+    nav .menu a {
+      padding: 7px 14px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .93rem;
+      transition: color .2s, background .2s;
+    }
+    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
+    nav .menu a.active {
+      color: #fff;
+      font-weight: 600;
+      background: var(--accent-ink);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-ink) 30%, transparent);
+    }
+
+    /* 主体 */
+    .container { max-width: 680px; margin: 0 auto; padding: 48px 24px 60px; }
+
+    /* 页头：面包屑 + 标题 */
+    .page-head { margin-bottom: 30px; }
+    .crumbs {
+      font-size: .84rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .crumbs a { color: var(--muted); transition: color .2s; }
+    .crumbs a:hover { color: var(--accent-ink); }
+    .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
+    .crumbs .cur { color: var(--text); font-weight: 600; }
+    .page-head h1 {
+      font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -.01em;
+    }
+    .page-head p { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+
+    /* 联系表单 */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 30px;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+    .form-card form { display: flex; flex-direction: column; gap: 14px; }
+    .form-card input, .form-card textarea {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 15px;
+      color: var(--text);
+      font-size: .92rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-card input:focus, .form-card textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+    .form-card textarea { min-height: 110px; resize: vertical; }
+    .form-card button {
+      background: var(--accent-ink);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      color: #fff;
+      font-size: .93rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+    .form-card button:hover { opacity: .88; transform: translateY(-1px); }
+    .form-card button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .form-msg { margin-top: 10px; font-size: .88rem; color: var(--accent-ink); font-weight: 500; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    footer {
+      text-align: center;
+      padding: 40px 24px 48px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer .brand { color: var(--accent-ink); }
+
+    @media (max-width: 640px) {
+      nav .menu a { padding: 7px 8px; font-size: .88rem; }
+      .container { padding: 32px 18px 50px; }
+      .form-card { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html"><span>晴天</span>小站</a>
+      <div class="right">
+        <div class="menu">
+          <a href="index.html">首页</a>
+          <a href="blog.html">博客</a>
+          <a href="index.html#about">关于我</a>
+          <a href="contact.html" class="active">联系我</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 页头：面包屑 + 标题 -->
+    <header class="page-head reveal">
+      <nav class="crumbs" aria-label="面包屑">
+        <a href="index.html">首页</a><span class="sep">/</span>
+        <span class="cur">联系我</span>
+      </nav>
+      <h1>联系我</h1>
+      <p>有什么想对我说的吗…</p>
+    </header>
+
+    <!-- 联系表单 -->
+    <div class="form-card reveal">
+      <form id="contact-form">
+        <input type="text" name="name" placeholder="昵称" required>
+        <input type="email" name="email" placeholder="你的邮箱" required>
+        <textarea name="message" placeholder="想说的话…" required></textarea>
+        <button type="submit">发送留言</button>
+      </form>
+      <p class="form-msg" id="form-msg"></p>
+    </div>
+  </div>
+
+  <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
+
+  <script>
+    // 滚动显示动画
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // 动态年份
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 联系表单
+    const form = document.getElementById('contact-form');
+    const msg = document.getElementById('form-msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = '发送中…';
+      try {
+        const res = await fetch('https://formspree.io/f/xrpzgzao', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (res.ok) {
+          msg.textContent = '发送成功！我会尽快回复你～';
+          form.reset();
+        } else {
+          msg.textContent = '发送失败，请稍后再试。';
+        }
+      } catch (err) {
+        msg.textContent = '网络错误，请稍后再试。';
+      }
+      btn.disabled = false;
+      btn.textContent = '发送留言';
+    });
+  </script>
+  <!-- Live2D 看板娘 -->
+  <script type="module" src="live2d/kandao.js"></script>
+</body>
+</html>

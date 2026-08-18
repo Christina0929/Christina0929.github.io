@@ -1,0 +1,6 @@
+# opencode 本地配置
+.agents/
+skills-lock.json
+
+# 临时截图
+_tmp_*.png
