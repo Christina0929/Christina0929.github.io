@@ -177,9 +177,9 @@
 
   // ---------- 文案加载 ----------
   let messages = {
-    default: ['哦，是你啊。今天也在逛呢。', '有点困了，昨晚睡得有点晚。', '看来你的爱还不够呢～这就是爱！=ω=', '曾经有个伟人说过，抓娃娃机是储蓄罐！', '一言蔽之，就是爱啊！'],
-    hoverBody: ['呀……干嘛呢。', '鼠标放错地方了吧。', '小心我咬你哦 =ω=', '爱还不够呢！'],
-    tapBody: ['别戳啦。', '会凹进去的。', '再点的话，作业就拜托你了哦。'],
+    default: ['哦，是你啊。今天也在逛呢。', '嗯……没什么特别的事。', '有点困了，昨晚睡得有点晚。', '天气不错呢。不过我还是想待在家里。', '刚打完一局游戏，有点累。', '有什么事吗。', '看来你的爱还不够呢～这就是爱！=ω=', '曾经有个伟人说过，抓娃娃机是储蓄罐！', '老师，我是那种平时不努力、上场也很强的类型。', '钻头才是男人的浪漫！~', '圣诞老人并不存在么……想起阿虚了', '一言蔽之，就是爱啊！', '我是 OTAKU，你不懂的！！', '会来的，叫睡魔的怪兽们～这是无法避免的～', '这才是所谓的萌点！', '贫乳是种状态，是稀少的资源！(￣▽￣)'],
+    hoverBody: ['呀……干嘛呢。', '鼠标放错地方了吧。', '小心我咬你哦 =ω=', '干什么呢你。', '我正忙着打游戏呢。', '爱还不够呢！'],
+    tapBody: ['别戳啦。', '再戳我咬你哦。', '游戏机都被你吓掉了。', '再点的话，作业就拜托你了哦。', '真是的……'],
     copy: '复制了要标明出处哦。不然爱不够呢！',
     visibilitychange: '欢迎回来。正好一起刷副本。',
     goodbye: '愿你有一天能与重要的人重逢。我先去玩会儿游戏了。=ω=',
@@ -248,26 +248,58 @@
     if (!document.hidden) show(messages.visibilitychange, 6000, 9);
   });
 
-  // ---------- 拖拽 ----------
+  // ---------- 拖拽（鼠标 + 触屏） ----------
   const drag = () => {
     let winW = window.innerWidth, winH = window.innerHeight;
     const w = waifu.offsetWidth, h = waifu.offsetHeight;
-    waifu.addEventListener('mousedown', (e) => {
-      if (e.button === 2) return; // 右键不拖
-      if (e.target !== img) return;
-      e.preventDefault();
-      const offX = e.offsetX, offY = e.offsetY;
-      document.onmousemove = (ev) => {
-        let x = ev.clientX - offX, y = ev.clientY - offY;
+
+    // 统一拖拽开始：鼠标或手指按下（仅限图片本体）
+    function dragStart(ev, isTouch) {
+      if (ev.button === 2) return; // 右键不拖
+      if (ev.target !== img) return;
+      ev.preventDefault();
+      const cx = isTouch ? ev.touches[0].clientX : ev.clientX;
+      const cy = isTouch ? ev.touches[0].clientY : ev.clientY;
+      // 以实际渲染位置为基准计算抓取偏移（兼容 bottom:0 停靠与 top/left 拖拽后的状态）
+      const rect = waifu.getBoundingClientRect();
+      const offX = cx - rect.left;
+      const offY = cy - rect.top;
+      let moved = false; // 是否真正发生了移动（点击不拖则保持原定位）
+
+      function move(ev2, isTouch2) {
+        // 首次移动时才从 bottom 停靠切换到 top/left 跟随
+        if (!moved) {
+          moved = true;
+          waifu.style.bottom = 'auto';
+        }
+        let x = (isTouch2 ? ev2.touches[0].clientX : ev2.clientX) - offX;
+        let y = (isTouch2 ? ev2.touches[0].clientY : ev2.clientY) - offY;
         if (y < 0) y = 0;
         if (y >= winH - h) y = winH - h;
         if (x < 0) x = 0;
         if (x >= winW - w) x = winW - w;
         waifu.style.top = y + 'px';
         waifu.style.left = x + 'px';
-      };
-      document.onmouseup = () => { document.onmousemove = null; };
-    });
+      }
+      function end() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        waifu.ontouchmove = null;
+        waifu.ontouchend = null;
+      }
+
+      if (isTouch) {
+        waifu.ontouchmove = (e) => { e.preventDefault(); move(e, true); };
+        waifu.ontouchend = end;
+        waifu.ontouchcancel = end;
+      } else {
+        document.onmousemove = (ev2) => move(ev2, false);
+        document.onmouseup = end;
+      }
+    }
+
+    waifu.addEventListener('mousedown', (e) => dragStart(e, false));
+    waifu.addEventListener('touchstart', (e) => dragStart(e, true), { passive: false });
     window.onresize = () => { winW = window.innerWidth; winH = window.innerHeight; };
   };
   drag();
