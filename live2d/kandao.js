@@ -40,8 +40,31 @@ import './lib/waifu-tips.js';
     /* ===== 气泡：延续旧版半透明白底 ===== */
     #waifu-tips {
       background-color: rgba(236, 217, 188, .85);
+      z-index: 6;
     }
     #waifu-tips span { color: #0099cc; }
+    /* 工具菜单保持在静态图上可点 */
+    #waifu-tool { z-index: 7; }
+
+    /* ===== 静态模式：立绘图片（旧版 kandao.png，高同 Live2D 画布） ===== */
+    #kandao-static-img {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: min(30vh, 260px);
+      width: auto;
+      display: none;
+      pointer-events: auto;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-drag: none;
+      z-index: 5;
+      filter: drop-shadow(0 8px 20px rgba(58, 50, 42, .18));
+      transition: filter .3s;
+    }
+    #kandao-static-img.show { display: block; }
+    #kandao-static-img.show:hover { filter: drop-shadow(0 8px 20px rgba(58, 50, 42, .28)); }
+    #kandao-static-img:active { cursor: grabbing; }
     /* ===== 手机端：缩小画布并停靠左下可视区 ===== */
     @media (max-width: 768px) {
       #waifu { left: 8px; }
@@ -49,6 +72,7 @@ import './lib/waifu-tips.js';
         height: min(22vh, 150px);
         width: min(22vh, 150px);
       }
+      #kandao-static-img { height: min(22vh, 150px); }
       #waifu-tips {
         width: 160px;
         font-size: 12px;
@@ -92,7 +116,9 @@ import './lib/waifu-tips.js';
 
     function dragStart(ev, isTouch) {
       if (ev.button === 2) return; // 右键不拖
-      if (ev.target !== canvas) return;
+      const staticImg = document.getElementById('kandao-static-img');
+      const allow = ev.target === canvas || (staticImg && ev.target === staticImg && staticImg.classList.contains('show'));
+      if (!allow) return;
       ev.preventDefault();
       const cx = isTouch ? ev.touches[0].clientX : ev.clientX;
       const cy = isTouch ? ev.touches[0].clientY : ev.clientY;
@@ -149,6 +175,98 @@ import './lib/waifu-tips.js';
     });
     obs.observe(document.body, { childList: true, subtree: true });
     setTimeout(() => obs.disconnect(), 20000);
+  }
+
+  // ---------- 动态/静态模式切换（自研，不动官方 widget） ----------
+  // 思路：静态模式 = 隐藏 live2d 画布，改显旧版立绘图片 kandao.png（图片加载的看板娘）；
+  //       动态模式 = 恢复 live2d 画布。选择用 localStorage 记忆。
+  const STATIC_KEY = 'kandao-static-mode';
+  const STATIC_SRC = 'live2d/model/custom/kandao.png';
+
+  function staticImgEl() {
+    let img = document.getElementById('kandao-static-img');
+    const waifu = document.getElementById('waifu');
+    // 统一挂到 #waifu（position:fixed 定位基准），迟到的元素挪进去
+    if (img && waifu && img.parentElement !== waifu) waifu.appendChild(img);
+    if (img) return img;
+    img = document.createElement('img');
+    img.id = 'kandao-static-img';
+    img.src = STATIC_SRC;
+    img.alt = '晴天小站看板娘 · 静态立绘';
+    img.draggable = false;
+    img.style.display = 'none';
+    (waifu || document.body).appendChild(img);
+    return img;
+  }
+
+  function setStatic(on) {
+    const canvas = document.getElementById('live2d');
+    const img = staticImgEl();
+    if (!canvas || !img) return;
+
+    if (on) {
+      canvas.style.visibility = 'hidden'; // 保留占位，避免容器跳动
+      img.classList.add('show');
+      img.style.display = 'block';
+      localStorage.setItem(STATIC_KEY, '1');
+    } else {
+      canvas.style.visibility = '';
+      img.classList.remove('show');
+      img.style.display = 'none';
+      localStorage.removeItem(STATIC_KEY);
+    }
+  }
+
+  // 配置工具按钮
+  function setupModeToggle() {
+    const tool = document.getElementById('waifu-tool');
+    if (!tool) return false;
+    if (document.getElementById('waifu-tool-mode')) return true;
+
+    const btn = document.createElement('span');
+    btn.id = 'waifu-tool-mode';
+    btn.title = '切换 动态/静态 模式（Live2D / 立绘图）';
+    // 图标随状态切换：太阳=动态，月亮=静态；点击即切换
+    const icons = {
+      sun: '<svg viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zm9-9a1 1 0 0 1-1 1h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zM4 12a1 1 0 0 1-1 1H1a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zm14.2-6.6a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0zM8.6 9.6a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0zm6.8 6.8a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0zM9.6 15.4a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0z"/></svg>',
+      moon: '<svg viewBox="0 0 24 24"><path d="M12.5 2a10 10 0 1 0 9.5 13.5A9 9 0 0 1 12.5 2z"/></svg>'
+    };
+    const setIcon = (staticOn) => { btn.innerHTML = staticOn ? icons.moon : icons.sun; };
+    const img2 = document.getElementById('kandao-static-img');
+    setIcon(img2 && img2.classList.contains('show'));
+    btn.addEventListener('click', () => {
+      const img = document.getElementById('kandao-static-img');
+      const next = !(img && img.classList.contains('show'));
+      setStatic(next);
+      setIcon(next);
+    });
+    tool.appendChild(btn);
+    return true;
+  }
+
+  // 官方 widget 建好后再挂按钮；监听 body 直到 #waifu-tool 出现
+  function initModeToggle() {
+    if (setupModeToggle()) return;
+    const obs = new MutationObserver(() => {
+      if (setupModeToggle()) obs.disconnect();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+    setTimeout(() => obs.disconnect(), 20000);
+  }
+  initModeToggle();
+
+  // 每次进入页面时恢复上次的模式（等 #waifu 出现后应用）
+  const savedStatic = localStorage.getItem(STATIC_KEY) === '1';
+  if (savedStatic) {
+    const stick = setInterval(() => {
+      if (document.getElementById('waifu') && document.getElementById('live2d')) {
+        clearInterval(stick);
+        setStatic(true);
+        const btnIcon = document.getElementById('waifu-tool-mode');
+        if (btnIcon) btnIcon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12.5 2a10 10 0 1 0 9.5 13.5A9 9 0 0 1 12.5 2z"/></svg>';
+      }
+    }, 300);
+    setTimeout(() => clearInterval(stick), 10000);
   }
 
   // ---------- 自适应：拖拽过的小屏被挤出屏幕时钳回可视区 ----------
