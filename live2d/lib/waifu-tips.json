@@ -127,8 +127,8 @@
     "tapBody": ["别戳啦。", "再戳我咬你哦。", "游戏机都被你吓掉了。", "再点的话，作业就拜托你了哦。", "真是的……"]
   },
   "models": [{
-    "name": "Shizuku",
-    "paths": ["live2d/model/shizuku/shizuku.model.json"],
-    "message": "来自晴天小站的 izumi ~"
+    "name": "Konata",
+    "paths": ["live2d/model/konata/konata.model3.json"],
+    "message": "这是我们的此方哦～=ω="
   }]
 }
