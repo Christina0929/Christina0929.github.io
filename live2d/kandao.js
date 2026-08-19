@@ -99,7 +99,7 @@ import './lib/waifu-tips.js';
     waifuPath: 'live2d/lib/waifu-tips.json',
     cubism2Path: 'live2d/lib/live2d.min.js',
     cubism5Path: 'live2d/lib/live2dcubismcore.min.js',
-    tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
+    tools: ['hitokoto'],
     drag: false,
     showToggleAfterQuit: true,
     logLevel: 'info'
