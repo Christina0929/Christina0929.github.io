@@ -4,3 +4,6 @@ skills-lock.json
 
 # 临时截图
 _tmp_*.png
+
+# 字体子集化前备份
+*.ttf.bak

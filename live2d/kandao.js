@@ -181,7 +181,7 @@ import './lib/waifu-tips.js';
   // 思路：静态模式 = 隐藏 live2d 画布，改显旧版立绘图片 kandao.png（图片加载的看板娘）；
   //       动态模式 = 恢复 live2d 画布。选择用 localStorage 记忆。
   const STATIC_KEY = 'kandao-static-mode';
-  const STATIC_SRC = 'live2d/model/custom/kandao.png';
+  const STATIC_SRC = 'live2d/model/custom/kandao.webp';
 
   function staticImgEl() {
     let img = document.getElementById('kandao-static-img');
