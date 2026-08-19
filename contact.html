@@ -3,9 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="sun-avatar-sm.png">
   <title>联系我 · 晴天小站</title>
+  <link rel="icon" href="sun-avatar-sm.png" type="image/png">
   <style>
+    /* 字体文件（本地） */
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: url('fonts/CormorantGaramond.ttf') format('truetype');
+    }
     :root {
       /* 暖纸·晴天 */
       --accent: #5d7a4e;
@@ -18,11 +47,17 @@
       --muted: rgba(53, 48, 42, .6);
       --shadow: rgba(58, 50, 42, .08);
       color-scheme: light;
+
+      /* 字体分层（参考 ahzoo） */
+      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
+      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
+      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
       line-height: 1.85;
@@ -50,7 +85,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    nav .logo { font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
+    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
     nav .logo span { color: var(--accent-ink); }
     nav .right { display: flex; align-items: center; gap: 12px; }
     nav .menu { display: flex; gap: 2px; }
@@ -75,6 +110,7 @@
     /* 页头：面包屑 + 标题 */
     .page-head { margin-bottom: 30px; }
     .crumbs {
+      font-family: var(--font-display);
       font-size: .84rem;
       color: var(--muted);
       margin-bottom: 12px;
@@ -84,6 +120,7 @@
     .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
     .crumbs .cur { color: var(--text); font-weight: 600; }
     .page-head h1 {
+      font-family: var(--font-display);
       font-size: clamp(1.8rem, 4.5vw, 2.4rem);
       font-weight: 900;
       letter-spacing: -.01em;
@@ -156,7 +193,8 @@
         <div class="menu">
           <a href="index.html">首页</a>
           <a href="blog.html">博客</a>
-          <a href="index.html#about">关于我</a>
+          <a href="bookmarks.html">书签</a>
+          <a href="about.html">关于我</a>
           <a href="contact.html" class="active">联系我</a>
         </div>
       </div>

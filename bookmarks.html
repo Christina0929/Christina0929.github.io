@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>书签 · 晴天小站</title>
+  <link rel="icon" href="sun-avatar-sm.png" type="image/png">
+  <style>
+    /* 字体文件（本地） */
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: url('fonts/CormorantGaramond.ttf') format('truetype');
+    }
+    :root {
+      /* 暖纸·晴天 */
+      --accent: #5d7a4e;
+      --accent-ink: #46643a;
+      --bg: #f2eee4;
+      --card: #fffdf7;
+      --line: rgba(58, 50, 42, .13);
+      --line-strong: rgba(58, 50, 42, .34);
+      --text: #35302a;
+      --muted: rgba(53, 48, 42, .6);
+      --shadow: rgba(58, 50, 42, .08);
+      color-scheme: light;
+
+      /* 字体分层（参考 ahzoo） */
+      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
+      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
+      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--accent); color: #fff; }
+
+    /* 顶部导航（全站统一） */
+    nav {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+      z-index: 100;
+    }
+    nav .inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
+    nav .logo span { color: var(--accent-ink); }
+    nav .right { display: flex; align-items: center; gap: 12px; }
+    nav .menu { display: flex; gap: 2px; }
+    nav .menu a {
+      padding: 7px 14px;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: .93rem;
+      transition: color .2s, background .2s;
+    }
+    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
+    nav .menu a.active {
+      color: #fff;
+      font-weight: 600;
+      background: var(--accent-ink);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-ink) 30%, transparent);
+    }
+
+    /* 主体 */
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 24px 60px; }
+
+    /* 页头：面包屑 + 标题 */
+    .page-head { margin-bottom: 30px; }
+    .crumbs {
+      font-family: var(--font-display);
+      font-size: .84rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .crumbs a { color: var(--muted); transition: color .2s; }
+    .crumbs a:hover { color: var(--accent-ink); }
+    .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
+    .crumbs .cur { color: var(--text); font-weight: 600; }
+    .page-head h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -.01em;
+    }
+    .page-head p { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+
+    /* 书签卡片 */
+    .bm-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 30px;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+    .bm-title { font-family: var(--font-display); font-size: 1.02rem; font-weight: 800; margin-bottom: 18px; }
+    .bm-title small { font-size: .8rem; font-weight: 400; color: var(--muted); margin-left: 8px; }
+    .bm-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    .bm-group {
+      background: color-mix(in srgb, var(--card) 60%, var(--bg));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .bm-group .bm-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .bm-ico { font-size: .95rem; flex-shrink: 0; }
+    .bm-group h3 { font-family: var(--font-display); font-size: .95rem; font-weight: 700; flex: 1; min-width: 0; }
+    .bm-group .count {
+      font-family: var(--font-num);
+      font-size: .68rem;
+      letter-spacing: .05em;
+      color: var(--accent-ink);
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 0 8px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .bm-group ul { list-style: none; display: flex; flex-direction: column; }
+    .bm-group li { margin: 0; }
+    .bm-group a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 6px;
+      color: var(--muted);
+      font-size: .85rem;
+      border-radius: 7px;
+      transition: color .15s, background .15s;
+    }
+    .bm-group a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .bm-group .bm-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    footer {
+      text-align: center;
+      padding: 40px 24px 48px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer .brand { color: var(--accent-ink); }
+
+    @media (max-width: 640px) {
+      nav .menu a { padding: 7px 8px; font-size: .88rem; }
+      .container { padding: 32px 18px 50px; }
+      .bm-card { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html"><span>晴天</span>小站</a>
+      <div class="right">
+        <div class="menu">
+          <a href="index.html">首页</a>
+          <a href="blog.html">博客</a>
+          <a href="bookmarks.html" class="active">书签</a>
+          <a href="about.html">关于我</a>
+          <a href="contact.html">联系我</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 页头：面包屑 + 标题 -->
+    <header class="page-head reveal">
+      <nav class="crumbs" aria-label="面包屑">
+        <a href="index.html">首页</a><span class="sep">/</span>
+        <span class="cur">书签</span>
+      </nav>
+      <h1>🔖 书签</h1>
+      <p>悄咪咪地收藏，声张滴不要。</p>
+    </header>
+
+    <!-- 书签内容 -->
+    <div class="bm-card reveal">
+      <h3 class="bm-title">我的收藏 <small id="bm-total"></small></h3>
+      <div class="bm-groups" id="bm-groups"></div>
+    </div>
+  </div>
+
+  <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 分组顺序与图标
+    const GROUP_META = [
+      { key: '我的网站', icon: '🏠' },
+      { key: 'AI 工具', icon: '🤖' },
+      { key: '编程开发', icon: '💻' },
+      { key: '学术论文', icon: '📚' },
+      { key: '娱乐', icon: '🎮' },
+      { key: '推荐工具', icon: '🧰' }
+    ];
+
+    // 书签数据（数据源：bookmarks.json，已按本地最新删减更新）
+    const ALL_BOOKMARKS = [
+
+      { folder: 'AI 工具', name: 'Kimi AI 官网', url: 'https://www.kimi.com/zh/'},
+      { folder: 'AI 工具', name: 'ChatGPT 中文', url: 'https://chatgpt.com/zh-CN/'},
+      { folder: 'AI 工具', name: 'DeepSeek', url: 'https://chat.deepseek.com/'},
+      { folder: 'AI 工具', name: 'OpenAI', url: 'https://openai.com/zh-Hans-CN/'},
+      { folder: 'AI 工具', name: 'Google AI Studio', url: 'https://aistudio.google.com/prompts/new_chat?model=gemini-3.1-flash-lite-image'},
+      { folder: 'AI 工具', name: '即梦 AI', url: 'https://jimeng.jianying.com/ai-tool/personal/MS4wLjABAAAAriIGRFR106rivvySz3mYxKwgSJGtXxS_VCnscjKmCRw'},
+      { folder: 'AI 工具', name: 'Suno - AI 音乐', url: 'https://suno.com/create?mode=CUSTOM'},
+      { folder: 'AI 工具', name: 'Cursor', url: 'https://cursor.com/dashboard'},
+      { folder: 'AI 工具', name: 'OpenCode 中文教程', url: 'https://learnopencode.com/'},
+      { folder: 'AI 工具', name: '简介 | OpenCode', url: 'https://opencode.ai/docs'},
+
+      { folder: '编程开发', name: 'GitHub', url: 'https://github.com/'},
+      { folder: '编程开发', name: '力扣 LeetCode', url: 'https://leetcode.cn/?lang=zh'},
+      { folder: '编程开发', name: 'CSDN', url: 'https://www.csdn.net/'},
+      { folder: '编程开发', name: 'Stack Overflow', url: 'https://stackoverflow.com/'},
+      { folder: '编程开发', name: '菜鸟教程', url: 'https://www.runoob.com/'},
+      { folder: '编程开发', name: '我要自学网', url: 'https://www.51zxw.net/'},
+      { folder: '编程开发', name: '学吧导航', url: 'https://www.xue8nav.com/'},
+      { folder: '编程开发', name: 'Codecademy', url: 'https://www.codecademy.cn/tutorial/python/'},
+      { folder: '编程开发', name: 'Coursera', url: 'https://www.coursera.org/'},
+      { folder: '编程开发', name: '良许嵌入式', url: 'https://www.lxlinux.net/e/'},
+      { folder: '编程开发', name: 'Code-noob', url: 'https://github.com/yuyedeng0929/code-noob'},
+      { folder: '编程开发', name: 'CipherTalk', url: 'https://github.com/ILoveBingLu/CipherTalk'},
+      { folder: '编程开发', name: '猪八戒网', url: 'https://www.zbj.com/'},
+      { folder: '编程开发', name: '代理客户端协议', url: 'https://agentclientprotocol.com/get-started/introduction'},
+      { folder: '编程开发', name: 'Formspree', url: 'https://formspree.io/forms/xrpzgzao/integration'},
+
+      { folder: '学术论文', name: '中国知网', url: 'https://www.cnki.net/'},
+      { folder: '学术论文', name: 'Sci-Hub', url: 'https://sci-hub.st/'},
+      { folder: '学术论文', name: 'MDPI', url: 'https://www.mdpi.com/'},
+      { folder: '学术论文', name: 'OALib', url: 'https://www.oalib.com/'},
+      { folder: '学术论文', name: '文献互助平台 - 科研通', url: 'https://www.ablesci.com/'},
+      { folder: '学术论文', name: '全国图书馆参考咨询联盟', url: 'http://www.ucdrs.superlib.net/'},
+      { folder: '学术论文', name: '国家哲学社会科学文献中心', url: 'https://www.ncpssd.org/'},
+      { folder: '学术论文', name: '梅斯AI导航站', url: 'https://aisite.medsci.cn/'},
+      { folder: '学术论文', name: '氢离子', url: 'https://www.ali-doctor.com/channel?tab=literature'},
+      { folder: '学术论文', name: '知乎', url: 'https://www.zhihu.com/'},
+
+      { folder: '娱乐', name: '哔哩哔哩', url: 'https://www.bilibili.com/'},
+      { folder: '娱乐', name: 'AcFun 弹幕视频网', url: 'https://www.acfun.cn/'},
+      { folder: '娱乐', name: '萌娘百科', url: 'https://mzh.moegirl.org.cn/Mainpage#/flow'},
+      { folder: '娱乐', name: 'MCBBS 中文论坛', url: 'https://www.mcbbs.co/forum.php'},
+      { folder: '娱乐', name: 'LittleSkin 皮肤站', url: 'https://littleskin.cn/?lang=zh_CN'},
+      { folder: '娱乐', name: 'Amazon Luna', url: 'https://luna.amazon.com/gamenight'},
+
+      { folder: '推荐工具', name: 'b站@一只小辉金吖', url: 'https://link3.cc/huijinya520'},
+      { folder: '推荐工具', name: 'QQ邮箱', url: 'https://wx.mail.qq.com/home/index?sid=zTE5YoyvMTAuEXFZAFBYTQAA#/list/1/1'},
+      { folder: '推荐工具', name: '2925邮箱', url: 'https://www.2925.com/login/'},
+      { folder: '推荐工具', name: '测速网 SpeedTest.cn', url: 'https://www.speedtest.cn/'},
+      { folder: '推荐工具', name: '中科大测速', url: 'https://test.ustc.edu.cn/'},
+      { folder: '推荐工具', name: 'V2EX', url: 'https://www.v2ex.com/'},
+      { folder: '推荐工具', name: 'UUUP Tools', url: 'https://uuup.net/tools/'},
+      { folder: '推荐工具', name: 'Wallhaven 壁纸', url: 'https://riverlanes.site/wallhaven/'},
+      { folder: '推荐工具', name: '极简壁纸', url: 'https://bizhi1.com/item-cat/minimalism' },
+      { folder: '推荐工具', name: 'OpenRouter', url: 'https://openrouter.ai/workspaces/default?utm_source=signup-success'}
+    ];
+
+    const groups = {};
+    ALL_BOOKMARKS.forEach(b => {
+      const key = b.folder || '未分类';
+      (groups[key] = groups[key] || []).push(b);
+    });
+    const ordered = [];
+    GROUP_META.forEach(m => { if (groups[m.key]) ordered.push(m); });
+    const rest = Object.keys(groups).filter(k => !GROUP_META.some(m => m.key === k)).map(k => ({ key: k, icon: '📌' }));
+    ordered.push(...rest);
+
+    const container = document.getElementById('bm-groups');
+    container.innerHTML = ordered.map(g => `
+      <div class="bm-group">
+        <div class="bm-head"><span class="bm-ico">${g.icon}</span><h3>${g.key}</h3><span class="count">${groups[g.key].length}</span></div>
+        <ul>
+          ${groups[g.key].map(b => `<li><a href="${b.url}" target="_blank"><span class="bm-name">${b.name}</span></a></li>`).join('')}
+        </ul>
+      </div>
+    `).join('');
+    document.getElementById('bm-total').textContent = `${ALL_BOOKMARKS.length} 个书签`;
+
+    // 滚动显示动画
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: .1 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  </script>
+  <!-- Live2D 看板娘 -->
+  <script type="module" src="live2d/kandao.js"></script>
+</body>
+</html>

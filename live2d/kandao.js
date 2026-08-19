@@ -5,8 +5,7 @@
  * 说明：静态立绘无 Live2D 骨骼动画；如需动画需将形象制作成 .moc/.moc3 模型
  */
 (() => {
-  // 小屏（手机）不显示，避免遮挡内容
-  if (screen.width < 768) return;
+  // 手机端：不隐藏，改为缩小 + 停靠可视区（见注入 CSS 的媒体查询与 fitWaifu）
   // 用户之前点过"隐藏"
   if (localStorage.getItem('waifu-disabled') === 'true') return;
 
@@ -82,6 +81,26 @@
     #waifu-toggle.waifu-toggle-active { margin-left: -50px; }
     #waifu-toggle.waifu-toggle-active:hover { margin-left: -30px; }
     #waifu-toggle svg { fill: #fff; height: 25px; }
+    /* ===== 手机端：缩小看板娘并移到可视区域，避免被边缘裁切/遮挡 ===== */
+    @media (max-width: 768px) {
+      #waifu { bottom: 0; left: 8px; }
+      #kandao-img { height: min(22vh, 150px); }
+      #waifu-tips {
+        width: 160px;
+        font-size: 12px;
+        line-height: 20px;
+        margin: -26px 8px;
+        min-height: 46px;
+        padding: 4px 8px;
+      }
+      #waifu-toggle {
+        bottom: 8px;
+        width: 50px;
+        padding: 4px;
+        margin-left: -80px;
+      }
+      #waifu-toggle.waifu-toggle-active { margin-left: -40px; }
+    }
     @keyframes waifu-shake {
       2% { transform: translate(.5px, -1.5px) rotate(-.5deg); }
       4% { transform: translate(.5px, 1.5px) rotate(1.5deg); }
@@ -252,6 +271,36 @@
     window.onresize = () => { winW = window.innerWidth; winH = window.innerHeight; };
   };
   drag();
+
+  // ---------- 自适应：小屏/被挤出屏幕时缩小并移回可视区 ----------
+  function fitWaifu() {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const isMobile = vw <= 768;
+    const img = document.getElementById('kandao-img');
+    // 小屏: 强制用媒体查询的缩小尺寸（兜底，防止内联样式覆盖）
+    if (isMobile && img) img.style.height = 'min(22vh, 150px)';
+    // 看板娘整体是否溢出可视区
+    const rect = waifu.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    let changed = false;
+    let nl = parseFloat(waifu.style.left) || 0, nt = parseFloat(waifu.style.top) || 0;
+    // 只对拖拽过的（有 left/top 内联值）做钳制；默认 left:0/bottom:0 停靠不动
+    const hasInline = waifu.style.left !== '' || waifu.style.top !== '';
+    if (hasInline) {
+      if (nl + w > vw) { nl = Math.max(0, vw - w); changed = true; }
+      if (nl < 0) { nl = 0; changed = true; }
+      if (nt + h > vh) { nt = Math.max(0, vh - h); changed = true; }
+      if (nt < 0) { nt = 0; changed = true; }
+      if (changed) {
+        waifu.style.left = nl + 'px';
+        waifu.style.top = nt + 'px';
+      }
+    }
+  }
+  window.addEventListener('resize', fitWaifu);
+  // 首次渲染后检查一次（覆盖"看板娘被裁"的场景）
+  setTimeout(fitWaifu, 300);
+  setTimeout(fitWaifu, 1200);
 
   // ---------- 隐藏 / 显示 ----------
   function showWaifu(visible) {

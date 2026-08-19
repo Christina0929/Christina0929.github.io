@@ -3,9 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="sun-avatar-sm.png">
   <title>开站大吉 '◡' · 晴天小站</title>
+  <link rel="icon" href="sun-avatar-sm.png" type="image/png">
   <style>
+    /* 字体文件（本地） */
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: url('fonts/CormorantGaramond.ttf') format('truetype');
+    }
     :root {
       --accent: #5d7a4e;
       --accent-ink: #46643a;
@@ -17,10 +46,16 @@
       --muted: rgba(53, 48, 42, .6);
       --shadow: rgba(58, 50, 42, .08);
       color-scheme: light;
+
+      /* 字体分层（参考 ahzoo） */
+      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
+      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
+      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
       line-height: 1.9;
@@ -49,7 +84,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    nav .logo { font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
+    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
     nav .logo span { color: var(--accent-ink); }
     nav .right { display: flex; align-items: center; gap: 12px; }
     nav .menu { display: flex; gap: 2px; }
@@ -76,7 +111,6 @@
       align-items: start;
     }
     .l-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-    .l-side { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 84px; }
 
     .card {
       background: var(--card);
@@ -88,6 +122,7 @@
 
     /* 面包屑：首页 / 博客 / 文章标题 */
     .crumbs {
+      font-family: var(--font-display);
       font-size: .84rem;
       color: var(--muted);
       margin-bottom: 14px;
@@ -137,13 +172,14 @@
       margin-bottom: 16px;
     }
     .post-head h1 {
+      font-family: var(--font-display);
       font-size: clamp(1.8rem, 4.5vw, 2.5rem);
       font-weight: 900;
       letter-spacing: -.01em;
       line-height: 1.25;
       margin-bottom: 12px;
     }
-    .post-meta { color: var(--muted); font-size: .86rem; }
+    .post-meta { font-family: var(--font-num); color: var(--muted); font-size: .86rem; }
     .post-meta .sep { margin: 0 8px; color: var(--line-strong); }
 
     .post-body { font-size: 1rem; color: var(--muted); margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
@@ -154,7 +190,7 @@
 
     /* 继续阅读 */
     .other { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); }
-    .other-title { font-size: 1rem; font-weight: 800; margin-bottom: 12px; }
+    .other-title { font-family: var(--font-display); font-size: 1rem; font-weight: 800; margin-bottom: 12px; }
     .other-list { display: flex; flex-direction: column; }
     .other-item {
       display: flex;
@@ -172,7 +208,7 @@
     .other-item .o-arrow { color: var(--muted); flex-shrink: 0; transition: color .2s; }
     .other-item:hover .o-arrow { color: var(--accent-ink); }
 
-    /* 上一篇 / 下一篇（无多余返回链接） */
+    /* 上一篇 / 下一篇（3D 翻书翻面） */
     .post-nav {
       margin-top: 40px;
       padding-top: 22px;
@@ -180,12 +216,52 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 14px;
+      font-size: .9rem;
+      perspective: 1200px; /* 景深：让翻转有立体书页感 */
+    }
+    .post-nav a {
+      position: relative;
+      display: block;
+      width: 148px;
+      height: 52px;
+      color: var(--accent-ink);
+      font-weight: 600;
+      transform-style: preserve-3d;
+      transition: transform .6s cubic-bezier(.25,.6,.3,1);
+    }
+    .post-nav a .pg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      box-shadow: 0 1px 4px var(--shadow);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+      white-space: nowrap;
       font-size: .9rem;
     }
-    .post-nav a { color: var(--accent-ink); font-weight: 600; }
-    .post-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .post-nav a .pg-front { color: var(--accent-ink); }
+    .post-nav a .pg-back {
+      transform: rotateY(180deg);
+      color: var(--muted);
+      font-size: .82rem;
+      border-color: var(--line-strong);
+      background: color-mix(in srgb, var(--card) 88%, var(--bg));
+    }
+    /* 翻书：悬停停留后整页翻过去，露出背面目标文章（JS 控制 .flip，防快速划动连转） */
+    .post-nav a.flip { transform: rotateY(180deg); text-decoration: none; }
+    /* 只有单个翻页按钮时（如"正在开发"置底、仅保留下一篇）靠右显示 */
+    .post-nav a:only-child { margin-left: auto; }
     .post-nav .prev { color: var(--muted); font-weight: 400; }
-    .post-nav .prev:hover { color: var(--text); }
+    .post-nav .prev .pg-front { color: var(--muted); }
+    .post-nav .prev:hover .pg-front { color: var(--text); }
 
     /* 侧栏作者卡 */
     .side-author { text-align: center; }
@@ -201,7 +277,7 @@
       font-size: 1.9rem;
       border: 1px solid var(--line-strong);
     }
-    .side-author h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+    .side-author h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
     .side-author p { color: var(--muted); font-size: .82rem; line-height: 1.7; }
 
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
@@ -237,7 +313,8 @@
         <div class="menu">
           <a href="index.html">首页</a>
           <a href="blog.html" class="active">博客</a>
-          <a href="index.html#about">关于我</a>
+          <a href="bookmarks.html">书签</a>
+          <a href="about.html">关于我</a>
           <a href="contact.html">联系我</a>
         </div>
       </div>
@@ -270,13 +347,15 @@
           <section class="other">
             <h3 class="other-title">继续阅读</h3>
             <div class="other-list">
-              <a class="other-item" href="post2.html"><span class="o-name">网页便笺</span><span class="o-date">2026年8月5日</span><span class="o-arrow">→</span></a>
               <a class="other-item" href="post3.html"><span class="o-name">正在开发</span><span class="o-date">2026年8月5日</span><span class="o-arrow">→</span></a>
             </div>
           </section>
 
           <nav class="post-nav">
-            <a href="post2.html">下一篇 →</a>
+            <a href="post3.html">
+              <span class="pg pg-front">下一篇 →</span>
+              <span class="pg pg-back">正在开发</span>
+            </a>
           </nav>
         </article>
       </div>
@@ -291,6 +370,18 @@
       es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
     }, { threshold: .1 });
     document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    // 上一篇/下一篇翻书：短停留才翻面，防快速划过时连续翻转
+    document.querySelectorAll('.post-nav a').forEach((a) => {
+      let t = null;
+      a.addEventListener('mouseenter', () => {
+        clearTimeout(t);
+        t = setTimeout(() => a.classList.add('flip'), 120);
+      });
+      a.addEventListener('mouseleave', () => {
+        clearTimeout(t);
+        a.classList.remove('flip');
+      });
+    });
   </script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>

@@ -3,9 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="sun-avatar-sm.png">
   <title>晴天小站</title>
+  <link rel="icon" href="sun-avatar-sm.png" type="image/png">
   <style>
+    /* 字体文件（本地） */
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'LXGW WenKai';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 400 900;
+      font-display: swap;
+      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: url('fonts/CormorantGaramond.ttf') format('truetype');
+    }
     :root {
       /* 暖纸·晴天 */
       --accent: #5d7a4e;
@@ -18,11 +47,17 @@
       --muted: rgba(53, 48, 42, .6);
       --shadow: rgba(58, 50, 42, .08);
       color-scheme: light;
+
+      /* 字体分层（参考 ahzoo） */
+      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
+      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
+      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
       line-height: 1.85;
@@ -50,7 +85,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    nav .logo { font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
+    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
     nav .logo span { color: var(--accent-ink); }
     nav .right { display: flex; align-items: center; gap: 12px; }
     nav .menu { display: flex; gap: 2px; }
@@ -104,6 +139,7 @@
       }
     }
     .intro h1 {
+      font-family: var(--font-display);
       font-size: clamp(2rem, 5vw, 2.6rem);
       font-weight: 900;
       letter-spacing: -.01em;
@@ -111,26 +147,11 @@
     }
     .intro h1 .brand { color: var(--accent-ink); }
     .intro .tagline {
+      font-family: var(--font-hand);
       font-size: 1.05rem;
       color: var(--muted);
       letter-spacing: .06em;
     }
-
-    /* 关于我（正文留空待站长手打） */
-    .about {
-      padding: 36px 0 44px;
-      border-bottom: 1px solid var(--line);
-    }
-    .about h2 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--accent-ink);
-      margin-bottom: 16px;
-    }
-    .about-body { min-height: 60px; }
-    .about-body p { color: var(--text); margin-bottom: 14px; }
-    .about-body p:last-child { margin-bottom: 0; }
-    .about-body .muted { color: var(--muted); }
 
     /* 站点信息：建站时长 / 博客数量 / 最近更新 */
     .stats {
@@ -142,6 +163,7 @@
     .stat + .stat { border-left: 1px solid var(--line); }
     .stat .num {
       display: block;
+      font-family: var(--font-num);
       font-size: 1.12rem;
       font-weight: 800;
       color: var(--accent-ink);
@@ -163,6 +185,7 @@
       border-bottom: 1px solid var(--line);
     }
     .links h2 {
+      font-family: var(--font-display);
       font-size: .82rem;
       font-weight: 700;
       letter-spacing: .18em;
@@ -210,6 +233,49 @@
     }
     .link-card .arrow { color: var(--muted); font-size: .85rem; transition: color .2s, transform .2s; }
     .link-card:hover .arrow { color: var(--accent-ink); transform: translate(2px, -2px); }
+
+    /* 关于我（首页文） */
+    .about {
+      padding: 44px 0 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .about > h2 {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+    }
+    .about .sub {
+      font-family: var(--font-hand);
+      font-size: .95rem;
+      color: var(--muted);
+      letter-spacing: .1em;
+      margin-bottom: 26px;
+    }
+    .qa h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-ink);
+      letter-spacing: .06em;
+      margin: 28px 0 8px;
+    }
+    .qa h3:first-child { margin-top: 0; }
+    .qa p {
+      font-size: .98rem;
+      line-height: 1.9;
+      margin-bottom: 12px;
+    }
+    .qa blockquote {
+      margin: 6px 0 14px;
+      padding: 4px 0 4px 16px;
+      border-left: 3px solid var(--accent);
+      font-family: var(--font-hand);
+      color: var(--muted);
+      font-size: .98rem;
+      letter-spacing: .04em;
+    }
 
     /* 回到顶部 */
     .to-top {
@@ -262,7 +328,8 @@
         <div class="menu">
           <a href="index.html" class="active">首页</a>
           <a href="blog.html">博客</a>
-          <a href="index.html#about">关于我</a>
+          <a href="bookmarks.html">书签</a>
+          <a href="about.html">关于我</a>
           <a href="contact.html">联系我</a>
         </div>
       </div>
@@ -273,15 +340,9 @@
   <main class="landing">
     <!-- 头像 + 名字 + 标语 -->
     <section class="intro reveal">
-      <div class="ava"><img src="sun-avatar.png" alt="晴天小站"></div>
+      <div class="ava"><img src="sun-avatar.png" alt=""></div>
       <h1><span class="brand">晴天</span>小站</h1>
       <p class="tagline">永远是深夜有多好</p>
-    </section>
-
-    <!-- 关于我（正文留空） -->
-    <section class="about reveal" id="about">
-      <h2>关于我 / About</h2>
-      <div class="about-body"></div>
     </section>
 
     <!-- 站点信息 -->
@@ -297,6 +358,27 @@
       <div class="stat">
         <span class="num" id="last-update">--</span>
         <span class="label">最近更新</span>
+      </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section class="about reveal">
+      <h2>关于我</h2>
+      <p class="sub">一些碎片，一些痕迹</p>
+
+      <div class="qa">
+        <h3>我是谁</h3>
+        <p>一个还在学习怎么学习的人。没有故事可讲，只有日常可记。</p>
+
+        <h3>这里是什么</h3>
+        <p>这个博客是随手丢东西的抽屉。看到好的文章、踩到新的坑、读完一本书、写完一段代码——随手记下来。不系统，不深刻，但都是真的。</p>
+        <p>过段时间回头看，有些已经没用了，有些居然还在用。这种"原来我还记得"的感觉，是记录最大的回报。</p>
+
+        <h3>为什么写</h3>
+        <blockquote>"我们写作，是为了不被遗忘，也为了不忘却。"</blockquote>
+        <p>写字是为了把模糊的想法变清楚。很多时候以为自己懂了，写下来才发现并没有。这个过程有点烦，但挺有效。</p>
+        <p>如果这些文字对你也有用，那是意外之喜。如果没有，也很正常。</p>
+        <blockquote>"持续做一件小事，本身就需要解释。"</blockquote>
       </div>
     </section>
 
