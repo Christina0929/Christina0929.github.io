@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="sun-avatar-sm.png">
   <title>晴天小站</title>
   <style>
     :root {
@@ -86,12 +87,21 @@
       height: 96px;
       margin: 0 auto 22px;
       border-radius: 50%;
-      background: color-mix(in srgb, var(--accent) 16%, transparent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.6rem;
-      border: 1px solid var(--line-strong);
+      overflow: hidden;
+      border: 2px solid var(--card);
+      box-shadow: 0 0 0 1px var(--line-strong);
+      animation: ava-glow 3.2s ease-in-out infinite;
+    }
+    .intro .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @keyframes ava-glow {
+      0%, 100% {
+        box-shadow: 0 0 0 1px var(--line-strong), 0 0 12px color-mix(in srgb, var(--accent) 20%, transparent);
+        transform: translateY(0);
+      }
+      50% {
+        box-shadow: 0 0 0 1px var(--line-strong), 0 0 24px color-mix(in srgb, var(--accent) 45%, transparent);
+        transform: translateY(-3px);
+      }
     }
     .intro h1 {
       font-size: clamp(2rem, 5vw, 2.6rem);
@@ -106,23 +116,21 @@
       letter-spacing: .06em;
     }
 
-    /* 自我介绍正文 */
-    .bio {
+    /* 关于我（正文留空待站长手打） */
+    .about {
       padding: 36px 0 44px;
       border-bottom: 1px solid var(--line);
     }
-    .bio p {
-      color: var(--text);
-      margin-bottom: 14px;
-    }
-    .bio p:last-child { margin-bottom: 0; }
-    .bio .lead {
+    .about h2 {
       font-size: 1.1rem;
-      font-weight: 600;
+      font-weight: 800;
       color: var(--accent-ink);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
-    .bio .muted { color: var(--muted); }
+    .about-body { min-height: 60px; }
+    .about-body p { color: var(--text); margin-bottom: 14px; }
+    .about-body p:last-child { margin-bottom: 0; }
+    .about-body .muted { color: var(--muted); }
 
     /* 站点信息：建站时长 / 博客数量 / 最近更新 */
     .stats {
@@ -264,18 +272,16 @@
   <!-- 极简个人主页 -->
   <main class="landing">
     <!-- 头像 + 名字 + 标语 -->
-    <section class="intro reveal" id="about">
-      <div class="ava">🌤️</div>
+    <section class="intro reveal">
+      <div class="ava"><img src="sun-avatar.png" alt="晴天小站"></div>
       <h1><span class="brand">晴天</span>小站</h1>
       <p class="tagline">永远是深夜有多好</p>
     </section>
 
-    <!-- 自我介绍 -->
-    <section class="bio reveal">
-      <p class="lead">晴天好心情 desuwa</p>
-      <p>最尊重token、最礼貌ai、it最精通ai最趁手之人(以上均属实=ω=）</p>
-      <p class="muted">不想起床懒得睡觉 · 早餐吃什么呢 / 午餐吃什么呢 / 晚餐吃什么呢 · 今天听点啥歌呢</p>
-      <p class="muted">此站由本人扎实雄厚的IT编程基础(doge，以及一点Vibe Coding支持完成</p>
+    <!-- 关于我（正文留空） -->
+    <section class="about reveal" id="about">
+      <h2>关于我 / About</h2>
+      <div class="about-body"></div>
     </section>
 
     <!-- 站点信息 -->

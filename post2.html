@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="sun-avatar-sm.png">
   <title>网页便笺 · 晴天小站</title>
   <style>
     :root {
@@ -69,7 +70,7 @@
     .container { max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }
     .layout {
       display: grid;
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 1fr;
       gap: 26px;
       align-items: start;
     }
@@ -96,6 +97,36 @@
     .crumbs a:hover { color: var(--accent-ink); }
     .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
     .crumbs .cur { color: var(--text); font-weight: 600; }
+
+    /* 文章头：头像在左，标题在右 */
+    .post-head {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      text-align: left;
+    }
+    .post-head-main { min-width: 0; flex: 1; }
+    .post-ava {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--card);
+      box-shadow: 0 0 0 1px var(--line-strong);
+      animation: ava-glow 3.2s ease-in-out infinite;
+    }
+    .post-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @keyframes ava-glow {
+      0%, 100% {
+        box-shadow: 0 0 0 1px var(--line-strong), 0 0 12px color-mix(in srgb, var(--accent) 20%, transparent);
+        transform: translateY(0);
+      }
+      50% {
+        box-shadow: 0 0 0 1px var(--line-strong), 0 0 24px color-mix(in srgb, var(--accent) 45%, transparent);
+        transform: translateY(-3px);
+      }
+    }
 
     .post-tag {
       display: inline-block;
@@ -251,6 +282,8 @@
     @media (max-width: 760px) {
       .container { padding: 18px 14px 50px; }
       .card { padding: 22px; }
+      .post-head { gap: 14px; }
+      .post-ava { width: 56px; height: 56px; }
     }
   </style>
 </head>
@@ -280,9 +313,12 @@
           </nav>
 
           <header class="post-head">
-            <span class="post-tag">收藏</span>
-            <h1>网页便笺</h1>
-            <p class="post-meta">2026年8月5日 <span class="sep">/</span> 收藏</p>
+            <div class="post-ava"><img src="sun-avatar.png" alt=""></div>
+            <div class="post-head-main">
+              <span class="post-tag">收藏</span>
+              <h1>网页便笺</h1>
+              <p class="post-meta">2026年8月5日 <span class="sep">/</span> 收藏</p>
+            </div>
           </header>
           <div class="post-body">
             <p>悄咪咪地查看，声张滴不要。</p>
@@ -307,9 +343,7 @@
           </nav>
         </article>
       </div>
-
-      </aside>
-    </div>
+</div>
   </div>
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
