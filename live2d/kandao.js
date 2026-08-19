@@ -40,27 +40,8 @@ import './lib/waifu-tips.js';
     /* ===== 气泡：延续旧版半透明白底 ===== */
     #waifu-tips {
       background-color: rgba(236, 217, 188, .85);
-      z-index: 6;
     }
     #waifu-tips span { color: #0099cc; }
-    /* 工具菜单保持在静态图上可点 */
-    #waifu-tool { z-index: 7; }
-
-    /* ===== 动态/静态模式切换 ===== */
-    #kandao-static-img {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: min(30vh, 260px);
-      height: min(30vh, 260px);
-      object-fit: contain;
-      display: none;
-      pointer-events: auto;
-      cursor: grab;
-      z-index: 5;
-    }
-    #kandao-static-img.show { display: block; }
-    #kandao-static-img:active { cursor: grabbing; }
     /* ===== 手机端：缩小画布并停靠左下可视区 ===== */
     @media (max-width: 768px) {
       #waifu { left: 8px; }
@@ -77,10 +58,6 @@ import './lib/waifu-tips.js';
         padding: 4px 8px;
       }
       #waifu-tool svg { height: 18px; }
-      #kandao-static-img {
-        width: min(22vh, 150px);
-        height: min(22vh, 150px);
-      }
       #waifu-toggle {
         bottom: 8px;
         width: 50px;
@@ -115,9 +92,7 @@ import './lib/waifu-tips.js';
 
     function dragStart(ev, isTouch) {
       if (ev.button === 2) return; // 右键不拖
-      const staticImg = document.getElementById('kandao-static-img');
-      const allow = ev.target === canvas || (staticImg && ev.target === staticImg && staticImg.classList.contains('show'));
-      if (!allow) return;
+      if (ev.target !== canvas) return;
       ev.preventDefault();
       const cx = isTouch ? ev.touches[0].clientX : ev.clientX;
       const cy = isTouch ? ev.touches[0].clientY : ev.clientY;
@@ -175,125 +150,6 @@ import './lib/waifu-tips.js';
     obs.observe(document.body, { childList: true, subtree: true });
     setTimeout(() => obs.disconnect(), 20000);
   }
-
-  // ---------- 动态/静态模式切换（自研，不动官方 widget） ----------
-  // 思路：静态模式 = 把当前 live2d 画布截一张图，用 <img> 盖住并隐藏画布，
-  //       从而"定格"当前模型；切回动态即恢复画布。选择用 localStorage 记忆。
-  const STATIC_KEY = 'kandao-static-mode';
-
-  function staticImgEl() {
-    let img = document.getElementById('kandao-static-img');
-    const waifu = document.getElementById('waifu');
-    // 统一挂到 #waifu（position:fixed 定位基准），迟到的元素挪进去
-    if (img && waifu && img.parentElement !== waifu) waifu.appendChild(img);
-    if (img) return img;
-    img = document.createElement('img');
-    img.id = 'kandao-static-img';
-    img.alt = '看板娘 · 静态模式';
-    img.style.display = 'none';
-    (waifu || document.body).appendChild(img);
-    return img;
-  }
-
-  // 截取当前画布画面（返回 dataURL；画布还没渲染好或 WebGL 禁止截图则返回 null）
-  function snapshotCanvas() {
-    const canvas = document.getElementById('live2d');
-    if (!canvas) return null;
-    try {
-      const url = canvas.toDataURL('image/png');
-      // toDataURL 在 WebGL preserveDrawingBuffer=false 时会得到空白帧，
-      // 对比尺寸近似则认为有效
-      return url && url.length > 1000 ? url : null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // 静态图兜底：截图失败时退用看板娘立绘（随时可加载，保证静态模式可用）
-  const STATIC_FALLBACK = 'live2d/model/custom/kandao.png';
-
-  let staticTimer = null;
-  function setStatic(on) {
-    const canvas = document.getElementById('live2d');
-    const img = staticImgEl();
-    if (!canvas || !img) return;
-
-    // 切静态：先截图再盖住画布；若画布此刻还是空白，重试几次等模型渲染完成
-    if (on) {
-      clearTimeout(staticTimer);
-      let tries = 0;
-      const trySnap = () => {
-        const url = snapshotCanvas();
-        img.src = url || STATIC_FALLBACK;
-        canvas.style.visibility = 'hidden';
-        img.classList.add('show');
-        img.style.display = 'block';
-        localStorage.setItem(STATIC_KEY, '1');
-        if (tries++ < 12) staticTimer = setTimeout(trySnap, 300);
-      };
-      trySnap();
-    } else {
-      clearTimeout(staticTimer);
-      canvas.style.visibility = '';
-      img.classList.remove('show');
-      img.style.display = 'none';
-      localStorage.removeItem(STATIC_KEY);
-    }
-  }
-
-  // 配置工具按钮
-  function setupModeToggle() {
-    const tool = document.getElementById('waifu-tool');
-    if (!tool) return false;
-    if (document.getElementById('waifu-tool-mode')) return true;
-
-    const btn = document.createElement('span');
-    btn.id = 'waifu-tool-mode';
-    btn.title = '切换 动态/静态 模式';
-    // 图标随状态切换：太阳=动态，月亮=静态；点击即切换
-    const icons = {
-      sun: '<svg viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zm9-9a1 1 0 0 1-1 1h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zM4 12a1 1 0 0 1-1 1H1a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zm14.2-6.6a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0zM8.6 9.6a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0zm6.8 6.8a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0zM9.6 15.4a1 1 0 0 1 0 1.4l-1.4 1.4a1 1 0 0 1-1.4-1.4l1.4-1.4a1 1 0 0 1 1.4 0z"/></svg>',
-      moon: '<svg viewBox="0 0 24 24"><path d="M12.5 2a10 10 0 1 0 9.5 13.5A9 9 0 0 1 12.5 2z"/></svg>'
-    };
-    const setIcon = (staticOn) => { btn.innerHTML = staticOn ? icons.moon : icons.sun; };
-    const img2 = document.getElementById('kandao-static-img');
-    setIcon(img2 && img2.classList.contains('show'));
-    btn.addEventListener('click', () => {
-      const img = document.getElementById('kandao-static-img');
-      const next = !(img && img.classList.contains('show'));
-      setStatic(next);
-      setIcon(next);
-    });
-    tool.appendChild(btn);
-    return true;
-  }
-
-  // 官方 widget 建好后再挂按钮；监听 body 直到 #waifu-tool 出现
-  function initModeToggle() {
-    if (setupModeToggle()) return;
-    const obs = new MutationObserver(() => {
-      if (setupModeToggle()) obs.disconnect();
-    });
-    obs.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => obs.disconnect(), 20000);
-  }
-  initModeToggle();
-
-  // 每次进入页面时恢复上次的模式（等 #waifu 出现且模型渲染好后截图）
-  const savedStatic = localStorage.getItem(STATIC_KEY) === '1';
-  if (savedStatic) {
-    const stick = setInterval(() => {
-      if (document.getElementById('waifu')) {
-        clearInterval(stick);
-        setStatic(true);
-      }
-    }, 300);
-    setTimeout(() => clearInterval(stick), 10000);
-  }
-
-  // 说明：switch-model/switch-texture 会重建画布（resetCanvas），
-  // 静态图是独立的 <img>，不随画布重建而消失，但内容会定格在旧模型。
-  // 这里在切静态后不拦截官方重建，简单起见保持定格即可。
 
   // ---------- 自适应：拖拽过的小屏被挤出屏幕时钳回可视区 ----------
   function fitWaifu() {
