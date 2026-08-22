@@ -3,182 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
   <title>博客 · 晴天小站</title>
   <link rel="icon" href="sun-avatar-sm.png" type="image/png">
+  <link rel="stylesheet" href="css/theme.css">
   <style>
-    /* 字体文件（本地） */
-    @font-face {
-      font-family: 'LXGW WenKai';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'LXGW WenKai';
-      font-style: normal;
-      font-weight: 500;
-      font-display: swap;
-      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Playfair Display';
-      font-style: normal;
-      font-weight: 400 900;
-      font-display: swap;
-      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Cormorant Garamond';
-      font-style: normal;
-      font-weight: 400 700;
-      font-display: swap;
-      src: url('fonts/CormorantGaramond.ttf') format('truetype');
-    }
-    :root {
-      /* 暖纸·晴天 */
-      --accent: #5d7a4e;
-      --accent-ink: #46643a;
-      --bg: #f2eee4;
-      --card: #fffdf7;
-      --line: rgba(58, 50, 42, .13);
-      --line-strong: rgba(58, 50, 42, .34);
-      --text: #35302a;
-      --muted: rgba(53, 48, 42, .6);
-      --shadow: rgba(58, 50, 42, .08);
-      color-scheme: light;
-
-      /* 字体分层（参考 ahzoo） */
-      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
-      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
-      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.8;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { text-decoration: none; color: inherit; }
-    ::selection { background: var(--accent); color: #fff; }
-
-    /* 顶部导航（四页统一） */
-    nav {
-      position: sticky;
-      top: 0;
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-      z-index: 100;
-    }
-    nav .inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
-    nav .logo span { color: var(--accent-ink); }
-    nav .right { display: flex; align-items: center; gap: 12px; }
-    nav .menu { display: flex; gap: 2px; }
-    nav .menu a {
-      padding: 7px 14px;
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: .93rem;
-      transition: color .2s, background .2s;
-    }
-    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
-    nav .menu a.active {
-      color: #fff;
-      font-weight: 600;
-      background: var(--accent-ink);
-      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-ink) 30%, transparent);
-    }
-
-    /* 主体 */
-    .container { max-width: 680px; margin: 0 auto; padding: 48px 24px 60px; }
-
-    /* 页头：标题 + 面包屑 */
-    .page-head { margin-bottom: 30px; }
-    .crumbs {
-      font-family: var(--font-display);
-      font-size: .84rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-    .crumbs a { color: var(--muted); transition: color .2s; }
-    .crumbs a:hover { color: var(--accent-ink); }
-    .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
-    .crumbs .cur { color: var(--text); font-weight: 600; }
-    .page-head h1 {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 4.5vw, 2.4rem);
-      font-weight: 900;
-      letter-spacing: -.01em;
-    }
-    .page-head p { color: var(--muted); font-size: .9rem; margin-top: 6px; }
-
-    /* 博客列表：innei 式紧凑列表（发丝线分隔、无卡片） */
-    .articles { border-top: 1px solid var(--line); }
+    /* ===== 博客页专属：文章卡片列表 ===== */
+    .articles { display: flex; flex-direction: column; gap: 16px; }
     .article {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
       align-items: center;
-      gap: 14px;
-      padding: 18px 4px;
-      border-bottom: 1px solid var(--line);
+      gap: 16px;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
       cursor: pointer;
-      transition: background .15s;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
     }
-    .article:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+    .article:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    }
     .article .tag {
-      font-family: var(--font-hand);
       font-size: .72rem;
-      letter-spacing: .06em;
+      font-weight: 600;
+      letter-spacing: .08em;
       color: var(--accent-ink);
-      border: 1px solid var(--line-strong);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, transparent), color-mix(in srgb, var(--accent-2) 15%, transparent));
       border-radius: 999px;
-      padding: 2px 11px;
+      padding: 4px 13px;
       white-space: nowrap;
     }
     .article .a-main { min-width: 0; }
-    .article .a-main h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 3px; transition: color .15s; }
+    .article .a-main h3 {
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+      margin-bottom: 3px;
+      transition: color .2s;
+    }
     .article:hover .a-main h3 { color: var(--accent-ink); }
     .article .a-sum {
-      font-size: .84rem;
+      font-size: .86rem;
       color: var(--muted);
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .article .date { font-family: var(--font-num); font-size: .78rem; color: var(--muted); white-space: nowrap; }
-
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    footer {
-      text-align: center;
-      padding: 40px 24px 48px;
-      border-top: 1px solid var(--line);
+    .article .date { font-size: .8rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .article .go {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
       color: var(--muted);
-      font-size: .85rem;
+      font-size: .95rem;
+      transition: background .25s, color .25s, transform .25s;
     }
-    footer .brand { color: var(--accent-ink); }
+    .article:hover .go {
+      background: linear-gradient(135deg, var(--accent), var(--accent-ink));
+      color: #fff;
+      transform: rotate(-45deg);
+    }
+
+    .article.reveal { opacity: 0; transform: translateY(26px); }
+    .article.reveal.visible { opacity: 1; transform: translateY(0); }
+    .article.reveal.visible:hover { transform: translateY(-4px); }
 
     @media (max-width: 640px) {
-      nav .menu a { padding: 7px 8px; font-size: .88rem; }
-      .container { padding: 32px 18px 50px; }
-      .article { grid-template-columns: 1fr; gap: 6px; padding: 16px 2px; }
-      .article .date { justify-self: start; }
+      .article { grid-template-columns: minmax(0, 1fr) auto; padding: 16px 18px; }
+      .article .tag { justify-self: start; grid-column: 1 / -1; }
+      .article .date { display: none; }
+      .article .go { width: 30px; height: 30px; }
     }
   </style>
 </head>
@@ -200,27 +102,33 @@
   </nav>
 
   <div class="container">
-    <!-- 页头：面包屑 + 标题 -->
+    <!-- 页头横幅 -->
     <header class="page-head reveal">
       <nav class="crumbs" aria-label="面包屑">
         <a href="index.html">首页</a><span class="sep">/</span>
         <span class="cur">博客</span>
       </nav>
-      <h1>博客</h1>
-      <p>记录代码、生活与杂七杂八。</p>
+      <h1>博客<span class="en">Blog Posts</span></h1>
+      <p class="sub">记录代码、生活与杂七杂八。</p>
     </header>
 
     <!-- 博客文章列表 -->
-    <div class="articles reveal" id="articles"></div>
+    <div class="articles" id="articles"></div>
   </div>
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
   <script>
-    // 滚动显示动画
+    // 滚动显示动画（交错入场）
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: .12 });
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          e.target.style.transitionDelay = Math.min(i * 100, 400) + 'ms';
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: .1 });
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
     // 动态年份
@@ -234,15 +142,17 @@
     ];
     const articleBox = document.getElementById('articles');
     articleBox.innerHTML = posts.map((p, i) => `
-      <article class="article" data-i="${i}">
+      <article class="article reveal" data-i="${i}" style="transition-delay:${i * 100}ms">
         <span class="tag">${p.tag}</span>
         <div class="a-main">
           <h3>${p.title}</h3>
           <p class="a-sum">${p.sum}</p>
         </div>
         <span class="date">${p.date}</span>
+        <span class="go" aria-hidden="true">→</span>
       </article>
     `).join('');
+    articleBox.querySelectorAll('.article').forEach((el) => observer.observe(el));
     articleBox.addEventListener('click', (e) => {
       const card = e.target.closest('.article');
       if (!card) return;
@@ -251,5 +161,7 @@
   </script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
+  <script src="js/scrollfx.js" defer></script>
+  <script src="js/theme-switcher.js" defer></script>
 </body>
 </html>

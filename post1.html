@@ -3,105 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
   <title>开站大吉 '◡' · 晴天小站</title>
   <link rel="icon" href="sun-avatar-sm.png" type="image/png">
+  <link rel="stylesheet" href="css/theme.css">
   <style>
-    /* 字体文件（本地） */
-    @font-face {
-      font-family: 'LXGW WenKai';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'LXGW WenKai';
-      font-style: normal;
-      font-weight: 500;
-      font-display: swap;
-      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Playfair Display';
-      font-style: normal;
-      font-weight: 400 900;
-      font-display: swap;
-      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Cormorant Garamond';
-      font-style: normal;
-      font-weight: 400 700;
-      font-display: swap;
-      src: url('fonts/CormorantGaramond.ttf') format('truetype');
-    }
-    :root {
-      --accent: #5d7a4e;
-      --accent-ink: #46643a;
-      --bg: #f2eee4;
-      --card: #fffdf7;
-      --line: rgba(58, 50, 42, .13);
-      --line-strong: rgba(58, 50, 42, .34);
-      --text: #35302a;
-      --muted: rgba(53, 48, 42, .6);
-      --shadow: rgba(58, 50, 42, .08);
-      color-scheme: light;
-
-      /* 字体分层（参考 ahzoo） */
-      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
-      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
-      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.9;
-      -webkit-font-smoothing: antialiased;
-      transition: background .35s, color .35s;
-    }
-    a { text-decoration: none; color: inherit; }
-    ::selection { background: var(--accent); color: #fff; }
-
-    /* 统一导航（四页一致） */
-    nav {
-      position: sticky;
-      top: 0;
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-      z-index: 100;
-    }
-    nav .inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
-    nav .logo span { color: var(--accent-ink); }
-    nav .right { display: flex; align-items: center; gap: 12px; }
-    nav .menu { display: flex; gap: 2px; }
-    nav .menu a {
-      padding: 7px 14px;
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: .93rem;
-      transition: color .2s, background .2s;
-    }
-    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
-    nav .menu a.active {
-      color: #fff;
-      font-weight: 600;
-      background: var(--accent-ink);
-      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-ink) 30%, transparent);
-    }
 
     .container { max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }
     .layout {
@@ -111,26 +17,6 @@
       align-items: start;
     }
     .l-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 30px;
-      box-shadow: 0 2px 10px var(--shadow);
-    }
-
-    /* 面包屑：首页 / 博客 / 文章标题 */
-    .crumbs {
-      font-family: var(--font-display);
-      font-size: .84rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-    .crumbs a { color: var(--muted); transition: color .2s; }
-    .crumbs a:hover { color: var(--accent-ink); }
-    .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
-    .crumbs .cur { color: var(--text); font-weight: 600; }
 
     /* 文章头：头像在左，标题在右 */
     .post-head {
@@ -280,29 +166,18 @@
     .side-author h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
     .side-author p { color: var(--muted); font-size: .82rem; line-height: 1.7; }
 
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    footer {
-      text-align: center;
-      padding: 36px 24px 44px;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: .85rem;
-    }
-    footer .brand { color: var(--accent-ink); }
 
     @media (max-width: 860px) {
       .layout { grid-template-columns: 1fr; }
       .l-side { position: static; }
     }
     @media (max-width: 640px) {
-      nav .menu a { padding: 7px 8px; font-size: .88rem; }
       .container { padding: 18px 14px 50px; }
       .card { padding: 22px; }
       .post-head { gap: 14px; }
       .post-ava { width: 56px; height: 56px; }
     }
+
   </style>
 </head>
 <body>
@@ -335,7 +210,7 @@
             <div class="post-ava"><img src="sun-avatar.png" alt=""></div>
             <div class="post-head-main">
               <span class="post-tag">新文章</span>
-              <h1>开站大吉 '◡'</h1>
+              <h1 data-en="Post">开站大吉 '◡'</h1>
               <p class="post-meta">2026年8月5日 <span class="sep">/</span> 开站</p>
             </div>
           </header>
@@ -385,5 +260,7 @@
   </script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
+  <script src="js/scrollfx.js" defer></script>
+  <script src="js/theme-switcher.js" defer></script>
 </body>
 </html>

@@ -3,204 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
   <title>书签 · 晴天小站</title>
   <link rel="icon" href="sun-avatar-sm.png" type="image/png">
+  <link rel="stylesheet" href="css/theme.css">
   <style>
-    /* 字体文件（本地） */
-    @font-face {
-      font-family: 'LXGW WenKai';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('fonts/LXGWWenKai-Regular.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'LXGW WenKai';
-      font-style: normal;
-      font-weight: 500;
-      font-display: swap;
-      src: url('fonts/LXGWWenKai-Medium.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Playfair Display';
-      font-style: normal;
-      font-weight: 400 900;
-      font-display: swap;
-      src: url('fonts/PlayfairDisplay.ttf') format('truetype');
-    }
-    @font-face {
-      font-family: 'Cormorant Garamond';
-      font-style: normal;
-      font-weight: 400 700;
-      font-display: swap;
-      src: url('fonts/CormorantGaramond.ttf') format('truetype');
-    }
-    :root {
-      /* 暖纸·晴天 */
-      --accent: #5d7a4e;
-      --accent-ink: #46643a;
-      --bg: #f2eee4;
-      --card: #fffdf7;
-      --line: rgba(58, 50, 42, .13);
-      --line-strong: rgba(58, 50, 42, .34);
-      --text: #35302a;
-      --muted: rgba(53, 48, 42, .6);
-      --shadow: rgba(58, 50, 42, .08);
-      color-scheme: light;
-
-      /* 字体分层（参考 ahzoo） */
-      --font-body: "LXGW WenKai", -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-      --font-display: "Playfair Display", "LXGW WenKai", "Noto Serif SC", "Songti SC", SimSun, serif;
-      --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", "楷体", serif;
-      --font-num: "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.85;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { text-decoration: none; color: inherit; }
-    ::selection { background: var(--accent); color: #fff; }
-
-    /* 顶部导航（全站统一） */
-    nav {
-      position: sticky;
-      top: 0;
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--line);
-      z-index: 100;
-    }
-    nav .inner {
-      max-width: 960px;
+    /* 主体（书签页加宽，目录型页面需要密度） */
+    main {
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 0 24px;
-      height: 60px;
+      padding: 36px 20px 50px;
+    }
+
+    /* 页头横幅 + 统计 */
+    .page-head {
+      border-radius: 24px;
+      padding: 38px 34px 28px;
+      background:
+        radial-gradient(circle at 85% 20%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 45%),
+        var(--panel-bg);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 22px;
       display: flex;
+      align-items: flex-end;
       justify-content: space-between;
-      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-    nav .logo { font-family: var(--font-hand); font-size: 1.12rem; font-weight: 800; letter-spacing: .02em; }
-    nav .logo span { color: var(--accent-ink); }
-    nav .right { display: flex; align-items: center; gap: 12px; }
-    nav .menu { display: flex; gap: 2px; }
-    nav .menu a {
-      padding: 7px 14px;
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: .93rem;
-      transition: color .2s, background .2s;
-    }
-    nav .menu a:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
-    nav .menu a.active {
-      color: #fff;
-      font-weight: 600;
-      background: var(--accent-ink);
-      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-ink) 30%, transparent);
-    }
-
-    /* 主体 */
-    .container { max-width: 860px; margin: 0 auto; padding: 48px 24px 60px; }
-
-    /* 页头：面包屑 + 标题 */
-    .page-head { margin-bottom: 30px; }
-    .crumbs {
-      font-family: var(--font-display);
-      font-size: .84rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-    .crumbs a { color: var(--muted); transition: color .2s; }
-    .crumbs a:hover { color: var(--accent-ink); }
-    .crumbs .sep { margin: 0 8px; color: var(--line-strong); }
-    .crumbs .cur { color: var(--text); font-weight: 600; }
     .page-head h1 {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 4.5vw, 2.4rem);
-      font-weight: 900;
-      letter-spacing: -.01em;
+      font-size: clamp(1.7rem, 4.5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: .02em;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
     }
-    .page-head p { color: var(--muted); font-size: .9rem; margin-top: 6px; }
-
-    /* 书签卡片 */
-    .bm-card {
-      background: var(--card);
+    .page-head h1 .en {
+      font-family: var(--font-en);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .page-head .sub {
+      font-family: var(--font-hand);
+      font-size: .95rem;
+      color: var(--muted);
+      letter-spacing: .1em;
+      margin-top: 6px;
+    }
+    .head-stats { display: flex; gap: 10px; }
+    .head-stats .chip {
+      background: var(--panel-bg);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 30px;
-      box-shadow: 0 2px 10px var(--shadow);
+      padding: 8px 18px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
     }
-    .bm-title { font-family: var(--font-display); font-size: 1.02rem; font-weight: 800; margin-bottom: 18px; }
-    .bm-title small { font-size: .8rem; font-weight: 400; color: var(--muted); margin-left: 8px; }
-    .bm-groups {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 16px;
-    }
-    .bm-group {
-      background: color-mix(in srgb, var(--card) 60%, var(--bg));
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-    }
-    .bm-group .bm-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-    .bm-ico { font-size: .95rem; flex-shrink: 0; }
-    .bm-group h3 { font-family: var(--font-display); font-size: .95rem; font-weight: 700; flex: 1; min-width: 0; }
-    .bm-group .count {
-      font-family: var(--font-num);
-      font-size: .68rem;
-      letter-spacing: .05em;
+    .head-stats .chip b {
+      display: block;
+      font-family: var(--font-en);
+      font-size: 1.05rem;
+      font-weight: 800;
       color: var(--accent-ink);
-      border: 1px solid var(--line-strong);
+      font-variant-numeric: tabular-nums;
+    }
+    .head-stats .chip span { font-size: .72rem; color: var(--muted); letter-spacing: .1em; }
+
+    /* 搜索 + 分类过滤卡 */
+    .bk-tool {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 16px 18px;
+      margin-bottom: 22px;
+      position: sticky;
+      top: 78px;
+      z-index: 50;
+      transition: box-shadow .3s;
+    }
+    .bk-tool:focus-within { box-shadow: var(--shadow-md); }
+    .bk-tool .search {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: .95rem;
+      color: var(--text);
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
+      border: 1.5px solid transparent;
       border-radius: 999px;
-      padding: 0 8px;
+      padding: 11px 20px;
+      outline: none;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+    .bk-tool .search::placeholder { color: var(--muted); }
+    .bk-tool .search:focus {
+      background: var(--card);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+    .bk-tool .tool-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .bk-filter { display: flex; flex-wrap: wrap; gap: 8px; }
+    .bk-filter button {
+      font-family: var(--font-body);
+      font-size: .84rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: color .2s, background .2s, box-shadow .2s, transform .2s;
+    }
+    .bk-filter button:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 11%, transparent); transform: translateY(-1px); }
+    .bk-filter button.on {
+      color: #fff;
       font-weight: 600;
+      background: linear-gradient(135deg, var(--accent), var(--accent-ink));
+      box-shadow: 0 3px 10px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+    .bk-filter .n {
+      font-size: .74rem;
+      opacity: .75;
+      margin-left: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+    .bk-count { font-size: .8rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+    /* 分组：宽屏双栏瀑布流 */
+    .bk-groups { columns: 2; column-gap: 18px; }
+    .bk-group {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      padding: 20px 22px 16px;
+      margin-bottom: 18px;
+      break-inside: avoid;
+      transition: box-shadow .3s;
+    }
+    .bk-group:hover { box-shadow: var(--shadow-md); }
+    .bk-group .head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .bk-group .ico {
+      width: 38px; height: 38px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, transparent), color-mix(in srgb, var(--accent-2) 15%, transparent));
+    }
+    .bk-group h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      flex: 1; min-width: 0;
+    }
+    .bk-group .count {
+      font-size: .76rem;
+      font-weight: 600;
+      color: var(--accent-ink);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border-radius: 999px;
+      padding: 2px 12px;
+      font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
-    .bm-group ul { list-style: none; display: flex; flex-direction: column; }
-    .bm-group li { margin: 0; }
-    .bm-group a {
+    .bk-group .chev {
+      flex-shrink: 0;
+      color: var(--muted);
+      font-size: .8rem;
+      transition: transform .3s;
+    }
+    .bk-group.folded .chev { transform: rotate(-90deg); }
+
+    /* 折叠动画（grid-rows 技巧） */
+    .bk-fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .35s cubic-bezier(.22,.8,.36,1); }
+    .bk-fold > div { overflow: hidden; min-height: 0; }
+    .bk-group.folded .bk-fold { grid-template-rows: 0fr; }
+
+    /* 书签迷你卡片 */
+    .bk-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 4px; }
+    .bk-links a {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 6px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      border: 1px solid transparent;
       color: var(--muted);
-      font-size: .85rem;
-      border-radius: 7px;
-      transition: color .15s, background .15s;
-    }
-    .bm-group a:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); }
-    .bm-group .bm-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      flex: 1;
+      font-size: .87rem;
+      font-weight: 500;
       min-width: 0;
+      transition: color .2s, background .2s, border-color .2s, transform .2s, box-shadow .2s;
     }
+    .bk-links a:hover {
+      color: var(--text);
+      background: color-mix(in srgb, var(--accent) 5%, var(--card));
+      border-color: var(--line);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .bk-links .fav { width: 22px; height: 22px; flex-shrink: 0; border-radius: 6px; opacity: .9; }
+    .bk-links .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bk-links .go {
+      flex-shrink: 0;
+      font-size: .8rem;
+      opacity: 0;
+      transform: translate(-2px, 2px);
+      transition: opacity .2s, transform .2s, color .2s;
+    }
+    .bk-links a:hover .go { opacity: .7; transform: translate(0, 0); color: var(--accent-ink); }
+    .bk-empty { text-align: center; color: var(--muted); font-size: .9rem; padding: 34px 0 14px; column-span: all; }
 
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,.8,.36,1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    footer {
-      text-align: center;
-      padding: 40px 24px 48px;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: .85rem;
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
     }
-    footer .brand { color: var(--accent-ink); }
 
+    @media (max-width: 920px) {
+      .bk-groups { columns: 1; }
+    }
     @media (max-width: 640px) {
-      nav .menu a { padding: 7px 8px; font-size: .88rem; }
-      .container { padding: 32px 18px 50px; }
-      .bm-card { padding: 22px; }
+      main { padding: 24px 14px 40px; }
+      .page-head { padding: 28px 20px 22px; border-radius: 18px; }
+      .bk-tool { padding: 12px 12px; border-radius: 16px; top: 70px; }
+      .tool-row { flex-direction: column; align-items: stretch; }
+      .bk-count { order: -1; }
+      .bk-links { grid-template-columns: 1fr 1fr; }
+      .bk-group { padding: 16px 16px 14px; border-radius: 16px; }
+      .bk-group .ico { width: 32px; height: 32px; font-size: .95rem; border-radius: 10px; }
     }
   </style>
 </head>
@@ -221,23 +272,31 @@
     </div>
   </nav>
 
-  <div class="container">
-    <!-- 页头：面包屑 + 标题 -->
+  <main>
+    <!-- 页头横幅 + 统计 -->
     <header class="page-head reveal">
-      <nav class="crumbs" aria-label="面包屑">
-        <a href="index.html">首页</a><span class="sep">/</span>
-        <span class="cur">书签</span>
-      </nav>
-      <h1>🔖 书签</h1>
-      <p>悄咪咪地收藏，声张滴不要。</p>
+      <div>
+        <h1>书签<span class="en">Bookmarks</span></h1>
+        <p class="sub">好东西当然是跟好朋友分享：）</p>
+      </div>
+      <div class="head-stats">
+        <div class="chip"><b id="stat-total">--</b><span>个书签</span></div>
+        <div class="chip"><b id="stat-groups">--</b><span>个分类</span></div>
+      </div>
     </header>
 
-    <!-- 书签内容 -->
-    <div class="bm-card reveal">
-      <h3 class="bm-title">我的收藏 <small id="bm-total"></small></h3>
-      <div class="bm-groups" id="bm-groups"></div>
+    <!-- 搜索 + 分类 -->
+    <div class="bk-tool reveal">
+      <input class="search" id="bk-search" type="search" placeholder="搜索书签名称或网址…" autocomplete="off">
+      <div class="tool-row">
+        <div class="bk-filter" id="bk-filter"></div>
+        <span class="bk-count" id="bk-count"></span>
+      </div>
     </div>
-  </div>
+
+    <!-- 书签分组（双栏瀑布流） -->
+    <div class="bk-groups" id="bk-groups"></div>
+  </main>
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
@@ -256,7 +315,6 @@
 
     // 书签数据（数据源：bookmarks.json，已按本地最新删减更新）
     const ALL_BOOKMARKS = [
-
       { folder: 'AI 工具', name: 'Kimi AI 官网', url: 'https://www.kimi.com/zh/'},
       { folder: 'AI 工具', name: 'ChatGPT 中文', url: 'https://chatgpt.com/zh-CN/'},
       { folder: 'AI 工具', name: 'DeepSeek', url: 'https://chat.deepseek.com/'},
@@ -267,7 +325,11 @@
       { folder: 'AI 工具', name: 'Cursor', url: 'https://cursor.com/dashboard'},
       { folder: 'AI 工具', name: 'OpenCode 中文教程', url: 'https://learnopencode.com/'},
       { folder: 'AI 工具', name: '简介 | OpenCode', url: 'https://opencode.ai/docs'},
-
+      { folder: 'AI 工具', name: 'Stitch - Design with AI', url: 'https://stitch.withgoogle.com/'},
+      { folder: 'AI 工具', name: 'Hue', url: 'https://hueapp.io/'},
+      { folder: 'AI 工具', name: 'API keys - OpenAI API', url: 'https://platform.openai.com/api-keys'},
+      { folder: 'AI 工具', name: 'local.ai Early access wall', url: 'https://local.ai/wall'},
+      { folder: 'AI 工具', name: 'AI Agent 中文站', url: 'https://hermesagent.fyi/zh'},
       { folder: '编程开发', name: 'GitHub', url: 'https://github.com/'},
       { folder: '编程开发', name: '力扣 LeetCode', url: 'https://leetcode.cn/?lang=zh'},
       { folder: '编程开发', name: 'CSDN', url: 'https://www.csdn.net/'},
@@ -283,7 +345,15 @@
       { folder: '编程开发', name: '猪八戒网', url: 'https://www.zbj.com/'},
       { folder: '编程开发', name: '代理客户端协议', url: 'https://agentclientprotocol.com/get-started/introduction'},
       { folder: '编程开发', name: 'Formspree', url: 'https://formspree.io/forms/xrpzgzao/integration'},
-
+      { folder: '编程开发', name: 'Google C++ 风格指南', url: 'https://google.github.io/styleguide/cppguide.html'},
+      { folder: '编程开发', name: 'CodeGeeX', url: 'https://codegeex.cn/downloadGuide#vscode'},
+      { folder: '编程开发', name: 'Element - Vue UI 框架', url: 'https://element.eleme.cn/#/zh-CN'},
+      { folder: '编程开发', name: 'Vuetify - Vue 组件框架', url: 'https://vuetifyjs.com/zh-Hans/'},
+      { folder: '编程开发', name: 'Ant Design', url: 'https://ant.design/index-cn'},
+      { folder: '编程开发', name: 'Bootstrap v5 中文文档', url: 'https://v5.bootcss.com/docs/get-started/introduction/'},
+      { folder: '编程开发', name: '稀土掘金', url: 'https://juejin.cn/'},
+      { folder: '编程开发', name: 'hexo-helper-live2d', url: 'https://github.com/EYHN/hexo-helper-live2d'},
+      { folder: '编程开发', name: '伪尤', url: 'https://www.pseudoyu.com/'},
       { folder: '学术论文', name: '中国知网', url: 'https://www.cnki.net/'},
       { folder: '学术论文', name: 'Sci-Hub', url: 'https://sci-hub.st/'},
       { folder: '学术论文', name: 'MDPI', url: 'https://www.mdpi.com/'},
@@ -294,14 +364,14 @@
       { folder: '学术论文', name: '梅斯AI导航站', url: 'https://aisite.medsci.cn/'},
       { folder: '学术论文', name: '氢离子', url: 'https://www.ali-doctor.com/channel?tab=literature'},
       { folder: '学术论文', name: '知乎', url: 'https://www.zhihu.com/'},
-
       { folder: '娱乐', name: '哔哩哔哩', url: 'https://www.bilibili.com/'},
+      { folder: '娱乐', name: '热摸爽 - 热点摸鱼', url: 'https://remoshuang.com/'},
+      { folder: '娱乐', name: 'GameRes 游资网论坛', url: 'https://www.gameres.com/forum'},
       { folder: '娱乐', name: 'AcFun 弹幕视频网', url: 'https://www.acfun.cn/'},
       { folder: '娱乐', name: '萌娘百科', url: 'https://mzh.moegirl.org.cn/Mainpage#/flow'},
       { folder: '娱乐', name: 'MCBBS 中文论坛', url: 'https://www.mcbbs.co/forum.php'},
       { folder: '娱乐', name: 'LittleSkin 皮肤站', url: 'https://littleskin.cn/?lang=zh_CN'},
       { folder: '娱乐', name: 'Amazon Luna', url: 'https://luna.amazon.com/gamenight'},
-
       { folder: '推荐工具', name: 'b站@一只小辉金吖', url: 'https://link3.cc/huijinya520'},
       { folder: '推荐工具', name: 'QQ邮箱', url: 'https://wx.mail.qq.com/home/index?sid=zTE5YoyvMTAuEXFZAFBYTQAA#/list/1/1'},
       { folder: '推荐工具', name: '2925邮箱', url: 'https://www.2925.com/login/'},
@@ -311,37 +381,118 @@
       { folder: '推荐工具', name: 'UUUP Tools', url: 'https://uuup.net/tools/'},
       { folder: '推荐工具', name: 'Wallhaven 壁纸', url: 'https://riverlanes.site/wallhaven/'},
       { folder: '推荐工具', name: '极简壁纸', url: 'https://bizhi1.com/item-cat/minimalism' },
-      { folder: '推荐工具', name: 'OpenRouter', url: 'https://openrouter.ai/workspaces/default?utm_source=signup-success'}
+      { folder: '推荐工具', name: 'OpenRouter', url: 'https://openrouter.ai/workspaces/default?utm_source=signup-success'},
+      { folder: '推荐工具', name: '全网热榜', url: 'https://rebang.today/home'},
+      { folder: '推荐工具', name: '90+ 免费在线视频工具', url: 'https://artplayer.org/zh-CN/tools/'},
+      { folder: '推荐工具', name: '卡卡轻导航', url: 'https://kaka770.cn/'},
+      { folder: '推荐工具', name: 'abeto - 互动体验', url: 'https://abeto.co/'},
+      { folder: '推荐工具', name: 'YYsuni', url: 'https://www.yysuni.com/'},
     ];
 
-    const groups = {};
-    ALL_BOOKMARKS.forEach(b => {
-      const key = b.folder || '未分类';
-      (groups[key] = groups[key] || []).push(b);
+    const container = document.getElementById('bk-groups');
+    const searchEl = document.getElementById('bk-search');
+    const filterEl = document.getElementById('bk-filter');
+    const countEl = document.getElementById('bk-count');
+    let activeFolder = null;
+
+    // 真实网站 favicon
+    const favIcon = (url) => {
+      try { return `https://www.google.com/s2/favicons?sz=32&domain=${new URL(url).hostname}`; }
+      catch { return FALLBACK_FAV; }
+    };
+    // favicon 加载失败时的兜底图标（青色圆点书签）
+    const FALLBACK_FAV = 'data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="7" fill="#2fa8b8"/><path d="M7 6.5A1.5 1.5 0 0 1 8.5 5H16a1 1 0 0 1 1 1v13l-4.5-3-4.5 3V6.5z" fill="#fff"/></svg>'
+    );
+
+    // 头部统计
+    document.getElementById('stat-total').textContent = ALL_BOOKMARKS.length;
+    document.getElementById('stat-groups').textContent = new Set(ALL_BOOKMARKS.map(b => b.folder)).size;
+
+    // 分类胶囊（带数量）
+    const folders = [...new Set(ALL_BOOKMARKS.map(b => b.folder))];
+    const folderCount = (k) => k ? ALL_BOOKMARKS.filter(b => b.folder === k).length : ALL_BOOKMARKS.length;
+    filterEl.innerHTML = [
+      `<button data-f="" class="on">全部<span class="n">${folderCount('')}</span></button>`,
+      ...GROUP_META.filter(m => folders.includes(m.key)).map(m =>
+        `<button data-f="${m.key}">${m.icon} ${m.key}<span class="n">${folderCount(m.key)}</span></button>`)
+    ].join('');
+    filterEl.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFolder = btn.dataset.f || null;
+        filterEl.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+        render();
+      });
     });
-    const ordered = [];
-    GROUP_META.forEach(m => { if (groups[m.key]) ordered.push(m); });
-    const rest = Object.keys(groups).filter(k => !GROUP_META.some(m => m.key === k)).map(k => ({ key: k, icon: '📌' }));
-    ordered.push(...rest);
 
-    const container = document.getElementById('bm-groups');
-    container.innerHTML = ordered.map(g => `
-      <div class="bm-group">
-        <div class="bm-head"><span class="bm-ico">${g.icon}</span><h3>${g.key}</h3><span class="count">${groups[g.key].length}</span></div>
-        <ul>
-          ${groups[g.key].map(b => `<li><a href="${b.url}" target="_blank"><span class="bm-name">${b.name}</span></a></li>`).join('')}
-        </ul>
-      </div>
-    `).join('');
-    document.getElementById('bm-total').textContent = `${ALL_BOOKMARKS.length} 个书签`;
+    const bindReveal = () => {
+      const els = document.querySelectorAll('.bk-groups .reveal:not(.visible)');
+      const io = new IntersectionObserver((es) => {
+        es.forEach((e, i) => {
+          if (e.isIntersecting) {
+            e.target.style.transitionDelay = Math.min(i * 60, 300) + 'ms';
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: .08 });
+      els.forEach((el) => io.observe(el));
+    };
 
-    // 滚动显示动画
-    const io = new IntersectionObserver((es) => {
-      es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    const render = () => {
+      const q = searchEl.value.trim().toLowerCase();
+      let visible = ALL_BOOKMARKS;
+      if (activeFolder) visible = visible.filter(b => b.folder === activeFolder);
+      if (q) visible = visible.filter(b => (b.folder + ' ' + b.name + ' ' + b.url).toLowerCase().includes(q));
+      countEl.textContent = '显示 ' + visible.length + ' / ' + ALL_BOOKMARKS.length + ' 个';
+
+      const g = {};
+      visible.forEach(b => { const k = b.folder || '未分类'; (g[k] = g[k] || []).push(b); });
+      const list = GROUP_META.filter(m => g[m.key]);
+      const extra = Object.keys(g).filter(k => !GROUP_META.some(m => m.key === k)).map(k => ({ key: k, icon: '📌' }));
+      list.push(...extra);
+
+      container.innerHTML = list.length ? list.map((g2) => `
+        <div class="bk-group reveal">
+          <div class="head" data-fold>
+            <span class="ico">${g2.icon}</span>
+            <h2>${g2.key}</h2>
+            <span class="count">${g[g2.key].length}</span>
+            <span class="chev">▼</span>
+          </div>
+          <div class="bk-fold"><div>
+            <div class="bk-links">
+              ${g[g2.key].map(b => `<a href="${b.url}" target="_blank" rel="noopener" title="${b.url}"><img class="fav" src="${favIcon(b.url)}" alt="" loading="lazy" onerror="this.onerror=null;this.src=FALLBACK_FAV"><span class="name">${b.name}</span><span class="go">↗</span></a>`).join('')}
+            </div>
+          </div></div>
+        </div>
+      `).join('') : '<p class="bk-empty">没有匹配的书签，换个关键词试试～</p>';
+
+      // 分组折叠
+      container.querySelectorAll('[data-fold]').forEach(h => {
+        h.addEventListener('click', () => h.closest('.bk-group').classList.toggle('folded'));
+      });
+      bindReveal();
+    };
+
+    render();
+    searchEl.addEventListener('input', () => render());
+
+    // 页头/搜索卡的入场动画
+    const ioTop = new IntersectionObserver((es) => {
+      es.forEach((e, i) => {
+        if (e.isIntersecting) {
+          e.target.style.transitionDelay = (i * 100) + 'ms';
+          e.target.classList.add('visible');
+          ioTop.unobserve(e.target);
+        }
+      });
     }, { threshold: .1 });
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    document.querySelectorAll('main > .reveal').forEach((el) => ioTop.observe(el));
   </script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
+  <script src="js/scrollfx.js" defer></script>
+  <script src="js/theme-switcher.js" defer></script>
 </body>
 </html>
