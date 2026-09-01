@@ -97,8 +97,18 @@
     .cl-prog { position: fixed; top: 0; left: 0; height: 2px; z-index: 51; width: 0; background: var(--accent); transition: width .08s; }
 
     @media (max-width: 640px) {
+      .container { padding: 24px 14px 40px; }
+      .cl-hero { padding: 6vh 0 4vh; }
+      .cl-hero h1 { font-size: clamp(2.2rem, 12vw, 4rem); }
       .cl-gallery { columns: 1; }
+      .cl-card { border-radius: 10px; }
+      .cl-card .cl-cap { opacity: 1; transform: translateY(0); padding: 1.5rem 1rem .8rem; }
+      .cl-card .cl-num { opacity: 1; transform: scale(1); }
       .cl-vel { display: none; }
+      .cl-quote { padding: 3rem .5rem; }
+      .cl-quote blockquote { font-size: 1.2rem; }
+      nav .menu { overflow-x: auto; flex-wrap: nowrap; gap: 4px; padding-bottom: 4px; }
+      nav .menu a { white-space: nowrap; font-size: .82rem; }
     }
   </style>
 </head>
@@ -133,7 +143,7 @@
 
     <section class="cl-gallery" id="clGallery">
       <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260901223156_211_1.png" alt="收藏 01" loading="lazy" width="600" height="420">
+        <img src="pic/收藏/微信图片_20260901223156_211_1.jpg" alt="收藏 01" loading="lazy" width="600" height="420">
         <div class="cl-num">01</div>
         <div class="cl-cap">Moment No.01</div>
       </div>
