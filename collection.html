@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
+  <title>收藏 · 晴天小站</title>
+  <link rel="icon" href="sun-avatar-sm.png" type="image/png">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/music-player.css?v=2">
+  <style data-page-css>
+    .container { max-width: 960px; margin: 0 auto; padding: 48px 24px 60px; }
+
+    /* Hero 区 */
+    .cl-hero { text-align: center; padding: 10vh 0 6vh; }
+    .cl-hero h1 {
+      font-size: clamp(3rem, 10vw, 7rem); font-weight: 800;
+      letter-spacing: -.04em; line-height: .95; margin-bottom: 1rem;
+    }
+    .cl-hero h1 .char {
+      display: inline-block; opacity: 0; transform: translateY(60%);
+      transition: opacity .8s cubic-bezier(.22,.8,.36,1), transform .8s cubic-bezier(.22,.8,.36,1);
+      cursor: default;
+    }
+    .cl-hero h1 .char.show {
+      opacity: 1; transform: translateY(0);
+      background: linear-gradient(120deg, var(--accent-ink) 10%, var(--accent) 50%, var(--accent-2) 90%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .cl-hero h1 .char.show:hover {
+      background: none; -webkit-background-clip: unset; background-clip: unset;
+      color: var(--accent-ink);
+    }
+    .cl-hero p { color: var(--muted); font-size: .9rem; letter-spacing: .05em; margin-top: .6rem; }
+
+    /* 链式入场 */
+    .chain-item {
+      opacity: 0; transform: translateY(40px);
+      transition: all .7s cubic-bezier(.22,.8,.36,1);
+    }
+    .chain-item.in { opacity: 1; transform: translateY(0); }
+
+    /* 瀑布流 */
+    .cl-gallery { columns: 2; column-gap: 16px; margin-top: 2rem; }
+    .cl-card {
+      break-inside: avoid; margin-bottom: 16px;
+      border-radius: 12px; overflow: hidden; position: relative;
+      background: var(--card); border: 1px solid var(--line);
+      cursor: crosshair;
+    }
+    .cl-card img {
+      width: 100%; height: auto; display: block;
+      filter: grayscale(20%); transition: filter .3s, transform .4s cubic-bezier(.22,.8,.36,1);
+    }
+    .cl-card:hover img { filter: grayscale(0%); transform: scale(1.03); }
+    .cl-card .cl-cap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem 1.2rem 1rem;
+      background: linear-gradient(transparent, rgba(0,0,0,.55));
+      color: #fff; font-size: .85rem; font-weight: 500;
+      opacity: 0; transform: translateY(10px);
+      transition: all .3s cubic-bezier(.22,.8,.36,1);
+    }
+    .cl-card:hover .cl-cap { opacity: 1; transform: translateY(0); }
+    .cl-card .cl-num {
+      position: absolute; top: 10px; right: 10px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--accent); color: #fff; font-size: .7rem;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(.6);
+      transition: all .25s cubic-bezier(.22,.8,.36,1);
+    }
+    .cl-card:hover .cl-num { opacity: 1; transform: scale(1); }
+
+    /* 引言 */
+    .cl-quote {
+      text-align: center; padding: 5rem 1rem;
+      border-top: 1px solid var(--line); margin-top: 2rem;
+    }
+    .cl-quote blockquote {
+      font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 500;
+      line-height: 1.4; max-width: 600px; margin: 0 auto;
+    }
+    .cl-quote .word {
+      display: inline-block; opacity: 0; transform: translateY(30px);
+      transition: all .6s cubic-bezier(.22,.8,.36,1);
+    }
+    .cl-quote .word.show { opacity: 1; transform: translateY(0); }
+    .cl-quote cite { display: block; margin-top: 1.5rem; color: var(--muted); font-size: .8rem; }
+
+    /* 速度条 */
+    .cl-vel { position: fixed; left: 0; top: 0; bottom: 0; width: 3px; z-index: 50; background: var(--line); }
+    .cl-vel-fill { width: 100%; height: 0; background: var(--accent); transition: height .08s; }
+
+    /* 进度条 */
+    .cl-prog { position: fixed; top: 0; left: 0; height: 2px; z-index: 51; width: 0; background: var(--accent); transition: width .08s; }
+
+    @media (max-width: 640px) {
+      .cl-gallery { columns: 1; }
+      .cl-vel { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cl-vel"><div class="cl-vel-fill" id="clVel"></div></div>
+  <div class="cl-prog" id="clProg"></div>
+
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html"><span>晴天</span>小站</a>
+      <div class="right">
+        <div class="menu">
+          <a href="index.html">首页</a>
+          <a href="blog.html">博客</a>
+          <a href="bookmarks.html">书签</a>
+          <a href="collection.html" class="active">收藏</a>
+          <a href="about.html">关于我</a>
+          <a href="contact.html">联系我</a>
+          <button class="cl-toggle" id="cl-toggle">日志</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <section class="cl-hero">
+      <h1 id="clTitle">COLLECTION</h1>
+      <p>美好的瞬间，值得被珍藏</p>
+    </section>
+
+    <section class="cl-gallery" id="clGallery">
+      <div class="cl-card chain-item" data-delay="0">
+        <img src="pic/收藏/微信图片_20260901223156_211_1.png" alt="收藏 01" loading="lazy" width="600" height="420">
+        <div class="cl-num">01</div>
+        <div class="cl-cap">Moment No.01</div>
+      </div>
+      <div class="cl-card chain-item" data-delay="120">
+        <img src="pic/收藏/微信图片_20260901223156_212_1.jpg" alt="收藏 02" loading="lazy" width="600" height="420">
+        <div class="cl-num">02</div>
+        <div class="cl-cap">Moment No.02</div>
+      </div>
+      <div class="cl-card chain-item" data-delay="240">
+        <img src="pic/收藏/微信图片_20260901223216_213_1.jpg" alt="收藏 03" loading="lazy" width="600" height="420">
+        <div class="cl-num">03</div>
+        <div class="cl-cap">Moment No.03</div>
+      </div>
+      <div class="cl-card chain-item" data-delay="360">
+        <img src="pic/收藏/微信图片_20260901223222_214_1.jpg" alt="收藏 04" loading="lazy" width="600" height="420">
+        <div class="cl-num">04</div>
+        <div class="cl-cap">Moment No.04</div>
+      </div>
+    </section>
+
+    <section class="cl-quote">
+      <blockquote id="clQuote">The earth has music for those who listen.</blockquote>
+      <cite>— William Shakespeare</cite>
+    </section>
+
+  </div>
+
+  <div class="cl-panel" id="cl-panel">
+    <h3>站点日志</h3>
+    <div id="cl-timeline"></div>
+  </div>
+
+  <div class="music-card collapsed" id="music-card">
+    <div class="mc-disc" id="mc-disc">
+      <div class="mc-ring"></div>
+      <div class="mc-center"><img src="sun-avatar-sm.png" alt=""></div>
+    </div>
+    <div class="mc-info">
+      <div class="mc-name" id="mc-name">--</div>
+      <div class="mc-artist" id="mc-artist">--</div>
+    </div>
+    <div class="mc-controls">
+      <button class="mc-btn" id="mc-prev">&#9198;</button>
+      <button class="mc-btn play" id="mc-play">&#9654;</button>
+      <button class="mc-btn" id="mc-next">&#9197;</button>
+      <button class="mc-btn mc-shuffle" id="mc-shuffle" title="随机换一首">&#8635;</button>
+    </div>
+    <div class="mc-progress" id="mc-progress"><div class="bar" id="mc-bar"></div></div>
+    <div class="mc-time"><span id="mc-current">0:00</span><span id="mc-total">0:00</span></div>
+    <div class="mc-volume">
+      <span class="mc-vol-icon" id="mc-vol-icon">&#128266;</span>
+      <input type="range" class="mc-vol-slider" id="mc-vol" min="0" max="100" value="80">
+    </div>
+  </div>
+
+  <button class="to-top" id="to-top" aria-label="回到顶部">↑</button>
+
+  <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
+
+  <script src="js/pjax.js"></script>
+  <script src="js/music-player.js?v=2"></script>
+  <script src="js/changelog.js"></script>
+  <script src="js/scrollfx.js" defer></script>
+  <script src="js/theme-switcher.js" defer></script>
+  <script>
+    (function(){
+      /* 速度条 */
+      var lastY=0, vel=document.getElementById('clVel');
+      window.addEventListener('scroll',function(){
+        var v=Math.abs(window.scrollY-lastY); lastY=window.scrollY;
+        vel.style.height=Math.min(v*3,100)+'%';
+        setTimeout(function(){vel.style.height='0%';},120);
+      },{passive:true});
+
+      /* 进度条 */
+      var prog=document.getElementById('clProg');
+      window.addEventListener('scroll',function(){
+        var s=window.scrollY,d=document.documentElement.scrollHeight-window.innerHeight;
+        prog.style.width=(s/d*100)+'%';
+      },{passive:true});
+
+      /* Hero 逐字 */
+      var t=document.getElementById('clTitle');
+      var sub=t.nextElementSibling;
+      var txt=t.textContent;t.innerHTML='';
+      for(var i=0;i<txt.length;i++){
+        var s=document.createElement('span');s.className='char';s.textContent=txt[i];
+        s.style.transitionDelay=(.3+i*.07)+'s';t.appendChild(s);
+      }
+      /* 副标题延迟 */
+      if(sub)sub.style.opacity='0';
+      setTimeout(function(){
+        t.querySelectorAll('.char').forEach(function(c){c.classList.add('show');});
+        if(sub){
+          setTimeout(function(){sub.style.transition='opacity .8s';sub.style.opacity='1';},600);
+        }
+      },100);
+
+      /* 链式入场 */
+      var cards=document.querySelectorAll('.chain-item');
+      var obs=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            var d=parseInt(e.target.dataset.delay)||0;
+            setTimeout(function(){e.target.classList.add('in');},d);
+            obs.unobserve(e.target);
+          }
+        });
+      },{threshold:.15});
+      cards.forEach(function(c){obs.observe(c);});
+
+      /* 引言逐词 */
+      var q=document.getElementById('clQuote'),qw=q.textContent.trim().split(/\s+/);
+      q.innerHTML='';
+      qw.forEach(function(w,i){
+        var s=document.createElement('span');s.className='word';s.textContent=w;
+        s.style.transitionDelay=(i*.06)+'s';q.appendChild(s);
+        q.appendChild(document.createTextNode(' '));
+      });
+      var qo=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting)e.target.querySelectorAll('.word').forEach(function(w){w.classList.add('show');});
+        });
+      },{threshold:.3});
+      qo.observe(q);
+    })();
+  </script>
+
+</body>
+</html>

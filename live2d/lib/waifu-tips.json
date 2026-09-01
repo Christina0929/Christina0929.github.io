@@ -6,9 +6,6 @@
     "selector": "#waifu-tool-asteroids",
     "text": ["要不要来玩飞机大战，我射击游戏还挺厉害的。", "这个按钮写着「不要点击」……那不是更想点了嘛。", "怎么，想和我玩一局，输了请吃巧克力螺。=ω="]
   }, {
-    "selector": "#waifu-tool-switch-model",
-    "text": ["我就这一身啦，cosplay 倒是可以给你换换。", "要见见我的同伴吗。", "想换看板娘的话，随你。"]
-  }, {
     "selector": "#waifu-tool-switch-texture",
     "text": ["喜欢换装 PLAY 吗。", "cosplay 可是我的专业领域。", "变装！"]
   }, {

@@ -13,6 +13,9 @@ import './lib/waifu-tips.js';
   // 旧版静态看板娘用 waifu-disabled 永久隐藏；官方 widget 遇此键会直接不渲染且无开关，
   // 为避免用户被"永久隐藏"卡死，载入时清理一次
   localStorage.removeItem('waifu-disabled');
+  // 恢复单模型（Konata）后，清理可能残留的多模型切换标记（modelId=1/2），
+  // 避免官方引擎按序号找不存在的模型报错。保留 modelId 也不会出错，这里顺手归 0。
+  localStorage.removeItem('modelId');
 
   // ---------- 注入官方 waifu.css（工具按钮/气泡/隐藏动画的基座样式） ----------
   const link = document.createElement('link');
@@ -32,7 +35,7 @@ import './lib/waifu-tips.js';
     #waifu.waifu-active { bottom: 0; }
     #waifu.waifu-hidden { display: none; }
     #waifu:hover { transform: translateY(20px); }
-    /* 画布尺寸：官方默认 300px 固定；改为视口自适应，保持 1:1 避免变形 */
+    /* ===== 画布尺寸：官方默认 300px 固定；改为视口自适应，保持 1:1 避免变形 ===== */
     #live2d {
       height: min(30vh, 260px);
       width: min(30vh, 260px);

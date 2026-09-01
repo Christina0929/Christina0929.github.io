@@ -1,0 +1,198 @@
+/* Music Player - shared across all pages */
+.music-card {
+  position: fixed;
+  top: 50%; right: 0;
+  transform: translateX(calc(100% - 36px));
+  width: 260px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px 0 0 18px;
+  box-shadow: -6px 0 28px rgba(0,0,0,.10);
+  z-index: 999;
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: transform .45s cubic-bezier(.22,.8,.36,1);
+  will-change: transform;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.music-card.expanded {
+  transform: translateX(0);
+}
+.music-card-close {
+  position: absolute;
+  top: 8px; right: 10px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: .65rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .25s ease;
+  opacity: 0; pointer-events: none;
+}
+.music-card.expanded .music-card-close { opacity: 1; pointer-events: auto; }
+.music-card-close:hover { border-color: var(--accent); color: var(--accent-ink); transform: scale(1.1); }
+.mc-disc {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #1a1a2e, #16213e, #0f3460, #1a1a2e);
+  box-shadow: 0 4px 16px rgba(0,0,0,.1), inset 0 0 0 5px rgba(255,255,255,.05);
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mc-disc.playing { animation: mc-spin 3.5s linear infinite; }
+@keyframes mc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.mc-disc .mc-center {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.mc-disc .mc-center img { width: 100%; height: 100%; object-fit: cover; }
+.mc-disc .mc-ring {
+  position: absolute; inset: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.mc-info { text-align: center; width: 100%; }
+.mc-info .mc-name {
+  font-weight: 600; font-size: .82rem;
+  margin-bottom: 1px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mc-info .mc-artist {
+  font-size: .7rem; color: var(--muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mc-controls { display: flex; align-items: center; gap: 10px; }
+.mc-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem;
+  transition: all .25s cubic-bezier(.22,.8,.36,1);
+}
+.mc-btn:hover { border-color: var(--accent); color: var(--accent-ink); transform: scale(1.08); }
+.mc-btn.play {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-ink));
+  color: #fff; border: none;
+  font-size: .92rem;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.mc-btn.play:hover { transform: scale(1.1); }
+.mc-progress {
+  width: 100%; height: 3px;
+  background: var(--line); border-radius: 2px;
+  cursor: pointer; position: relative;
+}
+.mc-progress .bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 2px; width: 0%;
+  transition: width .1s linear;
+}
+.mc-progress::after {
+  content: ''; position: absolute;
+  top: -4px; bottom: -4px; left: 0; right: 0;
+}
+.mc-time {
+  font-size: .62rem; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  display: flex; justify-content: space-between;
+  width: 100%;
+}
+.mc-volume {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+}
+.mc-vol-icon { font-size: .68rem; cursor: pointer; }
+.mc-vol-slider {
+  flex: 1; height: 3px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--line); border-radius: 2px;
+  outline: none; cursor: pointer;
+}
+.mc-vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-ink));
+  cursor: pointer;
+}
+.mc-vol-slider::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-ink));
+  cursor: pointer; border: none;
+}
+/* collapsed state */
+.music-card:not(.expanded) .mc-disc,
+.music-card:not(.expanded) .mc-info,
+.music-card:not(.expanded) .mc-controls,
+.music-card:not(.expanded) .mc-progress,
+.music-card:not(.expanded) .mc-time,
+.music-card:not(.expanded) .mc-volume {
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s ease;
+}
+.music-card.expanded .mc-disc,
+.music-card.expanded .mc-info,
+.music-card.expanded .mc-controls,
+.music-card.expanded .mc-progress,
+.music-card.expanded .mc-time,
+.music-card.expanded .mc-volume {
+  opacity: 1; pointer-events: auto;
+  transition: opacity .3s ease .15s;
+}
+.music-card:not(.expanded)::after {
+  content: '\266B';
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  color: #fff;
+  pointer-events: none;
+  animation: mc-peek-pulse 1.4s ease-in-out infinite;
+}
+@keyframes mc-peek-pulse {
+  0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: .5; transform: translate(-50%, -50%) scale(.85); }
+}
+
+/* ---------- 随机换曲按钮（卡片控制区） ---------- */
+.mc-btn.mc-shuffle { font-size: .8rem; }
+.mc-btn.mc-shuffle:hover { border-color: var(--accent); color: var(--accent-ink); transform: scale(1.08) rotate(180deg); }
+.mc-btn.mc-shuffle.spinning {
+  animation: mc-shuffle-spin .6s cubic-bezier(.22,.8,.36,1) both;
+}
+@keyframes mc-shuffle-spin {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(220deg) scale(1.12); }
+  to { transform: rotate(360deg) scale(1); }
+}
+@media (max-width: 640px) {
+  .music-card {
+    top: auto; bottom: 0; right: 0;
+    width: 100%;
+    border-radius: 18px 18px 0 0;
+    transform: translateY(calc(100% - 36px));
+    padding: 14px 20px 16px;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+  .music-card.expanded { transform: translateY(0); }
+  .music-card:not(.expanded)::after { content: '\2191'; font-size: .9rem; }
+}
