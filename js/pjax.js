@@ -9,8 +9,7 @@
   // body > nav 只保留主导航（直接子元素），面包屑 nav 在 main/container 内不会被匹配
   const SHELL =
     'body > nav, #cl-panel, #music-card, #to-top, .scroll-progress, .theme-fab, .theme-panel, ' +
-    '#waifu, #waifu-toggle, #waifu-tips, #kandao-static-img, footer, ' +
-    '.pjax-wipe, .pjax-wipe2'; // 色浪转场层常驻，换页时不能被清掉
+    '#waifu, #waifu-toggle, #waifu-tips, #kandao-static-img, footer';
 
   // 当前页面专属 style 节点引用（head 里第一个带 data-page-css 的 <style>）
   let pageStyleEl = null;
@@ -18,44 +17,6 @@
 
   // 并发锁：防止快速连点导致多个 navigate 同时运行（根因=DOM 重复删除/插入崩坏）
   let navigating = false;
-
-  // ---------- 双层色浪转场（链式互动）：圆形色浪从点击处扩散覆盖 → 换页 → 淡出 ----------
-  let wipe1 = null, wipe2 = null, wipeWord = null;
-  const REDUCE = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function ensureWipe() {
-    if (wipe1) return;
-    wipe1 = document.createElement('div');
-    wipe1.className = 'pjax-wipe';
-    wipe1.innerHTML = '<span class="word"></span>';
-    wipe2 = document.createElement('div');
-    wipe2.className = 'pjax-wipe2';
-    document.body.appendChild(wipe2);
-    document.body.appendChild(wipe1);
-    wipeWord = wipe1.querySelector('.word');
-  }
-  function circleCover(el, x, y, dur) {
-    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 40;
-    el.style.transition = 'none';
-    el.style.opacity = '1';
-    el.style.clipPath = 'circle(0px at ' + x + 'px ' + y + 'px)';
-    void el.offsetWidth;
-    el.style.transition = 'clip-path ' + dur + 'ms cubic-bezier(.7,0,.3,1)';
-    el.style.clipPath = 'circle(' + r + 'px at ' + x + 'px ' + y + 'px)';
-  }
-  function circleFade(el, delay) {
-    setTimeout(() => { el.style.transition = 'opacity .32s'; el.style.opacity = '0'; }, delay);
-    setTimeout(() => { el.style.transition = 'none'; el.style.clipPath = 'circle(0px at 50% 60%)'; }, delay + 340);
-  }
-  // 目标页英文名（转场时定格显示）
-  const PAGE_WORDS = [
-    ['index', 'HOME'], ['blog', 'BLOG'], ['post', 'POST'], ['collection', 'COLLECTION'],
-    ['bookmarks', 'MARKS'], ['about', 'ABOUT'], ['contact', 'CONTACT']
-  ];
-  function wordFor(url) {
-    const f = (url.split('/').pop() || '').toLowerCase();
-    for (const [k, w] of PAGE_WORDS) if (f.indexOf(k) === 0) return w;
-    return '...';
-  }
 
   // 需要跳转的内链规则
   function isInternal(a, href) {
@@ -79,21 +40,9 @@
   }
 
   // 切页主流程
-  async function navigate(url, push, origin) {
+  async function navigate(url, push) {
     if (navigating) return;          // 并发锁：上一次未完成则忽略
     navigating = true;
-    const reduce = REDUCE();
-    // 色浪先盖住屏幕（fetch 同时进行），盖住后再换内容
-    if (!reduce) {
-      ensureWipe();
-      wipeWord.textContent = wordFor(url);
-      const wx = (origin && origin.x) != null ? origin.x : innerWidth / 2;
-      const wy = (origin && origin.y) != null ? origin.y : innerHeight / 2;
-      circleCover(wipe2, wx, wy, 540);
-      setTimeout(() => circleCover(wipe1, wx, wy, 480), 70);
-      setTimeout(() => wipe1.classList.add('cover'), 250);
-      await new Promise((r) => setTimeout(r, 340));
-    }
     try {
       const res = await fetch(url, { headers: { 'X-Requested-With': 'pjax' } });
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -160,16 +109,8 @@
 
       // 9) 回到顶部（保留原有滚动位置在这不需要）
       window.scrollTo(0, 0);
-
-      // 10) 色浪退场
-      if (!reduce) {
-        setTimeout(() => wipe1.classList.remove('cover'), 160);
-        circleFade(wipe1, 200);
-        circleFade(wipe2, 260);
-      }
     } catch (err) {
       console.warn('[pjax] 切换失败，回退整页跳转:', err);
-      if (!reduce) { circleFade(wipe1, 0); circleFade(wipe2, 60); }
       location.href = url;
     } finally {
       navigating = false;            // 无论成功失败都解锁
@@ -186,7 +127,7 @@
     if (!isInternal(a, href)) return;
     if (href === location.pathname.split('/').pop()) return; // 同一页不重复切换
     e.preventDefault();
-    navigate(href, true, { x: e.clientX, y: e.clientY });
+    navigate(href, true);
   });
 
   // 浏览器前进/后退
