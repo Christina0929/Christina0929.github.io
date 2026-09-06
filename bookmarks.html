@@ -22,6 +22,9 @@
     }
 
     /* 页头横幅 + 统计 */
+    .ph-kicker { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); font-size: .64rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+    .ph-kicker::before { content: ""; width: 34px; height: 1px; background: var(--accent); }
+    .ph-kicker .dim { color: var(--muted); letter-spacing: .1em; }
     .page-head {
       border-radius: 24px;
       padding: 38px 34px 28px;
@@ -146,57 +149,63 @@
     }
     .bk-count { font-size: .8rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-    /* 分组：宽屏双栏瀑布流 */
-    .bk-groups { columns: 2; column-gap: 18px; }
+    /* 分组：开放式编辑式分区（去卡片，细线分隔） */
+    .bk-groups { columns: 2; column-gap: 34px; }
     .bk-group {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      padding: 20px 22px 16px;
-      margin-bottom: 18px;
+      padding: 12px 4px 8px;
+      margin-bottom: 10px;
       break-inside: avoid;
-      transition: box-shadow .3s;
+      border-top: 1px solid var(--line);
     }
-    .bk-group:hover { box-shadow: var(--shadow-md); }
     .bk-group .head {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
       cursor: pointer;
       user-select: none;
     }
-    .bk-group .ico {
-      width: 38px; height: 38px;
+    .bk-group .no {
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .66rem;
+      letter-spacing: .12em;
+      color: var(--accent);
       flex-shrink: 0;
-      display: flex;
+    }
+    .bk-group .ico {
+      width: auto; height: auto;
+      flex-shrink: 0;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.05rem;
-      border-radius: 12px;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, transparent), color-mix(in srgb, var(--accent-2) 15%, transparent));
+      font-size: 1rem;
+      border-radius: 0;
+      background: none;
     }
     .bk-group h2 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: .04em;
+      font-family: var(--font-body);
+      font-size: 1.12rem;
+      font-weight: 900;
+      letter-spacing: .02em;
       flex: 1; min-width: 0;
+      transition: color .25s;
     }
+    .bk-group .head:hover h2 { color: var(--accent-ink); }
     .bk-group .count {
-      font-size: .76rem;
-      font-weight: 600;
-      color: var(--accent-ink);
-      background: color-mix(in srgb, var(--accent) 12%, transparent);
-      border-radius: 999px;
-      padding: 2px 12px;
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .66rem;
+      font-weight: 400;
+      color: var(--muted);
+      background: none;
+      border-radius: 0;
+      padding: 0;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
     .bk-group .chev {
       flex-shrink: 0;
       color: var(--muted);
-      font-size: .8rem;
+      font-size: .7rem;
       transition: transform .3s;
     }
     .bk-group.folded .chev { transform: rotate(-90deg); }
@@ -206,14 +215,14 @@
     .bk-fold > div { overflow: hidden; min-height: 0; }
     .bk-group.folded .bk-fold { grid-template-rows: 0fr; }
 
-    /* 书签迷你卡片 */
-    .bk-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 4px; }
+    /* 书签迷你行 */
+    .bk-links { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; padding-bottom: 4px; }
     .bk-links a {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 9px 11px;
-      border-radius: 12px;
+      gap: 9px;
+      padding: 7px 10px;
+      border-radius: 10px;
       border: 1px solid transparent;
       color: var(--muted);
       font-size: .87rem;
@@ -256,8 +265,8 @@
       .tool-row { flex-direction: column; align-items: stretch; }
       .bk-count { order: -1; }
       .bk-links { grid-template-columns: 1fr 1fr; }
-      .bk-group { padding: 16px 16px 14px; border-radius: 16px; }
-      .bk-group .ico { width: 32px; height: 32px; font-size: .95rem; border-radius: 10px; }
+      .bk-group { padding: 10px 2px 6px; }
+      .bk-group .ico { font-size: .95rem; }
     }
   </style>
 </head>
@@ -284,6 +293,7 @@
     <!-- 页头横幅 + 统计 -->
     <header class="page-head reveal">
       <div>
+        <div class="ph-kicker">Bookmarks<span class="dim">— 收藏索引 · 逐分组折叠</span></div>
         <h1>书签<span class="en">Bookmarks</span></h1>
         <p class="sub">好东西当然是跟好朋友分享：）</p>
       </div>
@@ -500,12 +510,13 @@
       const extra = Object.keys(g).filter(k => !GROUP_META.some(m => m.key === k)).map(k => ({ key: k, icon: '📌' }));
       list.push(...extra);
 
-      container.innerHTML = list.length ? list.map((g2) => `
+      container.innerHTML = list.length ? list.map((g2, gi) => `
         <div class="bk-group reveal">
           <div class="head" data-fold>
+            <span class="no">${String(gi + 1).padStart(2, '0')}</span>
             <span class="ico">${g2.icon}</span>
             <h2>${g2.key}</h2>
-            <span class="count">${g[g2.key].length}</span>
+            <span class="count">${g[g2.key].length} sites</span>
             <span class="chev">▼</span>
           </div>
           <div class="bk-fold"><div>
