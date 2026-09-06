@@ -12,49 +12,49 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../fonts/LXGWWenKai-Regular.ttf') format('truetype');
+  src: url('../fonts/web/LXGWWenKai-Regular.woff2') format('woff2');
 }
 @font-face {
   font-family: 'LXGW WenKai';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('../fonts/LXGWWenKai-Medium.ttf') format('truetype');
+  src: url('../fonts/web/LXGWWenKai-Medium.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Noto Sans SC';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../fonts/NotoSansSC-Regular.ttf') format('truetype');
+  src: url('../fonts/web/NotoSansSC-Regular.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Noto Sans SC';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../fonts/NotoSansSC-Bold.ttf') format('truetype');
+  src: url('../fonts/web/NotoSansSC-Bold.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Noto Sans SC';
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('../fonts/NotoSansSC-Black.ttf') format('truetype');
+  src: url('../fonts/web/NotoSansSC-Black.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Noto Serif SC';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../fonts/NotoSerifSC-Bold.ttf') format('truetype');
+  src: url('../fonts/web/NotoSerifSC-Bold.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Noto Serif SC';
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('../fonts/NotoSerifSC-Black.ttf') format('truetype');
+  src: url('../fonts/web/NotoSerifSC-Black.woff2') format('woff2');
 }
 
 /* ---------- 令牌 ---------- */
