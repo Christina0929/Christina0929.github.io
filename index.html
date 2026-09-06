@@ -402,18 +402,20 @@
     tickUptime();
     setInterval(tickUptime, 1000);
 
-    // post count + last update
+    // post count + last update（最近更新 = 文章最新日期 与 站点改版日 取较新者）
+    const SITE_LAST_UPDATE = '2026-09-06';   // 发版时手动更新这个日期
     fetch('blog.html')
       .then((r) => r.text())
       .then((html) => {
         const dates = [...html.matchAll(/date:\s*'([^']+)'/g)].map((m) => m[1]);
         if (!dates.length) throw new Error('no posts');
         document.getElementById('post-count').textContent = dates.length + ' \u7bc7';
-        document.getElementById('last-update').textContent = dates.sort().pop();
+        const lastPost = dates.sort().pop();
+        document.getElementById('last-update').textContent = (lastPost > SITE_LAST_UPDATE ? lastPost : SITE_LAST_UPDATE);
       })
       .catch(() => {
         document.getElementById('post-count').textContent = '3 \u7bc7';
-        document.getElementById('last-update').textContent = '2026\u5e748\u67085\u65e5';
+        document.getElementById('last-update').textContent = SITE_LAST_UPDATE;
       });
 
   </script>
