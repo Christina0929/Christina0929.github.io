@@ -571,7 +571,8 @@ footer .brand { color: var(--accent-ink); font-weight: 600; }
   color: var(--accent);
 }
 
-/* ---------- PJAX 淡入淡出转场（低开销：只动 opacity/transform，合成器友好不掉帧） ---------- */
-.pjax-item { transition: opacity .2s ease, transform .2s ease; }
-body.pjax-out .pjax-item { opacity: 0 !important; transform: translateY(6px); }
-.pjax-item.pjax-in { opacity: 0 !important; transform: translateY(10px); transition: none; }
+/* ---------- PJAX 滑动切换（低开销：只动 transform，连续运动无空窗） ---------- */
+.pjax-item { transition: transform .16s cubic-bezier(.5, 0, .8, .4); }
+body.pjax-sliding .pjax-item { transform: translateY(-26px); }
+.pjax-item.pjax-enter { transform: translateY(28px) !important; transition: none; }
+.pjax-item.pjax-enter-active { transform: translateY(0) !important; transition: transform .22s cubic-bezier(.16, 1, .3, 1); }
