@@ -35,4 +35,17 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // 阅读版面：文章页自动注入顶部阅读进度条（PJAX 下每次切页实时重查 .post-body）
+  const readBar = document.createElement('div');
+  readBar.className = 'read-progress';
+  document.body.appendChild(readBar);
+  function onReadScroll() {
+    const body = document.querySelector('.post-body');
+    if (!body) { readBar.style.transform = 'scaleX(0)'; return; }
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ')';
+  }
+  window.addEventListener('scroll', onReadScroll, { passive: true });
+  onReadScroll();
 })();
