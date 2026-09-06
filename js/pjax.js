@@ -43,6 +43,18 @@
   async function navigate(url, push) {
     if (navigating) return;          // 并发锁：上一次未完成则忽略
     navigating = true;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 旧内容淡出（只动 opacity/transform，合成器友好；外壳保持稳定不闪）
+    if (!reduce) {
+      const oldNodes = Array.from(document.body.children).filter((el) => {
+        if (el.matches && el.matches(SHELL)) return false;
+        return el.tagName !== 'SCRIPT';
+      });
+      oldNodes.forEach((el) => el.classList.add('pjax-item'));
+      requestAnimationFrame(() => document.body.classList.add('pjax-out'));
+      await new Promise((r) => setTimeout(r, 200));
+    }
     try {
       const res = await fetch(url, { headers: { 'X-Requested-With': 'pjax' } });
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -109,8 +121,19 @@
 
       // 9) 回到顶部（保留原有滚动位置在这不需要）
       window.scrollTo(0, 0);
+
+      // 10) 新内容淡入
+      if (!reduce) {
+        document.body.classList.remove('pjax-out');
+        const inserted = newContent.filter((el) => el.nodeType === 1);
+        inserted.forEach((el) => el.classList.add('pjax-item', 'pjax-in'));
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          inserted.forEach((el) => el.classList.remove('pjax-in'));
+        }));
+      }
     } catch (err) {
       console.warn('[pjax] 切换失败，回退整页跳转:', err);
+      document.body.classList.remove('pjax-out');
       location.href = url;
     } finally {
       navigating = false;            // 无论成功失败都解锁

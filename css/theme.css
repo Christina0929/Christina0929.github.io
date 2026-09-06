@@ -570,3 +570,8 @@ footer .brand { color: var(--accent-ink); font-weight: 600; }
   padding: .05em .14em 0 0;
   color: var(--accent);
 }
+
+/* ---------- PJAX 淡入淡出转场（低开销：只动 opacity/transform，合成器友好不掉帧） ---------- */
+.pjax-item { transition: opacity .2s ease, transform .2s ease; }
+body.pjax-out .pjax-item { opacity: 0 !important; transform: translateY(6px); }
+.pjax-item.pjax-in { opacity: 0 !important; transform: translateY(10px); transition: none; }
