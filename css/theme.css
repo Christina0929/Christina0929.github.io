@@ -550,27 +550,6 @@ footer .brand { color: var(--accent-ink); font-weight: 600; }
   footer { padding: 28px 18px 36px; }
 }
 
-/* ---------- 阅读版面（step4：进度条 + 首字下沉） ---------- */
-.read-progress {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  z-index: 210;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transform-origin: 0 50%;
-  transform: scaleX(0);
-  pointer-events: none;
-}
-.post-body > p:first-of-type::first-letter {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 2.9em;
-  float: left;
-  line-height: .82;
-  padding: .05em .14em 0 0;
-  color: var(--accent);
-}
-
 /* ---------- PJAX 双层色浪转场（链式互动） ---------- */
 .pjax-wipe, .pjax-wipe2 { position: fixed; inset: 0; z-index: 300; pointer-events: none; clip-path: circle(0px at 50% 60%); }
 .pjax-wipe { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
