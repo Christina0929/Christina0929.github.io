@@ -249,6 +249,10 @@
     .bk-links a:hover .go { opacity: .7; transform: translate(0, 0); color: var(--accent-ink); }
     .bk-empty { text-align: center; color: var(--muted); font-size: .9rem; padding: 34px 0 14px; column-span: all; }
 
+    /* 点击涟漪（链式互动） */
+    .click-rip { position: fixed; z-index: 300; border: 1.5px solid var(--accent); border-radius: 50%; pointer-events: none; animation: click-rip .6s ease-out forwards; }
+    @keyframes click-rip { from { width: 0; height: 0; opacity: .5; transform: translate(-50%,-50%); } to { width: 220px; height: 220px; opacity: 0; transform: translate(-50%,-50%); } }
+
     .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,.8,.36,1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
     @media (prefers-reduced-motion: reduce) {
@@ -536,6 +540,16 @@
 
     render();
     searchEl.addEventListener('input', () => render());
+
+    // 点击涟漪（链式互动：每次点击从落点扩散一圈）
+    addEventListener('click', (e) => {
+      const r = document.createElement('div');
+      r.className = 'click-rip';
+      r.style.left = e.clientX + 'px';
+      r.style.top = e.clientY + 'px';
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 650);
+    });
 
     // 页头/搜索卡的入场动画
     const ioTop = new IntersectionObserver((es) => {
