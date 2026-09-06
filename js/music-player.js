@@ -23,11 +23,13 @@ const ALL_TRACKS = [
   const audio = new Audio();
   audio.volume = 0.8;
 
-  // 提前加载：在 DOM 就绪前就开始拉取上次播放的歌曲（服务器已带缓存头 + Range 支持），
-  // 让切页后声音几乎立即续上，避免"加载页面时卡顿一下"。
+  // 提前加载改为懒加载（性能修复）：只在需要时才拉取音频数据。
+  // 旧行为 preload='auto' 会在每次整页加载时预拉上一首整曲(2~9MB)，拖慢页面加载。
+  // 现在只取元数据（几百字节，够续播定位/显示时长），用户点播放时才加载音频本体；
+  // 本体带 1 天缓存头，播放过一次后基本秒开。
   const earlySaved = loadState();
   if (earlySaved && TRACKS[earlySaved.idx]) {
-    audio.preload = 'auto';
+    audio.preload = 'metadata';
     audio.src = TRACKS[earlySaved.idx].src;
   }
 
