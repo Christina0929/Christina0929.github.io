@@ -398,6 +398,7 @@ const server = http.createServer(async (req, res) => {
       if (acceptEncoding.includes('gzip') && COMPRESSIBLE.has(mimeBase) && stat2.size > 256) {
         const headers = {
           'Content-Type': contentType,
+          'Content-Encoding': 'gzip',
           'Accept-Ranges': 'bytes',
           'Cache-Control': cacheControl,
           'Vary': 'Accept-Encoding',
