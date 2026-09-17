@@ -146,22 +146,8 @@
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
+  <script src="js/common.js"></script>
   <script>
-    // 滚动显示动画（交错入场）
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          e.target.style.transitionDelay = Math.min(i * 100, 400) + 'ms';
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: .1 });
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-
-    // 动态年份
-    document.getElementById('year').textContent = new Date().getFullYear();
-
     // 博客文章列表
     // 注意：『正在开发』(post3.html) 永远置底，新文章一律插到它前面（即在它上方加一行）
     const posts = [
@@ -181,7 +167,8 @@
         <span class="go" aria-hidden="true">→</span>
       </article>
     `).join('');
-    articleBox.querySelectorAll('.article').forEach((el) => observer.observe(el));
+    articleBox.querySelectorAll('.article').forEach((el) => el.classList.add('reveal'));
+    if (typeof window.__commonRebind === 'function') window.__commonRebind();
     articleBox.addEventListener('click', (e) => {
       const card = e.target.closest('.article');
       if (!card) return;

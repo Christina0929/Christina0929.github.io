@@ -1,13 +1,17 @@
+/* 晴天小站 · Node.js 静态服务器 + GitHub OAuth + 留言板
+ * 日志: D:\Default Project\对话日志\2026-08-28.txt
+ * 回滚: 用 server.js.bak-YYYYMMDD 恢复 */
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const crypto = require('crypto');
+const zlib = require('zlib');
 
 const PORT = 8765;
 const GITHUB_CLIENT_ID = 'Ov23limaL8KEDjRchSqE';
-const GITHUB_CLIENT_SECRET = '568d9b6f35c5c4f058c90c71cf523039b649e64a';
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || '568d9b6f35c5c4f058c90c71cf523039b649e64a';
 const BASE_URL = 'http://localhost:' + PORT;
 const SITE = path.join(__dirname);
 
@@ -36,11 +40,20 @@ const MIME = {
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
   '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.opus': 'audio/opus',
+  '.webp': 'image/webp',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
   '.ttf': 'font/ttf',
   '.ico': 'image/x-icon',
 };
+
+// 可压缩的 MIME 类型
+const COMPRESSIBLE = new Set([
+  'text/html', 'text/css', 'text/javascript', 'application/javascript',
+  'application/json', 'image/svg+xml', 'text/plain', 'text/xml',
+]);
 
 function parseCookies(req) {
   const cookies = {};
@@ -61,11 +74,19 @@ function jsonReply(res, code, data) {
   res.end(body);
 }
 
-function readBody(req) {
-  return new Promise((resolve) => {
+// 读取 POST body，限制大小防滥用
+function readBody(req, maxBytes) {
+  maxBytes = maxBytes || 10240; // 默认 10KB
+  return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    let total = 0;
+    req.on('data', chunk => {
+      total += chunk.length;
+      if (total > maxBytes) { req.destroy(); reject(new Error('Body too large')); return; }
+      body += chunk;
+    });
     req.on('end', () => resolve(body));
+    req.on('error', reject);
   });
 }
 
@@ -203,7 +224,8 @@ const server = http.createServer(async (req, res) => {
     const cookies = parseCookies(req);
     const sessions = readJSON(SESSIONS_FILE, {});
     const session = sessions[cookies.session];
-    const body = JSON.parse(await readBody(req));
+    let body;
+    try { body = JSON.parse(await readBody(req, 4096)); } catch(e) { return jsonReply(res, 400, { error: 'Invalid body' }); }
 
     const msg = {
       id: Date.now().toString(36) + crypto.randomBytes(4).toString('hex'),
@@ -230,7 +252,8 @@ const server = http.createServer(async (req, res) => {
     const sessions = readJSON(SESSIONS_FILE, {});
     const session = sessions[cookies.session];
     if (!session) return jsonReply(res, 401, { error: 'Not logged in' });
-    const body = JSON.parse(await readBody(req));
+    let body;
+    try { body = JSON.parse(await readBody(req, 1024)); } catch(e) { return jsonReply(res, 400, { error: 'Invalid body' }); }
     const messages = readJSON(MESSAGES_FILE, []);
     const idx = messages.findIndex(m => m.id === body.id && (m.login === session.login || session.login === 'Christina0929'));
     if (idx === -1) return jsonReply(res, 404, { error: 'Not found' });
@@ -251,7 +274,8 @@ const server = http.createServer(async (req, res) => {
     const sessions = readJSON(SESSIONS_FILE, {});
     const session = sessions[cookies.session];
     if (!session) return jsonReply(res, 401, { error: 'Login required' });
-    const body = JSON.parse(await readBody(req));
+    let body;
+    try { body = JSON.parse(await readBody(req, 4096)); } catch(e) { return jsonReply(res, 400, { error: 'Invalid body' }); }
     const link = {
       id: Date.now().toString(36) + crypto.randomBytes(4).toString('hex'),
       site_name: (body.site_name || '').trim().substring(0, 100),
@@ -276,7 +300,8 @@ const server = http.createServer(async (req, res) => {
     const sessions = readJSON(SESSIONS_FILE, {});
     const session = sessions[cookies.session];
     if (!session || session.login !== 'Christina0929') return jsonReply(res, 403, { error: 'Forbidden' });
-    const body = JSON.parse(await readBody(req));
+    let body;
+    try { body = JSON.parse(await readBody(req, 1024)); } catch(e) { return jsonReply(res, 400, { error: 'Invalid body' }); }
     const links = readJSON(LINKS_FILE, []);
     const idx = links.findIndex(l => l.id === body.id);
     if (idx === -1) return jsonReply(res, 404, { error: 'Not found' });
@@ -291,7 +316,8 @@ const server = http.createServer(async (req, res) => {
     const sessions = readJSON(SESSIONS_FILE, {});
     const session = sessions[cookies.session];
     if (!session || session.login !== 'Christina0929') return jsonReply(res, 403, { error: 'Forbidden' });
-    const body = JSON.parse(await readBody(req));
+    let body;
+    try { body = JSON.parse(await readBody(req, 1024)); } catch(e) { return jsonReply(res, 400, { error: 'Invalid body' }); }
     const links = readJSON(LINKS_FILE, []);
     const link = links.find(l => l.id === body.id);
     if (!link) return jsonReply(res, 404, { error: 'Not found' });
@@ -305,61 +331,94 @@ const server = http.createServer(async (req, res) => {
   filePath = path.normalize(filePath);
   if (!filePath.startsWith(SITE)) { res.writeHead(403); return res.end(); }
 
-  try {
-    const stat = fs.statSync(filePath);
+  // 异步读取静态文件（不阻塞事件循环）
+  fs.stat(filePath, (err, stat) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+      return res.end('<h1>404</h1>');
+    }
     if (stat.isDirectory()) filePath = path.join(filePath, 'index.html');
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME[ext] || 'application/octet-stream';
 
-    // === 缓存策略 ===
-    // 音乐：跨页续播时若每次重新下载整首 MP3（数 MB），切换页面必卡顿。
-    // 给音频长缓存 → 第二次起直接从浏览器缓存 seek，秒出声音。
-    // HTML/JS/CSS 不缓存（改完要立刻见效，避免版本混淆）；图片保留 1 小时缓存。
-    const cacheControl =
-      ext === '.mp3' ? 'public, max-age=86400' :
-      ext === '.html' || ext === '.js' || ext === '.css' ? 'no-cache' :
-      'public, max-age=3600';
+    // 重新 stat（可能变成了 index.html）
+    fs.stat(filePath, (err2, stat2) => {
+      if (err2) {
+        res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end('<h1>404</h1>');
+      }
 
-    // === Range 请求支持（音频/视频 seek 必需） ===
-    // 此前服务器忽略 Range 头，导致音乐播放器切页续播时 seek 失败、从 0 重新播放（“CD 重置”）。
-    const range = req.headers.range;
-    if (range) {
-      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
-      if (match) {
-        const size = stat.size;
-        let start = match[1] === '' ? null : parseInt(match[1], 10);
-        let end = match[2] === '' ? null : parseInt(match[2], 10);
-        if (start === null) {
-          // 末尾 N 字节：bytes=-500
-          const suffix = end;
-          start = Math.max(size - suffix, 0);
-          end = size - 1;
-        } else {
-          if (end === null || end >= size) end = size - 1;
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = MIME[ext] || 'application/octet-stream';
+
+      // 缓存策略：
+      // - mp3/ogg/opus: 7 天（音频文件不变）
+      // - thumb 缩略图: 30 天（生成后不变）
+      // - 其他图片: 1 小时
+      // - html/js/css: no-cache（开发期要即时更新）
+      const isThumb = filePath.includes('pic/thumb/');
+      const cacheControl =
+        ext === '.mp3' || ext === '.ogg' || ext === '.opus' ? 'public, max-age=604800' :
+        isThumb ? 'public, max-age=2592000' :
+        ext === '.html' || ext === '.js' || ext === '.css' ? 'no-cache' :
+        'public, max-age=3600';
+
+      // === Range 请求支持（音频 seek 必需）===
+      const range = req.headers.range;
+      if (range) {
+        const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+        if (match) {
+          const size = stat2.size;
+          let start = match[1] === '' ? null : parseInt(match[1], 10);
+          let end = match[2] === '' ? null : parseInt(match[2], 10);
+          if (start === null) {
+            const suffix = end;
+            start = Math.max(size - suffix, 0);
+            end = size - 1;
+          } else {
+            if (end === null || end >= size) end = size - 1;
+          }
+          if (start > end || start >= size) {
+            res.writeHead(416, { 'Content-Range': 'bytes */' + size });
+            return res.end();
+          }
+          const stream = fs.createReadStream(filePath, { start, end });
+          res.writeHead(206, {
+            'Content-Type': contentType,
+            'Accept-Ranges': 'bytes',
+            'Cache-Control': cacheControl,
+            'Content-Length': end - start + 1,
+            'Content-Range': `bytes ${start}-${end}/${size}`,
+          });
+          return stream.pipe(res);
         }
-        if (start > end || start >= size) {
-          res.writeHead(416, { 'Content-Range': 'bytes */' + size });
-          return res.end();
-        }
-        const stream = fs.createReadStream(filePath, { start, end });
-        res.writeHead(206, {
+      }
+
+      // === gzip 压缩 ===
+      const acceptEncoding = req.headers['accept-encoding'] || '';
+      const mimeBase = contentType.split(';')[0].trim();
+      if (acceptEncoding.includes('gzip') && COMPRESSIBLE.has(mimeBase) && stat2.size > 256) {
+        const headers = {
           'Content-Type': contentType,
           'Accept-Ranges': 'bytes',
           'Cache-Control': cacheControl,
-          'Content-Length': end - start + 1,
-          'Content-Range': `bytes ${start}-${end}/${size}`,
-        });
-        return stream.pipe(res);
+          'Vary': 'Accept-Encoding',
+        };
+        res.writeHead(200, headers);
+        const gzip = zlib.createGzip({ level: 6 });
+        fs.createReadStream(filePath).pipe(gzip).pipe(res);
+        return;
       }
-    }
 
-    const content = fs.readFileSync(filePath);
-    res.writeHead(200, { 'Content-Type': contentType, 'Accept-Ranges': 'bytes', 'Cache-Control': cacheControl });
-    res.end(content);
-  } catch(e) {
-    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end('<h1>404</h1>');
-  }
+      // 无压缩，异步读取
+      fs.readFile(filePath, (err3, content) => {
+        if (err3) {
+          res.writeHead(500);
+          return res.end('Server error');
+        }
+        res.writeHead(200, { 'Content-Type': contentType, 'Accept-Ranges': 'bytes', 'Cache-Control': cacheControl });
+        res.end(content);
+      });
+    });
+  });
 });
 
 server.listen(PORT, () => {

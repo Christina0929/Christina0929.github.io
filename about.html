@@ -133,16 +133,7 @@
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
-  <script>
-    // 滚动显示动画
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: .12 });
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-
-    // 动态年份
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script src="js/common.js"></script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
   <script src="js/music-player.js?v=2"></script>

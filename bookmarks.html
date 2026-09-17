@@ -538,18 +538,8 @@
     render();
     searchEl.addEventListener('input', () => render());
 
-    // 页头/搜索卡的入场动画
-    const ioTop = new IntersectionObserver((es) => {
-      es.forEach((e, i) => {
-        if (e.isIntersecting) {
-          e.target.style.transitionDelay = (i * 100) + 'ms';
-          e.target.classList.add('visible');
-          ioTop.unobserve(e.target);
-        }
-      });
-    }, { threshold: .1 });
-    document.querySelectorAll('main > .reveal').forEach((el) => ioTop.observe(el));
   </script>
+  <script src="js/common.js"></script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
   <script src="js/music-player.js?v=2"></script>

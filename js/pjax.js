@@ -95,6 +95,9 @@
       // 6) 执行新页面内联脚本（在内容就位后执行，先于主题/看板娘？保持原顺序处理即可）
       newInlineScripts.forEach(runInlineScript);
 
+      // 7) 重新绑定共享行为（年份/reveal 动画等）
+      if (typeof window.__commonRebind === 'function') window.__commonRebind();
+
       // 7) 更新导航高亮
       const activeLink = doc.querySelector('nav .menu a.active');
       const activeHref = activeLink ? activeLink.getAttribute('href') : null;

@@ -1,20 +1,20 @@
 /* Music Player - shared across all pages */
 (function() {
 const ALL_TRACKS = [
-    { name: 'theme of SSS', artist: 'ANANT-GARDE EYES', src: 'music/01-theme-of-SSS.mp3', art: 'pic/01-theme-of-SSS.jpg' },
-    { name: 'Isekai Phonk', artist: 'Gaiyu', src: 'music/02-Isekai-Phonk.mp3', art: 'pic/02-Isekai-Phonk.jpg' },
-    { name: 'Butterflies', artist: 'Nohidea', src: 'music/03-Butterflies.mp3', art: 'pic/03-Butterflies.jpg' },
-    { name: 'Bumble Bee', artist: 'Xanemusic', src: 'music/04-Bumble-Bee.mp3', art: 'pic/04-Bumble-Bee.jpg' },
-    { name: 'Dear Mr\u300cF\u300d', artist: '\u3064\u3063\u3066\u771f\u591c\u4e2d\u3067\u3044\u308b\u306e\u306b\u3002', src: 'music/05-Dear-Mr-F.mp3', art: 'pic/05-Dear-Mr-F.jpg' },
-    { name: 'Ham', artist: '\u3064\u3063\u3066\u771f\u591c\u4e2d\u3067\u3044\u308b\u306e\u306b\u3002', src: 'music/06-Ham.mp3', art: 'pic/06-Ham.jpg' },
-    { name: 'MILABO', artist: '\u3064\u3063\u3066\u771f\u591c\u4e2d\u3067\u3044\u308b\u306e\u306b\u3002', src: 'music/07-MILABO.mp3', art: 'pic/07-MILABO.jpg' },
-    { name: 'Gate of steiner -piano-', artist: '\u963f\u4fdd\u521a', src: 'music/08-Gate-of-Steiner.mp3', art: 'pic/08-Gate-of-Steiner.jpg' },
-    { name: '\u7231\u6ee1\u6ea2\u7684\u82b1\u675f', artist: 'Superfly', src: 'music/09-\u732e\u4e0a\u7231\u7684\u82b1\u675f.mp3', art: 'pic/09-\u732e\u4e0a\u7231\u7684\u82b1\u675f.jpg' },
-    { name: '\u3044\u3064\u3082\u3053\u306e\u5834\u6240\u3067', artist: '\u5f69\u97f3', src: 'music/12-itsumono-basho.mp3', art: 'pic/12-itsumono-basho.jpg' },
-    { name: '\u6211\u4e0e\u4f60', artist: '\u9e23\u6f6e\u5148\u7ea6\u7535\u53f0 auburn', src: 'music/10-you-and-me.mp3', art: 'pic/10-you-and-me.jpg' },
-    { name: '\u3044\u3064\u3082\u306e\u98a8\u666f\u304b\u3089\u59cb\u307e\u308b\u7269\u8a9e', artist: '\u795e\u524d\u66c1 \u9af5\u7530\u9f8d\u4e00\uff08MONACA)', src: 'music/11-monaca-story.mp3', art: 'pic/11-monaca-story.jpg' },
-    { name: '\u30bd\u30e9\u30a4\u30ed', artist: '\u6c34\u701d\u3044\u306e\u308a', src: 'music/14-sorairo.mp3', art: 'pic/14-sorairo.jpg' },
-    { name: '\u30ac\u30e9\u30b9\u306e\u83ef', artist: '\u6c34\u6a39\u5948\u3005', src: 'music/13-glass-hana.mp3', art: 'pic/13-glass-hana.jpg' },
+    { name: 'theme of SSS', artist: 'ANANT-GARDE EYES', src: 'music/01-theme-of-SSS.mp3', art: 'pic/thumb/01-theme-of-SSS.jpg', artFull: 'pic/01-theme-of-SSS.jpg' },
+    { name: 'Isekai Phonk', artist: 'Gaiyu', src: 'music/02-Isekai-Phonk.mp3', art: 'pic/thumb/02-Isekai-Phonk.jpg', artFull: 'pic/02-Isekai-Phonk.jpg' },
+    { name: 'Butterflies', artist: 'Nohidea', src: 'music/03-Butterflies.mp3', art: 'pic/thumb/03-Butterflies.jpg', artFull: 'pic/03-Butterflies.jpg' },
+    { name: 'Bumble Bee', artist: 'Xanemusic', src: 'music/04-Bumble-Bee.mp3', art: 'pic/thumb/04-Bumble-Bee.jpg', artFull: 'pic/04-Bumble-Bee.jpg' },
+    { name: 'Dear Mr\u300cF\u300d', artist: '\u3064\u3063\u3066\u771f\u591c\u4e2d\u3067\u3044\u308b\u306e\u306b\u3002', src: 'music/05-Dear-Mr-F.mp3', art: 'pic/thumb/05-Dear-Mr-F.jpg', artFull: 'pic/05-Dear-Mr-F.jpg' },
+    { name: 'Ham', artist: '\u3064\u3063\u3066\u771f\u591c\u4e2d\u3067\u3044\u308b\u306e\u306b\u3002', src: 'music/06-Ham.mp3', art: 'pic/thumb/06-Ham.jpg', artFull: 'pic/06-Ham.jpg' },
+    { name: 'MILABO', artist: '\u3064\u3063\u3066\u771f\u591c\u4e2d\u3067\u3044\u308b\u306e\u306b\u3002', src: 'music/07-MILABO.mp3', art: 'pic/thumb/07-MILABO.jpg', artFull: 'pic/07-MILABO.jpg' },
+    { name: 'Gate of steiner -piano-', artist: '\u963f\u4fdd\u521a', src: 'music/08-Gate-of-Steiner.mp3', art: 'pic/08-Gate-of-Steiner.jpg', artFull: 'pic/08-Gate-of-Steiner.jpg' },
+    { name: '\u7231\u6ee1\u6ea2\u7684\u82b1\u675f', artist: 'Superfly', src: 'music/09-\u732e\u4e0a\u7231\u7684\u82b1\u675f.mp3', art: 'pic/thumb/09-\u732e\u4e0a\u7231\u7684\u82b1\u675f.jpg', artFull: 'pic/09-\u732e\u4e0a\u7231\u7684\u82b1\u675f.jpg' },
+    { name: '\u3044\u3064\u3082\u3053\u306e\u5834\u6240\u3067', artist: '\u5f69\u97f3', src: 'music/12-itsumono-basho.mp3', art: 'pic/thumb/12-itsumono-basho.jpg', artFull: 'pic/12-itsumono-basho.jpg' },
+    { name: '\u6211\u4e0e\u4f60', artist: '\u9e23\u6f6e\u5148\u7ea6\u7535\u53f0 auburn', src: 'music/10-you-and-me.mp3', art: 'pic/thumb/10-you-and-me.jpg', artFull: 'pic/10-you-and-me.jpg' },
+    { name: '\u3044\u3064\u3082\u306e\u98a8\u666f\u304b\u3089\u59cb\u307e\u308b\u7269\u8a9e', artist: '\u795e\u524d\u66c1 \u9af5\u7530\u9f8d\u4e00\uff08MONACA)', src: 'music/11-monaca-story.mp3', art: 'pic/thumb/11-monaca-story.jpg', artFull: 'pic/11-monaca-story.jpg' },
+    { name: '\u30bd\u30e9\u30a4\u30ed', artist: '\u6c34\u701d\u3044\u306e\u308a', src: 'music/14-sorairo.mp3', art: 'pic/thumb/14-sorairo.jpg', artFull: 'pic/14-sorairo.jpg' },
+    { name: '\u30ac\u30e9\u30b9\u306e\u83ef', artist: '\u6c34\u6a39\u5948\u3005', src: 'music/13-glass-hana.mp3', art: 'pic/thumb/13-glass-hana.jpg', artFull: 'pic/13-glass-hana.jpg' },
   ];
 
   const TRACKS = ALL_TRACKS;

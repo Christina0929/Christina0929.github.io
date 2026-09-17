@@ -276,12 +276,8 @@
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
+  <script src="js/common.js"></script>
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-    const io = new IntersectionObserver((es) => {
-      es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-    }, { threshold: .1 });
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
     // 上一篇/下一篇翻书：短停留才翻面，防快速划过时连续翻转
     document.querySelectorAll('.post-nav a').forEach((a) => {
       let t = null;
