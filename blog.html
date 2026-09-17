@@ -14,79 +14,71 @@
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/music-player.css?v=2">
   <style data-page-css>
-    /* ===== 博客页专属：文章卡片列表 ===== */
-    .articles { display: flex; flex-direction: column; gap: 16px; }
+    /* ===== 博客页专属：编辑式文章索引（step3） ===== */
+    .articles { border-top: 1px solid var(--line); }
     .article {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
-      align-items: center;
-      gap: 16px;
-      padding: 20px 24px;
-      border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow-sm);
+      grid-template-columns: 3.6rem minmax(0, 1fr) auto auto;
+      align-items: baseline;
+      gap: 1.3rem;
+      padding: 1.05rem .5rem;
+      border-bottom: 1px solid var(--line);
       cursor: pointer;
-      transition: transform .25s, box-shadow .25s, border-color .25s;
+      transition: background .3s, padding .3s;
     }
     .article:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
+      padding-left: 1.1rem;
+    }
+    .article .no {
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .7rem;
+      letter-spacing: .12em;
+      color: var(--accent);
     }
     .article .tag {
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .08em;
+      display: inline-block;
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .58rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
       color: var(--accent-ink);
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, transparent), color-mix(in srgb, var(--accent-2) 15%, transparent));
-      border-radius: 999px;
-      padding: 4px 13px;
-      white-space: nowrap;
+      margin-bottom: 4px;
     }
     .article .a-main { min-width: 0; }
     .article .a-main h3 {
-      font-size: 1.08rem;
-      font-weight: 700;
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+      font-weight: 800;
       letter-spacing: .01em;
-      margin-bottom: 3px;
-      transition: color .2s;
+      line-height: 1.25;
+      margin-bottom: 2px;
+      transition: color .3s, transform .45s cubic-bezier(.16,1,.3,1);
     }
-    .article:hover .a-main h3 { color: var(--accent-ink); }
+    .article:hover .a-main h3 { color: var(--accent-ink); transform: translateX(6px); }
     .article .a-sum {
-      font-size: .86rem;
+      font-size: .84rem;
       color: var(--muted);
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .article .date { font-size: .8rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .article .date { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); font-size: .66rem; color: var(--muted); white-space: nowrap; letter-spacing: .1em; }
     .article .go {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .85rem;
       color: var(--muted);
-      font-size: .95rem;
-      transition: background .25s, color .25s, transform .25s;
+      transition: color .3s, transform .35s;
     }
-    .article:hover .go {
-      background: linear-gradient(135deg, var(--accent), var(--accent-ink));
-      color: #fff;
-      transform: rotate(-45deg);
-    }
+    .article:hover .go { color: var(--accent-ink); transform: translate(3px, -3px); }
 
-    .article.reveal { opacity: 0; transform: translateY(26px); }
+    .article.reveal { opacity: 0; transform: translateY(22px); }
     .article.reveal.visible { opacity: 1; transform: translateY(0); }
-    .article.reveal.visible:hover { transform: translateY(-4px); }
 
     @media (max-width: 640px) {
-      .article { grid-template-columns: minmax(0, 1fr) auto; padding: 16px 18px; }
-      .article .tag { justify-self: start; grid-column: 1 / -1; }
+      .article { grid-template-columns: minmax(0, 1fr) auto; padding: .9rem .3rem; }
+      .article .no { display: none; }
       .article .date { display: none; }
-      .article .go { width: 30px; height: 30px; }
     }
   </style>
 </head>
@@ -173,14 +165,15 @@
     // 博客文章列表
     // 注意：『正在开发』(post3.html) 永远置底，新文章一律插到它前面（即在它上方加一行）
     const posts = [
-      { tag: '新文章', date: '2026年8月5日', title: "开站大吉 '◡'", href: 'post1.html', sum: '重生之我是HTML高手。' },
-      { tag: '最新留言', date: '2026年8月5日', title: '正在开发', href: 'post3.html', sum: '仍在test中，敬请期待…' }
+      { tag: '新文章', date: '2026-08-05', title: "开站大吉 '◡'", href: 'post1.html', sum: '重生之我是HTML高手。' },
+      { tag: '最新留言', date: '2026-08-05', title: '正在开发', href: 'post3.html', sum: '仍在test中，敬请期待…' }
     ];
     const articleBox = document.getElementById('articles');
     articleBox.innerHTML = posts.map((p, i) => `
       <article class="article reveal" data-i="${i}" style="transition-delay:${i * 100}ms">
-        <span class="tag">${p.tag}</span>
+        <span class="no">${String(i + 1).padStart(3, '0')}</span>
         <div class="a-main">
+          <span class="tag">${p.tag}</span>
           <h3>${p.title}</h3>
           <p class="a-sum">${p.sum}</p>
         </div>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live2D 查看 · 凉宫春日 & 长门有希</title>
+<!-- 引擎: 本地 Cubism Core + CDN PIXI6/pixi-live2d-display(仅本查看页用,与站点挂件无关)
+     注意: 必须单 PIXI.Application 单 WebGL 上下文 —— 框架 ShaderManager 是全局单例,
+     多上下文会导致先渲染的模型用错 gl 而隐身 (v0.4.0 已知问题) -->
+<script src="live2d/lib/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; background: #10131c; overflow: hidden;
+    font-family: system-ui, "Microsoft YaHei"; color: #aab; }
+  #stage { position: fixed; inset: 0; }
+  canvas { display: block; }
+  .name {
+    position: absolute; top: 18px; text-align: center; width: 50%;
+    font-size: 20px; letter-spacing: 2px; color: #e8e2d5; text-shadow: 0 2px 8px rgba(0,0,0,.6);
+    pointer-events: none;
+  }
+  .name .sub { font-size: 12px; color: #778; margin-top: 6px; letter-spacing: 0; }
+  #name-l { left: 0; } #name-r { right: 0; }
+  #divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #232838; }
+  #status {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: #8892a8; background: rgba(20,24,36,.8);
+    padding: 6px 16px; border-radius: 14px; border: 1px solid #232838; z-index: 5;
+  }
+  .err { color: #e88; font: 14px/1.7 monospace; white-space: pre-wrap; max-width: 90%; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="name" id="name-l">凉宫春日<div class="sub">点击人物播放动作</div></div>
+<div class="name" id="name-r">长门有希<div class="sub">点击人物播放动作</div></div>
+<div id="divider"></div>
+<div id="status">加载中…</div>
+<script>
+// 调试钩子: 收集报错和模型实例,便于远程诊断
+window.__errs = []; window.__models = []; window.__apps = [];
+addEventListener('error', e => window.__errs.push('ERR: ' + e.message));
+addEventListener('unhandledrejection', e => window.__errs.push('REJ: ' + (e.reason && e.reason.message || e.reason)));
+
+const status = document.getElementById('status');
+function note(s){ status.textContent = s; }
+
+(async () => {
+  try {
+    note('正在加载模型…');
+    // 单画布单上下文: 两个模型共存于同一场景
+    const app = new PIXI.Application({
+      backgroundAlpha: 0, autoDensity: true, resolution: devicePixelRatio,
+      resizeTo: window,
+    });
+    document.getElementById('stage').appendChild(app.view);
+    window.__apps.push(app);
+
+    const defs = [
+      { url: 'live2d/model/haruhi/model.model3.json', label: '凉宫春日', cx: 0.25 },
+      { url: 'live2d/model/nagato/model.model3.json', label: '长门有希', cx: 0.75 },
+    ];
+
+    const layout = (model, cx) => {
+      // 等比缩放到半屏高,水平以 cx 份额居中,垂直微降(模型原点在头顶)
+      const w = model.internalModel.originalWidth, h = model.internalModel.originalHeight;
+      const s = Math.min(app.screen.width / 2 / w, app.screen.height / h) * 1.15;
+      model.scale.set(s);
+      model.anchor.set(0.5, 0.5);
+      model.position.set(app.screen.width * cx, app.screen.height / 2 + h * s * 0.08);
+    };
+
+    for (const { url, label, cx } of defs) {
+      const model = await PIXI.live2d.Live2DModel.from(url, {
+        autoInteract: true,       // 点击 = 播放 Tap 动作
+        autoUpdate: true,         // 呼吸/物理/眨眼自动演算
+        motionPreload: 'IDLE',    // 只预载 Idle 组
+      });
+      app.stage.addChild(model);
+      layout(model, cx);
+      addEventListener('resize', () => layout(model, cx));
+
+      // 动作事件在 motionManager 上(model 层 v0.4.0 不转发 motion 事件)
+      const mm = model.internalModel.motionManager;
+      mm.on('motionStart', (g, i) => note(`${label} 动作: ${g} #${i}`));
+      model.on('hit', areas => note(`${label} 命中区域: ${areas.join(', ') || '身体'}`));
+
+      window.__models.push({ label, model });
+    }
+    note('就绪 —— 摇晃/眨眼/呼吸自动播放，点击人物触发动作');
+  } catch (e) {
+    note('');
+    status.innerHTML = '<span class="err">加载失败:\n' + (e && e.message || e) +
+      '\n\n检查: 1) 本地服务是否在运行 (localhost)  2) CDN 是否可达  3) 控制台详细报错</span>';
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>

@@ -109,6 +109,7 @@
 
       // 9) 回到顶部（保留原有滚动位置在这不需要）
       window.scrollTo(0, 0);
+
     } catch (err) {
       console.warn('[pjax] 切换失败，回退整页跳转:', err);
       location.href = url;
