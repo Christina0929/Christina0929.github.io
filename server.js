@@ -1,5 +1,6 @@
 ﻿/* 晴天小站 Node.js 服务器 - 安全+稳定+性能版
- * 日志: D:\Default Project\对话日志\2026-08-28.txt
+ * 修改 2026-09-18: 移除硬编码OAuth secret、不再存储用户access_token、writeJSON改原子写入
+ * 日志: D:\Default Project\对话日志\2026-09-18.txt
  * 回滚: git checkout HEAD~1 server.js */
 const http = require('http');
 const https = require('https');
@@ -11,7 +12,7 @@ const zlib = require('zlib');
 
 const PORT = process.env.PORT || 8765;
 const GITHUB_CLIENT_ID = 'Ov23limaL8KEDjRchSqE';
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || '568d9b6f35c5c4f058c90c71cf523039b649e64a';
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET; // 只从环境变量读，硬编码secret已泄露必须重置
 const BASE_URL = 'http://localhost:' + PORT;
 const SITE = path.join(__dirname);
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000;
@@ -25,7 +26,7 @@ const LINKS_FILE = path.join(DATA_DIR, 'links.json');
 const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
 
 function readJSON(f, fb) { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch(e) { return fb; } }
-function writeJSON(f, d) { try { fs.writeFileSync(f, JSON.stringify(d, null, 2), 'utf8'); } catch(e) { console.error('writeJSON:', e); } }
+function writeJSON(f, d) { try { const tmp = f + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(d, null, 2), 'utf8'); fs.renameSync(tmp, f); } catch(e) { console.error('writeJSON:', e); } } // tmp+rename原子写，避免并发写坏json
 
 const MIME = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.gif':'image/gif', '.svg':'image/svg+xml', '.mp3':'audio/mpeg', '.ogg':'audio/ogg', '.opus':'audio/opus', '.webp':'image/webp', '.woff2':'font/woff2', '.woff':'font/woff', '.ttf':'font/ttf', '.ico':'image/x-icon' };
 const COMPRESSIBLE = new Set(['text/html','text/css','text/javascript','application/javascript','application/json','image/svg+xml','text/plain','text/xml']);
@@ -138,7 +139,7 @@ async function handle(req, res) {
       if (!tr.access_token) { res.writeHead(302, { Location: '/contact.html?login=failed' }); return res.end(); }
       const ur = await ghReq({ hostname:'api.github.com', path:'/user', method:'GET', headers:{'Authorization':'token '+tr.access_token,'User-Agent':'sunny-blog','Accept':'application/json'} });
       const tk = genToken();
-      sess[tk] = { login:ur.login, name:(ur.name||ur.login).substring(0,100), avatar:(ur.avatar_url||'').substring(0,500), token:tr.access_token, created:Date.now() };
+      sess[tk] = { login:ur.login, name:(ur.name||ur.login).substring(0,100), avatar:(ur.avatar_url||'').substring(0,500), created:Date.now() }; // 不存access_token，第三方凭证不落盘
       delete sess['pending_'+state];
       cleanSessions(sess);
       writeJSON(SESSIONS_FILE, sess);
@@ -261,6 +262,7 @@ process.on('unhandledRejection', e => console.error('[WARN]', e));
 setInterval(() => { const s = readJSON(SESSIONS_FILE, {}); if (cleanSessions(s)) writeJSON(SESSIONS_FILE, s); }, 3600000);
 
 server.listen(PORT, () => {
+  if (!GITHUB_CLIENT_SECRET) console.warn('[WARN] 未设置 GITHUB_CLIENT_SECRET 环境变量，GitHub 登录将不可用');
   console.log(`Server: ${BASE_URL}`);
   console.log('OAuth callback: ' + BASE_URL + '/api/callback');
 });

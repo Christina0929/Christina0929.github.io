@@ -11,6 +11,7 @@ _tmp_*.png
 # 日志与归档不部署
 对话日志/
 _archive/
+server.log
 
 # 运行数据与依赖（含 token/留言，禁止发布）
 data/
@@ -18,4 +19,5 @@ node_modules/
 package-lock.json
 
 # 开发过程备份
+*.bak
 *.bak-2*
