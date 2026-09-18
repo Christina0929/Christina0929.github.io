@@ -24,6 +24,10 @@
 .music-card.expanded {
   transform: translateX(0);
 }
+/* 收起态 hover 微探出 */
+.music-card:not(.expanded):hover {
+  transform: translateX(calc(100% - 42px));
+}
 .music-card-close {
   position: absolute;
   top: 8px; right: 10px;
@@ -38,7 +42,7 @@
   transition: all .25s ease;
   opacity: 0; pointer-events: none;
 }
-.music-card.expanded .music-card-close { opacity: 1; pointer-events: auto; }
+.music-card.expanded .music-card-close { opacity: 1; pointer-events: auto; transition: opacity .3s ease .2s, transform .3s cubic-bezier(.22,.8,.36,1) .2s; transform: scale(1); }
 .music-card-close:hover { border-color: var(--accent); color: var(--accent-ink); transform: scale(1.1); }
 .mc-disc {
   width: 88px; height: 88px;
@@ -148,14 +152,29 @@
   opacity: 0; pointer-events: none;
   transition: opacity .15s ease;
 }
-.music-card.expanded .mc-disc,
-.music-card.expanded .mc-info,
-.music-card.expanded .mc-controls,
-.music-card.expanded .mc-progress,
-.music-card.expanded .mc-time,
-.music-card.expanded .mc-volume {
+.music-card.expanded .mc-disc {
+  opacity: 1; pointer-events: auto;
+  transition: opacity .3s ease .05s, transform .4s cubic-bezier(.22,.8,.36,1) .05s;
+}
+.music-card.expanded .mc-info {
+  opacity: 1; pointer-events: auto;
+  transition: opacity .3s ease .1s;
+}
+.music-card.expanded .mc-controls {
   opacity: 1; pointer-events: auto;
   transition: opacity .3s ease .15s;
+}
+.music-card.expanded .mc-progress {
+  opacity: 1; pointer-events: auto;
+  transition: opacity .3s ease .2s;
+}
+.music-card.expanded .mc-time {
+  opacity: 1; pointer-events: auto;
+  transition: opacity .3s ease .22s;
+}
+.music-card.expanded .mc-volume {
+  opacity: 1; pointer-events: auto;
+  transition: opacity .3s ease .25s;
 }
 .music-card:not(.expanded)::after {
   content: '\266B';
