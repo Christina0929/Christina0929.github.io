@@ -3,23 +3,26 @@
 (() => {
   'use strict';
 
-  // 年份 footer
+  // 防重复绑定标记
+  let toTopBound = false;
+
   function bindYear() {
     const el = document.getElementById('year');
     if (el) el.textContent = new Date().getFullYear();
   }
 
-  // 回到顶部
   function bindToTop() {
+    if (toTopBound) return; // 已绑定过，不重复添加 scroll 监听
+    toTopBound = true;
     const btn = document.getElementById('to-top');
     if (!btn) return;
     window.addEventListener('scroll', () => {
-      btn.classList.toggle('show', window.scrollY > 400);
+      const b = document.getElementById('to-top');
+      if (b) b.classList.toggle('show', window.scrollY > 400);
     }, { passive: true });
     btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 
-  // 滚动 reveal（统一版本，带交错延迟，上限 400ms）
   function bindReveal() {
     const els = document.querySelectorAll('.reveal:not(.visible)');
     if (!els.length) return;
@@ -35,7 +38,6 @@
     els.forEach(el => io.observe(el));
   }
 
-  // 首次加载
   function init() {
     bindYear();
     bindToTop();
@@ -48,7 +50,6 @@
     init();
   }
 
-  // PJAX 切页后重新绑定（pjax.js 在内容替换后调用）
   window.__commonRebind = function() {
     bindYear();
     bindReveal();
