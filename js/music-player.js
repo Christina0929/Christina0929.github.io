@@ -1,4 +1,7 @@
-/* Music Player - shared across all pages */
+/* Music Player - shared across all pages
+ * 改 2026-09-19: 手机端补上真正的收起入口（关闭按钮 + 点卡片空白收起）
+ * 日志: D:\Default Project\对话日志\2026-09-19.txt
+ * 回滚: git checkout HEAD~1 js/music-player.js */
 (function() {
 const ALL_TRACKS = [
     { name: 'theme of SSS', artist: 'ANANT-GARDE EYES', src: 'music/01-theme-of-SSS.mp3', art: 'pic/thumb/01-theme-of-SSS.jpg', artFull: 'pic/01-theme-of-SSS.jpg' },
@@ -113,13 +116,14 @@ const ALL_TRACKS = [
     document.addEventListener('click', (e) => {
       if (e.target.id === 'hero-ava' || (e.target.closest && e.target.closest('#hero-ava'))) openCard();
     });
+    // 收起入口：① 右上角关闭按钮 ② 点卡片空白/歌名（手机端子元素铺满，只点卡片本体永远收不起来）
+    const closeBtn = musicCard.querySelector('.music-card-close');
+    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeCard(); });
     musicCard.addEventListener('click', (e) => {
       if (suppressClick) return;
-      if (!musicCard.classList.contains('expanded')) {
-        openCard();
-      } else if (e.target === musicCard) {
-        closeCard();
-      }
+      if (!musicCard.classList.contains('expanded')) { openCard(); return; }
+      if (e.target.closest && e.target.closest('button, input, .mc-disc, .mc-progress, .mc-volume')) return;
+      closeCard();
     });
 
     /* 沿右边缘垂直拖动卡片（只纵向、贴右） */

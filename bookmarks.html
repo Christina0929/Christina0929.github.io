@@ -11,8 +11,8 @@
   <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
   <title>书签 · 晴天小站</title>
   <link rel="icon" href="sun-avatar-sm.png" type="image/png">
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/music-player.css?v=2">
+  <link rel="stylesheet" href="css/theme.css?v=3">
+  <link rel="stylesheet" href="css/music-player.css?v=3">
   <style data-page-css>
     /* 主体（书签页加宽，目录型页面需要密度） */
     main {
@@ -91,7 +91,7 @@
       padding: 16px 18px;
       margin-bottom: 22px;
       position: sticky;
-      top: 78px;
+      top: var(--nav-h, 78px);
       z-index: 50;
       transition: box-shadow .3s;
     }
@@ -261,9 +261,29 @@
     @media (max-width: 640px) {
       main { padding: 24px 14px 40px; }
       .page-head { padding: 28px 20px 22px; border-radius: 18px; }
-      .bk-tool { padding: 12px 12px; border-radius: 16px; top: 70px; }
-      .tool-row { flex-direction: column; align-items: stretch; }
-      .bk-count { order: -1; }
+      .bk-tool { padding: 10px 12px; border-radius: 16px; top: var(--nav-h, 70px); }
+      .tool-row { flex-direction: column; align-items: stretch; gap: 8px; }
+      .bk-count { order: -1; font-size: .74rem; }
+      /* 19 个分类胶囊竖排会吃掉半屏（390px 下实测 352px 高）→ 改成单行横滑 */
+      .bk-filter {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 6px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+        mask-image: linear-gradient(90deg, #000 88%, transparent);
+      }
+      .bk-filter::-webkit-scrollbar { display: none; }
+      .bk-filter button { flex-shrink: 0; padding: 6px 12px; font-size: .8rem; }
+      /* 往下读时把分类行收起来，只留搜索框；往回滚再露出来 */
+      .bk-tool .tool-row {
+        max-height: 64px;
+        opacity: 1;
+        overflow: hidden;
+        transition: max-height .3s cubic-bezier(.22,.8,.36,1), opacity .25s, margin-top .3s;
+      }
+      .bk-tool.condensed .tool-row { max-height: 0; opacity: 0; margin-top: 0; }
       .bk-links { grid-template-columns: 1fr 1fr; }
       .bk-group { padding: 10px 2px 6px; }
       .bk-group .ico { font-size: .95rem; }
@@ -320,6 +340,7 @@
   </div>
 
     <div class="music-card collapsed" id="music-card">
+      <button class="music-card-close" id="mc-close" aria-label="收起播放器" title="收起">&#10005;</button>
     <div class="mc-disc" id="mc-disc">
       <div class="mc-ring"></div>
       <div class="mc-center"><img src="sun-avatar-sm.png" alt=""></div>
@@ -480,6 +501,8 @@
       btn.addEventListener('click', () => {
         activeFolder = btn.dataset.f || null;
         filterEl.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+        // 单行横滑后，点中的分类要自己滚进可视范围
+        if (btn.scrollIntoView) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         render();
       });
     });
@@ -538,11 +561,35 @@
     render();
     searchEl.addEventListener('input', () => render());
 
+    // 下滑收起分类行、上滑露出（仅手机）。window 监听只挂一次，PJAX 切页后重新找元素。
+    if (!window.__bkCondenseBound) {
+      window.__bkCondenseBound = true;
+      let tool = null, lastY = window.scrollY;
+      const getTool = () => {
+        if (!tool || !tool.isConnected) tool = document.querySelector('.bk-tool');
+        return tool;
+      };
+      window.addEventListener('scroll', () => {
+        const t = getTool();
+        if (!t) return;
+        const y = window.scrollY;
+        const ae = document.activeElement;
+        if (window.innerWidth > 640 || y < 140 || (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA'))) {
+          t.classList.remove('condensed');
+        } else if (y > lastY + 6) {
+          t.classList.add('condensed');
+        } else if (y < lastY - 6) {
+          t.classList.remove('condensed');
+        }
+        lastY = y;
+      }, { passive: true });
+    }
+
   </script>
-  <script src="js/common.js"></script>
+  <script src="js/common.js?v=3"></script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
-  <script src="js/music-player.js?v=2"></script>
+  <script src="js/music-player.js?v=3"></script>
   <script src="js/changelog.js"></script>
   <script src="js/scrollfx.js" defer></script>
   <script src="js/theme-switcher.js" defer></script>

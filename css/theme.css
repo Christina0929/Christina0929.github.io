@@ -73,6 +73,8 @@
   --shadow-sm: 0 2px 10px rgba(23, 108, 120, .08);
   --shadow-md: 0 8px 28px rgba(23, 108, 120, .13);
   --radius: 20px;
+  /* 导航栏实际高度：common.js 启动/切页/resize 时量出来写回，页内 sticky 元素靠它对齐 */
+  --nav-h: 72px;
   --nav-bg: rgba(255, 255, 255, .72);
   --panel-bg: rgba(255, 255, 255, .80);
   --blob1: #bfe6f5;
@@ -156,6 +158,8 @@ body {
 a { text-decoration: none; color: inherit; }
 ::selection { background: var(--accent); color: #fff; }
 img { max-width: 100%; }
+/* 触屏点按不再整块闪灰（音乐卡片/工具栏那种类选中变色就是它） */
+a, button, input, label, summary { -webkit-tap-highlight-color: transparent; }
 
 /* 固定背景层（伪元素实现，规避 background-attachment:fixed 的分色 bug） */
 body::before {
@@ -186,13 +190,20 @@ html::before { width: 420px; height: 420px; background: var(--blob1); top: -120p
 }
 
 /* ---------- 顶部导航：全宽简洁 ---------- */
-nav {
+/* 只作用于页面顶部那条：面包屑 .crumbs 和翻页 .post-nav 也是 <nav>，
+   以前被一起 sticky + 加了底色，会盖在主导航上 */
+body > nav {
   position: sticky;
   top: 0;
   z-index: 100;
   width: 100%;
   padding: 0;
-  transition: top .3s;
+  /* 2026-09-19: 原先导航完全透明，滚动时正文从菜单底下穿过看不清 */
+  background: var(--nav-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: top .3s, border-color .3s;
 }
 nav .inner {
   display: flex;
@@ -252,8 +263,8 @@ nav .menu a.active {
   transform: scaleX(0);
   pointer-events: none;
 }
-nav.scrolled { top: 0; }
-nav.scrolled .inner { padding-top: 12px; padding-bottom: 12px; }
+body > nav.scrolled { top: 0; border-bottom-color: var(--line); }
+body > nav.scrolled .inner { padding-top: 12px; padding-bottom: 12px; }
 
 /* ---------- 日志时间线 ---------- */
 .cl-toggle {
@@ -264,6 +275,9 @@ nav.scrolled .inner { padding-top: 12px; padding-bottom: 12px; }
   background: none;
   border: none;
   cursor: pointer;
+  /* 手机上这个按钮会被挤成两行，把整条导航撑到 90px 高 */
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: color .2s, transform .2s;
 }
 .cl-toggle:hover { color: var(--text); transform: translateY(-3px) scale(1.05); }
@@ -538,15 +552,17 @@ footer .brand { color: var(--accent-ink); font-weight: 600; }
 
 /* ---------- 移动端 ---------- */
 @media (max-width: 640px) {
-  nav .inner { padding: 12px 16px; }
-  nav .logo { font-size: 1.2rem; }
-  nav .menu a { padding: 6px 12px; font-size: 1rem; }
+  nav .inner { padding: 10px 14px; }
+  nav .logo { font-size: 1.15rem; }
+  nav .menu a { padding: 5px 11px; font-size: .98rem; }
+  .cl-toggle { padding: 5px 11px; font-size: .98rem; }
   .container { padding: 24px 14px 40px; }
   .page-head { padding: 28px 20px 24px; border-radius: 18px; }
   .card, .form-card, .about-card, .side-card { border-radius: 16px; }
-  .to-top { right: 18px; bottom: 78px; width: 42px; height: 42px; }
-  .theme-fab { right: 18px; bottom: 78px; width: 42px; height: 42px; }
-  .theme-panel { right: 18px; bottom: 130px; }
+  /* 两个圆钮原先同在 right:18/bottom:78 完全叠在一起，改成并排 + 避开底部播放条和安全区 */
+  .to-top { right: 16px; bottom: calc(64px + env(safe-area-inset-bottom)); width: 42px; height: 42px; }
+  .theme-fab { right: 66px; bottom: calc(64px + env(safe-area-inset-bottom)); width: 42px; height: 42px; }
+  .theme-panel { right: 14px; left: auto; bottom: calc(116px + env(safe-area-inset-bottom)); width: 216px; }
   footer { padding: 28px 18px 36px; }
 }
 

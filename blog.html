@@ -11,8 +11,8 @@
   <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
   <title>博客 · 晴天小站</title>
   <link rel="icon" href="sun-avatar-sm.png" type="image/png">
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/music-player.css?v=2">
+  <link rel="stylesheet" href="css/theme.css?v=3">
+  <link rel="stylesheet" href="css/music-player.css?v=3">
   <style data-page-css>
     /* ===== 博客页专属：编辑式文章索引（step3） ===== */
     .articles { border-top: 1px solid var(--line); }
@@ -122,6 +122,7 @@
   </div>
 
   <div class="music-card collapsed" id="music-card">
+    <button class="music-card-close" id="mc-close" aria-label="收起播放器" title="收起">&#10005;</button>
     <div class="mc-disc" id="mc-disc">
       <div class="mc-ring"></div>
       <div class="mc-center"><img src="sun-avatar-sm.png" alt=""></div>
@@ -146,7 +147,7 @@
 
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
-  <script src="js/common.js"></script>
+  <script src="js/common.js?v=3"></script>
   <script>
     // 博客文章列表
     // 注意：『正在开发』(post3.html) 永远置底，新文章一律插到它前面（即在它上方加一行）
@@ -180,7 +181,7 @@
   </script>
   <!-- Live2D 看板娘 -->
   <script type="module" src="live2d/kandao.js"></script>
-  <script src="js/music-player.js?v=2"></script>
+  <script src="js/music-player.js?v=3"></script>
   <script src="js/changelog.js"></script>
   <script src="js/scrollfx.js" defer></script>
   <script src="js/theme-switcher.js" defer></script>
