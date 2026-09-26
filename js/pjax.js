@@ -29,11 +29,25 @@
 
   // 页面内联脚本执行：new Function 包裹 → 变量只在函数作用域，避免多次切页时
   // 同名 const/let 与全局冲突；document/window/fetch 等仍可访问。
+  // 性能修复: PJAX 每次切页都重跑内联脚本，页面里的 window scroll 监听会一层层叠加
+  // （浏览越久越卡）。这里给 window.addEventListener 装一次性去重护栏：
+  // 同类型 window 级监听若已存在（按 存储键:类型:函数源码 去重）则跳过注册。
   function runInlineScript(el) {
     const code = el.textContent || '';
     if (!code.trim()) return;
     try {
-      new Function(code)();
+      const wrapped =
+        '(function(){' +
+        'if(!window.__pjaxAelPatched){' +
+        'var __orig=window.addEventListener.bind(window);' +
+        'window.__pjaxAelKeys=window.__pjaxAelKeys||{};' +
+        'window.addEventListener=function(type,fn,opts){' +
+        'try{if((type==="scroll"||type==="resize")&&this===window&&typeof fn==="function"){' +
+        'var k=type+":"+fn.toString().slice(0,120);' +
+        'if(window.__pjaxAelKeys[k])return;window.__pjaxAelKeys[k]=1;}}catch(e){}' +
+        'return __orig(type,fn,opts);};' +
+        'window.__pjaxAelPatched=1;}})();' + code;
+      new Function(wrapped)();
     } catch (err) {
       console.warn('[pjax] 页面内联脚本执行失败:', err);
     }
