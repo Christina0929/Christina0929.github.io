@@ -24,23 +24,25 @@
     }
     .l-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
 
-    /* 文章头：头像在左，标题在右 */
+    /* 文章头：居中竖排（标题为主角，头像作落款） */
     .post-head {
+      text-align: center;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 22px;
-      text-align: left;
+      gap: 6px;
     }
-    .post-head-main { min-width: 0; flex: 1; }
+    .post-head-main { min-width: 0; }
     .post-ava {
-      width: 72px;
-      height: 72px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
       border: 2px solid var(--card);
       box-shadow: 0 0 0 1px var(--line-strong);
       animation: ava-glow 3.2s ease-in-out infinite;
+      order: -1;
     }
     .post-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
     @keyframes ava-glow {
@@ -55,34 +57,47 @@
     }
     .post-tag {
       display: inline-block;
-      font-size: .74rem;
-      letter-spacing: .06em;
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .68rem;
+      letter-spacing: .14em;
       color: var(--accent-ink);
-      border: 1px solid var(--line-strong);
+      border: none;
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
       border-radius: 999px;
-      padding: 3px 13px;
-      margin-bottom: 16px;
+      padding: 3px 14px;
+      margin-bottom: 14px;
     }
     .post-head h1 {
       font-family: var(--font-display);
-      font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+      font-size: clamp(1.7rem, 4vw, 2.3rem);
       font-weight: 900;
-      letter-spacing: -.01em;
-      line-height: 1.25;
-      margin-bottom: 12px;
+      letter-spacing: .01em;
+      line-height: 1.28;
+      margin-bottom: 10px;
     }
-    .post-meta { font-family: var(--font-num); color: var(--muted); font-size: .86rem; }
+    .post-meta { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); color: var(--muted); font-size: .7rem; letter-spacing: .1em; }
     .post-meta .sep { margin: 0 8px; color: var(--line-strong); }
 
-    .post-body { font-size: 1rem; color: var(--muted); margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
+    .post-body {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 26px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 2;
+    }
     .post-body p { margin-bottom: 18px; }
+    .post-body > p:first-of-type { font-size: 1.08rem; color: var(--text); }
     .post-body strong { color: var(--text); font-weight: 600; }
     .post-body a { color: var(--accent-ink); border-bottom: 1px solid var(--line-strong); }
     .post-body a:hover { border-bottom-color: var(--accent-ink); }
 
-    /* 继续阅读 */
-    .other { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); }
-    .other-title { font-family: var(--font-display); font-size: 1rem; font-weight: 800; margin-bottom: 12px; }
+    /* 继续阅读：编辑式行 */
+    .other { margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line); max-width: 700px; margin-left: auto; margin-right: auto; }
+    .other-title { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); font-size: .66rem; font-weight: 400; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
     .other-list { display: flex; flex-direction: column; }
     .other-item {
       display: flex;
@@ -95,15 +110,18 @@
     }
     .other-item:last-child { border-bottom: none; }
     .other-item:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); padding-left: 14px; }
-    .other-item .o-name { font-size: .95rem; font-weight: 600; flex: 1; }
-    .other-item .o-date { font-size: .78rem; color: var(--muted); flex-shrink: 0; }
+    .other-item .o-name { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; flex: 1; }
+    .other-item .o-date { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); font-size: .66rem; color: var(--muted); flex-shrink: 0; letter-spacing: .1em; }
     .other-item .o-arrow { color: var(--muted); flex-shrink: 0; transition: color .2s; }
     .other-item:hover .o-arrow { color: var(--accent-ink); }
 
     /* 上一篇 / 下一篇（3D 翻书翻面） */
     .post-nav {
-      margin-top: 40px;
-      padding-top: 22px;
+      margin-top: 44px;
+      padding-top: 24px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
       border-top: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
@@ -219,7 +237,7 @@
             <div class="post-head-main">
               <span class="post-tag">新文章</span>
               <h1 data-en="Post">开站大吉 '◡'</h1>
-              <p class="post-meta">2026年8月5日 <span class="sep">/</span> 开站</p>
+              <p class="post-meta">2026-08-05 <span class="sep">/</span> 开站 <span class="sep">/</span> 2 min read</p>
             </div>
           </header>
 
@@ -230,7 +248,7 @@
           <section class="other">
             <h3 class="other-title">继续阅读</h3>
             <div class="other-list">
-              <a class="other-item" href="post3.html"><span class="o-name">正在开发</span><span class="o-date">2026年8月5日</span><span class="o-arrow">→</span></a>
+              <a class="other-item" href="post3.html"><span class="o-name">正在开发</span><span class="o-date">2026-08-05</span><span class="o-arrow">→</span></a>
             </div>
           </section>
 
