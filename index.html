@@ -110,7 +110,7 @@
       align-items: center;
       gap: 2px;
     }
-    .hero .scroll-hint .chev { font-size: 1rem; animation: bounce-down 1.6s ease-in-out infinite; }
+    .hero .scroll-hint .chev { font-size: 1rem; }
     @keyframes bounce-down {
       0%, 100% { transform: translateY(0); opacity: .9; }
       50% { transform: translateY(6px); opacity: .4; }
@@ -231,8 +231,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 7px; color: #fff;
       box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 40%, transparent);
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
+          }
     @keyframes pulse-dot {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.15); }

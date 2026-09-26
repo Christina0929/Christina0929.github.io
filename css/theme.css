@@ -172,17 +172,13 @@ html::before {
   content: "";
   position: fixed;
   border-radius: 50%;
-  /* 性能修复: blur 会随每帧动画重算，改为动画外层 transform（GPU 合成），模糊贴在内层只渲染一次 */
+  /* 性能修复: 无限动画全部停用——光斑静态化（blur 只在首帧/换主题时渲染一次，零持续开销） */
   filter: blur(70px);
   opacity: .5;
   pointer-events: none;
   z-index: -1;
-  animation: blob-drift 18s ease-in-out infinite alternate;
-  will-change: transform;
-  backface-visibility: hidden;
-  transform: translateZ(0);
 }
-body::after { width: 360px; height: 360px; background: var(--blob2); bottom: -100px; right: -80px; animation-delay: -6s; }
+body::after { width: 360px; height: 360px; background: var(--blob2); bottom: -100px; right: -80px; }
 html::before { width: 420px; height: 420px; background: var(--blob1); top: -120px; left: -100px; }
 @keyframes blob-drift {
   from { transform: translate3d(0, 0, 0) scale(1); }
@@ -221,13 +217,8 @@ nav .logo::before {
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
-  animation: pulse 2.6s ease-in-out infinite;
 }
-@keyframes pulse {
-  /* 性能修复: 动画 transform 缩放代替 box-shadow 重算（box-shadow 动画会触发重绘） */
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.35); opacity: .55; }
-}
+
 nav .logo span { color: var(--accent-ink); }
 nav .right { display: flex; align-items: center; gap: 0; min-width: 0; flex: 1; justify-content: flex-end; }
 nav .menu { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
@@ -458,6 +449,7 @@ nav.scrolled .inner { padding-top: 12px; padding-bottom: 12px; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   body::after, html::before, nav .logo::before { animation: none; }
+  /* 光斑/呼吸灯已全局静态化 */
 }
 
 /* ---------- 页脚 ---------- */
