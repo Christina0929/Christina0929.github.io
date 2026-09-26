@@ -571,3 +571,6 @@ footer .brand { color: var(--accent-ink); font-weight: 600; }
   color: var(--accent);
 }
 
+
+/* ---------- 主题波纹换色（View Transitions 圆形揭示） ---------- */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }

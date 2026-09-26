@@ -54,8 +54,21 @@
   document.addEventListener('click', () => panel.classList.remove('open'));
 
   panel.querySelectorAll('.tp-item').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      apply(btn.dataset.key);
+    btn.addEventListener('click', (e) => {
+      // 波纹换色：新主题色从点击处随圆形波纹扩散揭示（View Transitions，回档丢失后重新加回）
+      const x = e.clientX, y = e.clientY;
+      const DUR = 700;
+      const applyFn = () => apply(btn.dataset.key);
+      if (document.startViewTransition) {
+        const rMax = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.1;
+        const vt = document.startViewTransition(applyFn);
+        vt.ready.then(() => {
+          document.documentElement.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rMax}px at ${x}px ${y}px)`] },
+            { duration: DUR, easing: 'cubic-bezier(.45,.05,.25,1)', pseudoElement: '::view-transition-new(root)' }
+          );
+        }).catch(() => {});
+      } else applyFn();
       panel.classList.remove('open');
     });
   });
