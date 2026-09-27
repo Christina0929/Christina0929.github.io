@@ -49,6 +49,7 @@
     .band-cap { display: flex; justify-content: space-between; align-items: baseline; margin-top: .5rem; }
     .band-no { font-family: var(--font-mono, monospace); font-size: .6rem; letter-spacing: .18em; color: var(--accent); }
     .band-name { font-size: .8rem; color: var(--text); }
+.band-name i:empty { display:none; }
 .band-name i { font-style: normal; font-family: var(--font-mono, monospace); font-size: .58rem; letter-spacing: .06em; color: var(--muted); margin-left: .5rem; }
 
     /* 瀑布流 */
@@ -65,6 +66,7 @@
     }
     .cl-card:hover img { filter: grayscale(0%); transform: scale(1.03); }
     .cl-card .cl-cap b { display:block; font-size:.86rem; font-weight:700; color:#fff; }
+.cl-card .cl-cap i:empty { display:none; }
 .cl-card .cl-cap i { display:block; font-style:normal; font-family:var(--font-mono,monospace); font-size:.58rem; letter-spacing:.08em; opacity:.75; margin-top:2px; }
 .cl-card .cl-cap {
       position: absolute; bottom: 0; left: 0; right: 0;
@@ -115,6 +117,7 @@
       .cl-gallery { columns: 1; }
       .cl-card { border-radius: 10px; margin-bottom: 12px; }
       .cl-card .cl-cap b { display:block; font-size:.86rem; font-weight:700; color:#fff; }
+.cl-card .cl-cap i:empty { display:none; }
 .cl-card .cl-cap i { display:block; font-style:normal; font-family:var(--font-mono,monospace); font-size:.58rem; letter-spacing:.08em; opacity:.75; margin-top:2px; }
 .cl-card .cl-cap { font-size: .75rem; padding: 1.2rem .8rem .6rem; }
       .cl-card .cl-num { width: 22px; height: 22px; font-size: .6rem; top: 6px; right: 6px; }
@@ -168,7 +171,7 @@
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223216_213_1.jpg" alt="收藏横 03" loading="lazy" width="1200" height="636">
-          <figcaption class="band-cap"><span class="band-no">WIDE 03</span><span class="band-name">青莲龙吟 <i>国风幻想 · 画师不详</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 03</span><span class="band-name">青莲龙吟 <i></i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221435_7_65.jpg" alt="收藏横 04" loading="lazy" width="900" height="506">
@@ -193,7 +196,7 @@
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223222_214_1.jpg" alt="收藏 01" loading="lazy" width="600" height="1650">
           <div class="cl-num">01</div>
-          <div class="cl-cap"><b>愿戴荣光坠入天渊</b><i>明日方舟 同人</i></div>
+          <div class="cl-cap"><b>愿戴荣光坠入天渊</b><i>鸣潮 同人</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="90">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221434_6_65.jpg" alt="收藏 02" loading="lazy" width="600" height="965">
@@ -208,7 +211,7 @@
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221440_11_65.jpg" alt="收藏 04" loading="lazy" width="600" height="970">
           <div class="cl-num">04</div>
-          <div class="cl-cap"><b>粉色狙击</b><i>魔法少女系同人 · 画师不详</i></div>
+          <div class="cl-cap"><b>粉色狙击</b><i></i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221441_12_65.jpg" alt="收藏 05" loading="lazy" width="600" height="600">
@@ -248,12 +251,12 @@
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221734_19_65.jpg" alt="收藏 12" loading="lazy" width="600" height="623">
           <div class="cl-num">12</div>
-          <div class="cl-cap"><b>紫发少女</b><i>画师不详</i></div>
+          <div class="cl-cap"><b>紫发少女</b><i></i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221735_20_65.jpg" alt="收藏 13" loading="lazy" width="600" height="877">
           <div class="cl-num">13</div>
-          <div class="cl-cap"><b>蓝发书卷少女</b><i>画师不详</i></div>
+          <div class="cl-cap"><b>蓝发书卷少女</b><i></i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="90">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221737_22_65.jpg" alt="收藏 14" loading="lazy" width="600" height="720">
@@ -263,12 +266,12 @@
         <figure class="cl-card chain-item" data-delay="180">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221738_23_65.jpg" alt="收藏 15" loading="lazy" width="600" height="1073">
           <div class="cl-num">15</div>
-          <div class="cl-cap"><b>夏の果てへ</b><i>蓝白水手 · 画师不详</i></div>
+          <div class="cl-cap"><b>夏の果てへ</b><i></i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221739_24_65.jpg" alt="收藏 16" loading="lazy" width="600" height="900">
           <div class="cl-num">16</div>
-          <div class="cl-cap"><b>七夕夜 · 短册祈愿</b><i>画师不详</i></div>
+          <div class="cl-cap"><b>七夕夜 · 短册祈愿</b><i></i></div>
         </figure>
     </section>
 
