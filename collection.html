@@ -35,11 +35,7 @@
     .cl-hero p { color: var(--muted); font-size: .9rem; letter-spacing: .05em; margin-top: .6rem; }
 
     /* 链式入场 */
-    .chain-item {
-      opacity: 0; transform: translateY(40px);
-      transition: transform .7s cubic-bezier(.22,.8,.36,1), opacity .7s ease;
-    }
-    .chain-item.in { opacity: 1; transform: translateY(0); }
+    /* 性能与可靠修复: 移除链式入场透明门控（IO 漏触发导致整页空白），卡片默认可见 */
 
     /* 瀑布流 */
     .cl-gallery { columns: 2; column-gap: 16px; margin-top: 2rem; }
@@ -338,19 +334,6 @@
           setTimeout(function(){sub.style.transition='opacity .8s';sub.style.opacity='1';},600);
         }
       },100);
-
-      /* 链式入场 */
-      var cards=document.querySelectorAll('.chain-item');
-      var obs=new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if(e.isIntersecting){
-            var d=parseInt(e.target.dataset.delay)||0;
-            setTimeout(function(){e.target.classList.add('in');},d);
-            obs.unobserve(e.target);
-          }
-        });
-      },{threshold:.15});
-      cards.forEach(function(c){obs.observe(c);});
 
       /* 引言逐词 */
       var q=document.getElementById('clQuote'),qw=q.textContent.trim().split(/\s+/);
