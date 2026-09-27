@@ -35,6 +35,7 @@
   new MutationObserver(() => {
     fx = THEME_FX[document.documentElement.getAttribute('data-theme')] || THEME_FX[''];
     particles = [];          // 切主题瞬间清空旧粒子，新配色立即出现
+    setTimeout(seed, 60);
   }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   // 内容栏测量：粒子只落在左右空白区（窄屏无空白则回退全宽）
@@ -89,6 +90,15 @@
     }
   }
 
+  // 预铺: 部分粒子直接散布在视口内（含页面顶部），打开就有装饰
+  function seed() {
+    const n = Math.ceil(fx.max * 0.5);
+    for (let i = 0; i < n; i++) {
+      spawn();
+      const p = particles[particles.length - 1];
+      if (p && p.type !== 'meteor') p.y = rand(0, innerHeight * 0.85);
+    }
+  }
   let running = true;
   document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
@@ -99,7 +109,7 @@
     const dt = Math.min((now - lastFrame) / 1000, 0.1);
     lastFrame = now;
 
-    if (particles.length < fx.max && now - lastSpawn > rand(500, 1400)) {
+    if (particles.length < fx.max && now - lastSpawn > rand(300, 800)) {
       spawn(); lastSpawn = now;
     }
 
@@ -144,5 +154,6 @@
       return true;
     });
   }
+  seed();
   requestAnimationFrame(tick);
 })();
