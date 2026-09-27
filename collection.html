@@ -37,6 +37,19 @@
     /* 链式入场 */
     /* 性能与可靠修复: 移除链式入场透明门控（IO 漏触发导致整页空白），卡片默认可见 */
 
+    /* 横向滚动横带（页面滚动联动横移，链式互动） */
+    .band-section { margin-top: 3rem; }
+    .band-head { margin-bottom: 1rem; }
+    .band-kicker { font-family: var(--font-mono, monospace); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+    .band-clip { overflow: hidden; margin: 0 -16px; }
+    .horizontal-band { display: flex; gap: 1.4rem; padding: .4rem 16px; will-change: transform; }
+    .band-item { flex-shrink: 0; width: min(560px, 78vw); margin: 0; position: relative; }
+    .band-item img { width: 100%; height: 300px; object-fit: cover; display: block; border-radius: 12px; filter: grayscale(18%); transition: filter .35s, transform .4s cubic-bezier(.22,.8,.36,1); }
+    .band-item:hover img { filter: grayscale(0%); transform: scale(1.02); }
+    .band-cap { display: flex; justify-content: space-between; align-items: baseline; margin-top: .5rem; }
+    .band-no { font-family: var(--font-mono, monospace); font-size: .6rem; letter-spacing: .18em; color: var(--accent); }
+    .band-name { font-size: .8rem; color: var(--muted); }
+
     /* 瀑布流 */
     .cl-gallery { columns: 2; column-gap: 16px; margin-top: 2rem; }
     .cl-card {
@@ -137,122 +150,121 @@
       <p>美好的瞬间，值得被珍藏</p>
     </section>
 
+    <section class="band-section" id="bandSection" aria-label="横幅精选">
+      <div class="band-head"><span class="band-kicker">WIDE — 横幅精选 · 随页面滚动横移</span></div>
+      <div class="band-clip"><div class="horizontal-band" id="clBand">
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223156_211_1.jpg" alt="收藏横 01" loading="lazy" width="1200" height="825">
+          <figcaption class="band-cap"><span class="band-no">WIDE 01</span><span class="band-name">Moment No.01</span></figcaption>
+        </figure>
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223156_212_1.jpg" alt="收藏横 02" loading="lazy" width="1200" height="600">
+          <figcaption class="band-cap"><span class="band-no">WIDE 02</span><span class="band-name">Moment No.02</span></figcaption>
+        </figure>
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223216_213_1.jpg" alt="收藏横 03" loading="lazy" width="1200" height="636">
+          <figcaption class="band-cap"><span class="band-no">WIDE 03</span><span class="band-name">Moment No.03</span></figcaption>
+        </figure>
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221435_7_65.jpg" alt="收藏横 04" loading="lazy" width="900" height="506">
+          <figcaption class="band-cap"><span class="band-no">WIDE 04</span><span class="band-name">Moment No.04</span></figcaption>
+        </figure>
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221438_9_65.jpg" alt="收藏横 05" loading="lazy" width="900" height="506">
+          <figcaption class="band-cap"><span class="band-no">WIDE 05</span><span class="band-name">Moment No.05</span></figcaption>
+        </figure>
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221439_10_65.jpg" alt="收藏横 06" loading="lazy" width="900" height="440">
+          <figcaption class="band-cap"><span class="band-no">WIDE 06</span><span class="band-name">Moment No.06</span></figcaption>
+        </figure>
+        <figure class="band-item">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221736_21_65.jpg" alt="收藏横 07" loading="lazy" width="900" height="699">
+          <figcaption class="band-cap"><span class="band-no">WIDE 07</span><span class="band-name">Moment No.07</span></figcaption>
+        </figure>
+      </div></div>
+    </section>
+
     <section class="cl-gallery" id="clGallery">
-      <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260901223156_211_1.jpg" alt="收藏 01" loading="lazy" width="600" height="420">
-        <div class="cl-num">01</div>
-        <div class="cl-cap">Moment No.01</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="120">
-        <img src="pic/收藏/微信图片_20260901223156_212_1.jpg" alt="收藏 02" loading="lazy" width="600" height="420">
-        <div class="cl-num">02</div>
-        <div class="cl-cap">Moment No.02</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="240">
-        <img src="pic/收藏/微信图片_20260901223216_213_1.jpg" alt="收藏 03" loading="lazy" width="600" height="420">
-        <div class="cl-num">03</div>
-        <div class="cl-cap">Moment No.03</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="360">
-        <img src="pic/收藏/微信图片_20260901223222_214_1.jpg" alt="收藏 04" loading="lazy" width="600" height="420">
-        <div class="cl-num">04</div>
-        <div class="cl-cap">Moment No.04</div>
-      <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260926221434_6_65.jpg" alt="收藏 05" loading="lazy" width="600" height="965">
-        <div class="cl-num">05</div>
-        <div class="cl-cap">Moment No.05</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="120">
-        <img src="pic/收藏/微信图片_20260926221435_7_65.jpg" alt="收藏 06" loading="lazy" width="600" height="337">
-        <div class="cl-num">06</div>
-        <div class="cl-cap">Moment No.06</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="240">
-        <img src="pic/收藏/微信图片_20260926221437_8_65.jpg" alt="收藏 07" loading="lazy" width="600" height="849">
-        <div class="cl-num">07</div>
-        <div class="cl-cap">Moment No.07</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="360">
-        <img src="pic/收藏/微信图片_20260926221438_9_65.jpg" alt="收藏 08" loading="lazy" width="600" height="337">
-        <div class="cl-num">08</div>
-        <div class="cl-cap">Moment No.08</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260926221439_10_65.jpg" alt="收藏 09" loading="lazy" width="600" height="293">
-        <div class="cl-num">09</div>
-        <div class="cl-cap">Moment No.09</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="120">
-        <img src="pic/收藏/微信图片_20260926221440_11_65.jpg" alt="收藏 10" loading="lazy" width="600" height="970">
-        <div class="cl-num">10</div>
-        <div class="cl-cap">Moment No.10</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="240">
-        <img src="pic/收藏/微信图片_20260926221441_12_65.jpg" alt="收藏 11" loading="lazy" width="600" height="600">
-        <div class="cl-num">11</div>
-        <div class="cl-cap">Moment No.11</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="360">
-        <img src="pic/收藏/微信图片_20260926221442_13_65.jpg" alt="收藏 12" loading="lazy" width="600" height="849">
-        <div class="cl-num">12</div>
-        <div class="cl-cap">Moment No.12</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260926221443_14_65.jpg" alt="收藏 13" loading="lazy" width="600" height="849">
-        <div class="cl-num">13</div>
-        <div class="cl-cap">Moment No.13</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="120">
-        <img src="pic/收藏/微信图片_20260926221444_15_65.jpg" alt="收藏 14" loading="lazy" width="600" height="1339">
-        <div class="cl-num">14</div>
-        <div class="cl-cap">Moment No.14</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="240">
-        <img src="pic/收藏/微信图片_20260926221445_16_65.jpg" alt="收藏 15" loading="lazy" width="600" height="785">
-        <div class="cl-num">15</div>
-        <div class="cl-cap">Moment No.15</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="360">
-        <img src="pic/收藏/微信图片_20260926221446_17_65.jpg" alt="收藏 16" loading="lazy" width="600" height="849">
-        <div class="cl-num">16</div>
-        <div class="cl-cap">Moment No.16</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260926221448_18_65.jpg" alt="收藏 17" loading="lazy" width="600" height="849">
-        <div class="cl-num">17</div>
-        <div class="cl-cap">Moment No.17</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="120">
-        <img src="pic/收藏/微信图片_20260926221734_19_65.jpg" alt="收藏 18" loading="lazy" width="600" height="623">
-        <div class="cl-num">18</div>
-        <div class="cl-cap">Moment No.18</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="240">
-        <img src="pic/收藏/微信图片_20260926221735_20_65.jpg" alt="收藏 19" loading="lazy" width="600" height="877">
-        <div class="cl-num">19</div>
-        <div class="cl-cap">Moment No.19</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="360">
-        <img src="pic/收藏/微信图片_20260926221736_21_65.jpg" alt="收藏 20" loading="lazy" width="600" height="466">
-        <div class="cl-num">20</div>
-        <div class="cl-cap">Moment No.20</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="0">
-        <img src="pic/收藏/微信图片_20260926221737_22_65.jpg" alt="收藏 21" loading="lazy" width="600" height="720">
-        <div class="cl-num">21</div>
-        <div class="cl-cap">Moment No.21</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="120">
-        <img src="pic/收藏/微信图片_20260926221738_23_65.jpg" alt="收藏 22" loading="lazy" width="600" height="1073">
-        <div class="cl-num">22</div>
-        <div class="cl-cap">Moment No.22</div>
-      </div>
-      <div class="cl-card chain-item" data-delay="240">
-        <img src="pic/收藏/微信图片_20260926221739_24_65.jpg" alt="收藏 23" loading="lazy" width="600" height="900">
-        <div class="cl-num">23</div>
-        <div class="cl-cap">Moment No.23</div>
-      </div>
-      </div>
+        <figure class="cl-card chain-item" data-delay="0">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223222_214_1.jpg" alt="收藏 01" loading="lazy" width="600" height="1650">
+          <div class="cl-num">01</div>
+          <div class="cl-cap">Moment No.01</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="90">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221434_6_65.jpg" alt="收藏 02" loading="lazy" width="600" height="965">
+          <div class="cl-num">02</div>
+          <div class="cl-cap">Moment No.02</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="180">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221437_8_65.jpg" alt="收藏 03" loading="lazy" width="600" height="849">
+          <div class="cl-num">03</div>
+          <div class="cl-cap">Moment No.03</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="270">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221440_11_65.jpg" alt="收藏 04" loading="lazy" width="600" height="970">
+          <div class="cl-num">04</div>
+          <div class="cl-cap">Moment No.04</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="0">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221441_12_65.jpg" alt="收藏 05" loading="lazy" width="600" height="600">
+          <div class="cl-num">05</div>
+          <div class="cl-cap">Moment No.05</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="90">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221442_13_65.jpg" alt="收藏 06" loading="lazy" width="600" height="849">
+          <div class="cl-num">06</div>
+          <div class="cl-cap">Moment No.06</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="180">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221443_14_65.jpg" alt="收藏 07" loading="lazy" width="600" height="849">
+          <div class="cl-num">07</div>
+          <div class="cl-cap">Moment No.07</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="270">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221444_15_65.jpg" alt="收藏 08" loading="lazy" width="600" height="1339">
+          <div class="cl-num">08</div>
+          <div class="cl-cap">Moment No.08</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="0">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221445_16_65.jpg" alt="收藏 09" loading="lazy" width="600" height="785">
+          <div class="cl-num">09</div>
+          <div class="cl-cap">Moment No.09</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="90">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221446_17_65.jpg" alt="收藏 10" loading="lazy" width="600" height="849">
+          <div class="cl-num">10</div>
+          <div class="cl-cap">Moment No.10</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="180">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221448_18_65.jpg" alt="收藏 11" loading="lazy" width="600" height="849">
+          <div class="cl-num">11</div>
+          <div class="cl-cap">Moment No.11</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="270">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221734_19_65.jpg" alt="收藏 12" loading="lazy" width="600" height="623">
+          <div class="cl-num">12</div>
+          <div class="cl-cap">Moment No.12</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="0">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221735_20_65.jpg" alt="收藏 13" loading="lazy" width="600" height="877">
+          <div class="cl-num">13</div>
+          <div class="cl-cap">Moment No.13</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="90">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221737_22_65.jpg" alt="收藏 14" loading="lazy" width="600" height="720">
+          <div class="cl-num">14</div>
+          <div class="cl-cap">Moment No.14</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="180">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221738_23_65.jpg" alt="收藏 15" loading="lazy" width="600" height="1073">
+          <div class="cl-num">15</div>
+          <div class="cl-cap">Moment No.15</div>
+        </figure>
+        <figure class="cl-card chain-item" data-delay="270">
+          <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221739_24_65.jpg" alt="收藏 16" loading="lazy" width="600" height="900">
+          <div class="cl-num">16</div>
+          <div class="cl-cap">Moment No.16</div>
+        </figure>
     </section>
 
     <section class="cl-quote">
@@ -334,6 +346,21 @@
           setTimeout(function(){sub.style.transition='opacity .8s';sub.style.opacity='1';},600);
         }
       },100);
+
+      /* 横带滚动联动：按区块经过视口的进度横向平移（链式互动） */
+      var band=document.getElementById('clBand'), bandSec=document.getElementById('bandSection');
+      function bandTick(){
+        if(!band||!bandSec) return;
+        var r=bandSec.getBoundingClientRect();
+        var total=band.scrollWidth-band.parentElement.clientWidth;
+        if(total>0){
+          var p=Math.min(Math.max((innerHeight-r.top)/(innerHeight+r.height),0),1);
+          band.style.transform='translateX('+(-p*total)+'px)';
+        }
+      }
+      window.addEventListener('scroll',bandTick,{passive:true});
+      window.addEventListener('resize',bandTick,{passive:true});
+      bandTick();
 
       /* 引言逐词 */
       var q=document.getElementById('clQuote'),qw=q.textContent.trim().split(/\s+/);
