@@ -70,7 +70,9 @@ import './lib/waifu-tips.js';
     #kandao-static-img:active { cursor: grabbing; }
     /* ===== 手机端：缩小画布并停靠左下可视区 ===== */
     @media (max-width: 768px) {
-      #waifu { left: 8px; }
+      /* 底部让出 48px：手机音乐条收起时是贴底的全宽把手，别压在它上面 */
+      #waifu { left: 8px; bottom: calc(48px + env(safe-area-inset-bottom)); }
+      #waifu.waifu-active { bottom: calc(48px + env(safe-area-inset-bottom)); }
       #live2d {
         height: min(22vh, 150px);
         width: min(22vh, 150px);
