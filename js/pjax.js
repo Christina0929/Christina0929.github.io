@@ -6,7 +6,7 @@
 
   const SHELL =
     'body > nav, #cl-panel, #music-card, #to-top, .scroll-progress, .theme-fab, .theme-panel, ' +
-    '#waifu, #waifu-toggle, #waifu-tips, #kandao-static-img, footer';
+    '#waifu, #waifu-toggle, #waifu-tips, #kandao-static-img, footer, #fallfx';
 
   let pageStyleEl = null;
   try { pageStyleEl = document.head.querySelector('style[data-page-css]'); } catch (e) {}

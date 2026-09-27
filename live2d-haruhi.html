@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live2D 查看 · 凉宫春日 & 长门有希</title>
+<title>Live2D 查看 · 凉宫春日 & 白发少女 & 紫发少女 & 长门有希</title>
 <!-- 引擎: 本地 Cubism Core + CDN PIXI6/pixi-live2d-display(仅本查看页用,与站点挂件无关)
      注意: 必须单 PIXI.Application 单 WebGL 上下文 —— 框架 ShaderManager 是全局单例,
      多上下文会导致先渲染的模型用错 gl 而隐身 (v0.4.0 已知问题) -->
@@ -16,13 +16,14 @@
   #stage { position: fixed; inset: 0; }
   canvas { display: block; }
   .name {
-    position: absolute; top: 18px; text-align: center; width: 50%;
-    font-size: 20px; letter-spacing: 2px; color: #e8e2d5; text-shadow: 0 2px 8px rgba(0,0,0,.6);
+    position: absolute; top: 18px; text-align: center; width: 25%;
+    font-size: 18px; letter-spacing: 2px; color: #e8e2d5; text-shadow: 0 2px 8px rgba(0,0,0,.6);
     pointer-events: none;
   }
-  .name .sub { font-size: 12px; color: #778; margin-top: 6px; letter-spacing: 0; }
-  #name-l { left: 0; } #name-r { right: 0; }
-  #divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #232838; }
+  .name .sub { font-size: 11px; color: #778; margin-top: 6px; letter-spacing: 0; }
+  #name-1 { left: 0; } #name-2 { left: 25%; } #name-3 { left: 50%; } #name-4 { left: 75%; }
+  .vdiv { position: absolute; top: 0; bottom: 0; width: 1px; background: #232838; }
+  #d1 { left: 25%; } #d2 { left: 50%; } #d3 { left: 75%; }
   #status {
     position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
     font-size: 12px; color: #8892a8; background: rgba(20,24,36,.8);
@@ -33,9 +34,11 @@
 </head>
 <body>
 <div id="stage"></div>
-<div class="name" id="name-l">凉宫春日<div class="sub">点击人物播放动作</div></div>
-<div class="name" id="name-r">长门有希<div class="sub">点击人物播放动作</div></div>
-<div id="divider"></div>
+<div class="name" id="name-1">凉宫春日<div class="sub">点击人物播放动作</div></div>
+<div class="name" id="name-2">白发少女<div class="sub">PSD2Live 自动生成</div></div>
+<div class="name" id="name-3">紫发少女<div class="sub">AI立绘全自动管线</div></div>
+<div class="name" id="name-4">长门有希<div class="sub">点击人物播放动作</div></div>
+<div class="vdiv" id="d1"></div><div class="vdiv" id="d2"></div><div class="vdiv" id="d3"></div>
 <div id="status">加载中…</div>
 <script>
 // 调试钩子: 收集报错和模型实例,便于远程诊断
@@ -49,7 +52,7 @@ function note(s){ status.textContent = s; }
 (async () => {
   try {
     note('正在加载模型…');
-    // 单画布单上下文: 两个模型共存于同一场景
+    // 单画布单上下文: 四个模型共存于同一场景
     const app = new PIXI.Application({
       backgroundAlpha: 0, autoDensity: true, resolution: devicePixelRatio,
       resizeTo: window,
@@ -58,25 +61,34 @@ function note(s){ status.textContent = s; }
     window.__apps.push(app);
 
     const defs = [
-      { url: 'live2d/model/haruhi/model.model3.json', label: '凉宫春日', cx: 0.25 },
-      { url: 'live2d/model/nagato/model.model3.json', label: '长门有希', cx: 0.75 },
+      { url: 'live2d/model/haruhi/model.model3.json', label: '凉宫春日', cx: 0.125 },
+      { url: 'live2d/model/psd2live/model.model3.json', label: '白发少女', cx: 0.375, damp: 0.4 },
+      { url: 'live2d/model/wechat-girl/model.model3.json', label: '紫发少女', cx: 0.625, damp: 0.4 },
+      { url: 'live2d/model/nagato/model.model3.json', label: '长门有希', cx: 0.875 },
     ];
 
     const layout = (model, cx) => {
-      // 等比缩放到半屏高,水平以 cx 份额居中,垂直微降(模型原点在头顶)
+      // 等比缩放到 1/4 屏宽内,水平以 cx 份额居中,垂直微降(模型原点在头顶)
       const w = model.internalModel.originalWidth, h = model.internalModel.originalHeight;
-      const s = Math.min(app.screen.width / 2 / w, app.screen.height / h) * 1.15;
+      const s = Math.min(app.screen.width / 4 / w, app.screen.height / h) * 1.15;
       model.scale.set(s);
       model.anchor.set(0.5, 0.5);
       model.position.set(app.screen.width * cx, app.screen.height / 2 + h * s * 0.08);
     };
 
-    for (const { url, label, cx } of defs) {
-      const model = await PIXI.live2d.Live2DModel.from(url, {
-        autoInteract: true,       // 点击 = 播放 Tap 动作
-        autoUpdate: true,         // 呼吸/物理/眨眼自动演算
-        motionPreload: 'IDLE',    // 只预载 Idle 组
-      });
+    // 并行加载+独立容错: 单模型失败/挂起不影响其他模型 (v0.4.0 偶发 from() 挂起无报错)
+    const loadOne = async ({ url, label, cx, damp }) => {
+      // 45秒超时则换缓存键重试一次 (from() 按来源缓存,换键强制新加载)
+      const attempt = (u) => Promise.race([
+        PIXI.live2d.Live2DModel.from(u, { autoInteract: true, autoUpdate: true, motionPreload: 'IDLE' }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('加载超时')), 45000)),
+      ]);
+      let model;
+      try { model = await attempt(url); }
+      catch (e1) {
+        note(`${label} 首次加载失败,重试…`);
+        model = await attempt(url + '?retry=1');
+      }
       app.stage.addChild(model);
       layout(model, cx);
       addEventListener('resize', () => layout(model, cx));
@@ -86,9 +98,23 @@ function note(s){ status.textContent = s; }
       mm.on('motionStart', (g, i) => note(`${label} 动作: ${g} #${i}`));
       model.on('hit', areas => note(`${label} 命中区域: ${areas.join(', ') || '身体'}`));
 
+      // AI生成模型: 视线/头部跟随鼠标的幅度衰减(默认全幅显得夸张)
+      if (damp && damp < 1) {
+        const fc = model.internalModel.focusController;
+        const origFocus = fc.focus.bind(fc);
+        fc.focus = (x, y) => origFocus(x * damp, y * damp);
+      }
+
       window.__models.push({ label, model });
-    }
-    note('就绪 —— 摇晃/眨眼/呼吸自动播放，点击人物触发动作');
+      return label;
+    };
+
+    const results = await Promise.allSettled(defs.map(loadOne));
+    const ok = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+    const bad = results.filter(r => r.status === 'rejected').map(r => r.reason && r.reason.message);
+    note(ok.length === defs.length
+      ? '就绪 —— 摇晃/眨眼/呼吸自动播放，点击人物触发动作'
+      : `就绪 ${ok.length}/${defs.length} —— 失败: ${bad.join('; ')}`);
   } catch (e) {
     note('');
     status.innerHTML = '<span class="err">加载失败:\n' + (e && e.message || e) +
