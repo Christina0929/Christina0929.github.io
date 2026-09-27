@@ -13,7 +13,12 @@
     .container { max-width: 960px; margin: 0 auto; padding: 48px 24px 60px; }
 
     /* Hero 区 */
-    .cl-hero { text-align: center; padding: 10vh 0 6vh; }
+    .cl-hero { text-align: center; padding: 7vh 0 5vh; }
+    .cl-kicker { display: flex; align-items: center; justify-content: center; gap: .9rem; margin-bottom: 1rem; }
+    .cl-kicker .rule { width: 34px; height: 1px; background: var(--accent); }
+    .cl-kicker { font-family: var(--font-mono, monospace); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+    .cl-meta { display: flex; gap: 1.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.4rem; }
+    .cl-meta span { font-family: var(--font-mono, monospace); font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
     .cl-hero h1 {
       font-size: clamp(3rem, 10vw, 7rem); font-weight: 800;
       letter-spacing: -.04em; line-height: .95; margin-bottom: 1rem;
@@ -154,40 +159,44 @@
   <div class="container">
 
     <section class="cl-hero">
+      <div class="cl-kicker"><span class="rule"></span><span>COLLECTION — 收藏 · 每一张都值得</span></div>
       <h1 id="clTitle">COLLECTION</h1>
       <p>美好的瞬间，值得被珍藏</p>
+      <div class="cl-meta">
+        <span>23 Works</span><span>WIDE 07</span><span>Since 2026-09</span><span>Updated 09-27</span>
+      </div>
     </section>
 
     <section class="band-section" id="bandSection" aria-label="横幅精选">
-      <div class="band-head"><span class="band-kicker">WIDE — 横幅精选 · 随页面滚动横移</span></div>
+      <div class="band-head"><span class="band-kicker">WIDE — 精选收藏</span></div>
       <div class="band-clip"><div class="horizontal-band" id="clBand">
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223156_211_1.jpg" alt="收藏横 01" loading="lazy" width="1200" height="825">
-          <figcaption class="band-cap"><span class="band-no">WIDE 01</span><span class="band-name">花田之夏 · 亚托莉 <i>ATRI -My Dear Moments-</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 01</span><span class="band-name">亚托莉 · 我挚爱的时光01 <i>ATRI -My Dear Moments-</i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223156_212_1.jpg" alt="收藏横 02" loading="lazy" width="1200" height="600">
-          <figcaption class="band-cap"><span class="band-no">WIDE 02</span><span class="band-name">海滨远眺 · 亚托莉 <i>ATRI -My Dear Moments-</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 02</span><span class="band-name">亚托莉 · 我挚爱的时光02 <i>ATRI -My Dear Moments-</i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223216_213_1.jpg" alt="收藏横 03" loading="lazy" width="1200" height="636">
-          <figcaption class="band-cap"><span class="band-no">WIDE 03</span><span class="band-name">青莲龙吟 <i></i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 03</span><span class="band-name">清霄 <i></i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221435_7_65.jpg" alt="收藏横 04" loading="lazy" width="900" height="506">
-          <figcaption class="band-cap"><span class="band-no">WIDE 04</span><span class="band-name">魂魄妖梦 · 拔剑 <i>东方Project 同人</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 04</span><span class="band-name">琪露诺 · 魂魄妖梦 <i>久蒼穹</i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221438_9_65.jpg" alt="收藏横 05" loading="lazy" width="900" height="506">
-          <figcaption class="band-cap"><span class="band-no">WIDE 05</span><span class="band-name">博丽灵梦 · 巫女一刀 <i>东方Project 同人</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 05</span><span class="band-name">博丽灵梦 · 巫女一刀 <i>久蒼穹</i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221439_10_65.jpg" alt="收藏横 06" loading="lazy" width="900" height="440">
-          <figcaption class="band-cap"><span class="band-no">WIDE 06</span><span class="band-name">灵梦与魔理沙 · 鸟居之空 <i>东方Project 同人</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 06</span><span class="band-name">灵梦与魔理沙 <i>前额叶绞肉机</i></span></figcaption>
         </figure>
         <figure class="band-item">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221736_21_65.jpg" alt="收藏横 07" loading="lazy" width="900" height="699">
-          <figcaption class="band-cap"><span class="band-no">WIDE 07</span><span class="band-name">SOS团 · 止まれ <i>凉宫春日的忧郁</i></span></figcaption>
+          <figcaption class="band-cap"><span class="band-no">WIDE 07</span><span class="band-name">SOS团 · 止まれ <i>Ixy（いくしー）</i></span></figcaption>
         </figure>
       </div></div>
     </section>
@@ -196,12 +205,12 @@
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260901223222_214_1.jpg" alt="收藏 01" loading="lazy" width="600" height="1650">
           <div class="cl-num">01</div>
-          <div class="cl-cap"><b>愿戴荣光坠入天渊</b><i>鸣潮 同人</i></div>
+          <div class="cl-cap"><b>愿戴荣光坠入天渊</b><i>超凶の狄璐卡</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="90">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221434_6_65.jpg" alt="收藏 02" loading="lazy" width="600" height="965">
           <div class="cl-num">02</div>
-          <div class="cl-cap"><b>圆环之理 · 水晶之心</b><i>魔法少女小圆 同人</i></div>
+          <div class="cl-cap"><b>凝固的时间</b><i>虞花-</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="180">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221437_8_65.jpg" alt="收藏 03" loading="lazy" width="600" height="849">
@@ -211,67 +220,67 @@
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221440_11_65.jpg" alt="收藏 04" loading="lazy" width="600" height="970">
           <div class="cl-num">04</div>
-          <div class="cl-cap"><b>粉色狙击</b><i></i></div>
+          <div class="cl-cap"><b>魔法少女小圆</b><i>七田のQTian</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221441_12_65.jpg" alt="收藏 05" loading="lazy" width="600" height="600">
           <div class="cl-num">05</div>
-          <div class="cl-cap"><b>双马尾 · 红缎带</b><i>签名 QIU SU 百日绘 (2/100)</i></div>
+          <div class="cl-cap"><b>博丽灵梦</b><i>QIU SU</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="90">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221442_13_65.jpg" alt="收藏 06" loading="lazy" width="600" height="849">
           <div class="cl-num">06</div>
-          <div class="cl-cap"><b>雪夜灯笼 · 魔理沙与灵梦</b><i>东方Project 同人</i></div>
+          <div class="cl-cap"><b>雪夜灯笼 · 魔理沙与灵梦</b><i>こうこう</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="180">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221443_14_65.jpg" alt="收藏 07" loading="lazy" width="600" height="849">
           <div class="cl-num">07</div>
-          <div class="cl-cap"><b>夏祭红伞</b><i>东方Project 博丽灵梦</i></div>
+          <div class="cl-cap"><b>博丽灵梦 夏祭</b><i>こうこう</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221444_15_65.jpg" alt="收藏 08" loading="lazy" width="600" height="1339">
           <div class="cl-num">08</div>
-          <div class="cl-cap"><b>神社一日 · 四幕</b><i>东方Project 博丽灵梦</i></div>
+          <div class="cl-cap"><b>神社一日 · 四幕</b><i>こうこう</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221445_16_65.jpg" alt="收藏 09" loading="lazy" width="600" height="785">
           <div class="cl-num">09</div>
-          <div class="cl-cap"><b>银杏与屋顶</b><i>东方Project 博丽灵梦</i></div>
+          <div class="cl-cap"><b>银杏与屋顶</b><i>こうこう</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="90">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221446_17_65.jpg" alt="收藏 10" loading="lazy" width="600" height="849">
           <div class="cl-num">10</div>
-          <div class="cl-cap"><b>祭典掷盏</b><i>东方Project 博丽灵梦</i></div>
+          <div class="cl-cap"><b>祭典掷盏</b><i>こうこう</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="180">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221448_18_65.jpg" alt="收藏 11" loading="lazy" width="600" height="849">
           <div class="cl-num">11</div>
-          <div class="cl-cap"><b>祭典街角</b><i>东方Project 博丽灵梦</i></div>
+          <div class="cl-cap"><b>博丽灵梦 祭典</b><i>こうこう</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221734_19_65.jpg" alt="收藏 12" loading="lazy" width="600" height="623">
           <div class="cl-num">12</div>
-          <div class="cl-cap"><b>紫发少女</b><i></i></div>
+          <div class="cl-cap"><b>BB</b><i>siki</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="0">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221735_20_65.jpg" alt="收藏 13" loading="lazy" width="600" height="877">
           <div class="cl-num">13</div>
-          <div class="cl-cap"><b>蓝发书卷少女</b><i></i></div>
+          <div class="cl-cap"><b>洛琪希</b><i>无职转生 同人</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="90">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221737_22_65.jpg" alt="收藏 14" loading="lazy" width="600" height="720">
           <div class="cl-num">14</div>
-          <div class="cl-cap"><b>SOS团 · 止まれ</b><i>凉宫春日的忧郁</i></div>
+          <div class="cl-cap"><b>SOS团 · 止まれ</b><i>Ixy（いくしー）</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="180">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221738_23_65.jpg" alt="收藏 15" loading="lazy" width="600" height="1073">
           <div class="cl-num">15</div>
-          <div class="cl-cap"><b>夏の果てへ</b><i></i></div>
+          <div class="cl-cap"><b>亚托莉 · 我挚爱的时光03</b><i>ATRI -My Dear Moments-</i></div>
         </figure>
         <figure class="cl-card chain-item" data-delay="270">
           <img src="pic/%E6%94%B6%E8%97%8F/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260926221739_24_65.jpg" alt="收藏 16" loading="lazy" width="600" height="900">
           <div class="cl-num">16</div>
-          <div class="cl-cap"><b>七夕夜 · 短册祈愿</b><i></i></div>
+          <div class="cl-cap"><b>柊镜 柊司</b><i></i></div>
         </figure>
     </section>
 
