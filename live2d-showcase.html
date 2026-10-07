@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live2D 模型收藏展示 · 丛雨 / ATRI / Amadeus / Yuuka</title>
+<!-- 成品模型展示页: 丛雨(千恋＊万花) / ATRI / Amadeus(牧濑红莉栖) / Yuuka
+     架构与主查看页一致: 单 PIXI.Application 单 WebGL 上下文 + 并行加载 + 超时重试 -->
+<script src="live2d/lib/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; background: #10131c; overflow: hidden;
+    font-family: system-ui, "Microsoft YaHei"; color: #aab; }
+  #stage { position: fixed; inset: 0; }
+  canvas { display: block; }
+  .name {
+    position: absolute; top: 16px; text-align: center; width: 25%;
+    font-size: 18px; letter-spacing: 2px; color: #e8e2d5; text-shadow: 0 2px 8px rgba(0,0,0,.6);
+    pointer-events: none;
+  }
+  .name .sub { font-size: 11px; color: #778; margin-top: 6px; letter-spacing: 0; }
+  #n1 { left: 0; } #n2 { left: 25%; } #n3 { left: 50%; } #n4 { left: 75%; }
+  .vdiv { position: absolute; top: 0; bottom: 0; width: 1px; background: #232838; }
+  #d1 { left: 25%; } #d2 { left: 50%; } #d3 { left: 75%; }
+  #status {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: #8892a8; background: rgba(20,24,36,.8);
+    padding: 6px 16px; border-radius: 14px; border: 1px solid #232838; z-index: 5;
+  }
+  .err { color: #e88; font: 14px/1.7 monospace; white-space: pre-wrap; max-width: 90%; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="name" id="n1">丛雨<div class="sub">千恋＊万花 · 点不同部位有不同反应</div></div>
+<div class="name" id="n2">ATRI<div class="sub">ATRI -My Dear Moments- · 点击有动作</div></div>
+<div class="name" id="n3">Amadeus<div class="sub">命运石之门 · 牧濑红莉栖</div></div>
+<div class="name" id="n4">Yuuka<div class="sub">VTuber 模型 · 物理摆动</div></div>
+<div class="vdiv" id="d1"></div><div class="vdiv" id="d2"></div><div class="vdiv" id="d3"></div>
+<div id="status">加载中…</div>
+<script>
+window.__errs = []; window.__models = []; window.__apps = [];
+addEventListener('error', e => window.__errs.push('ERR: ' + e.message));
+addEventListener('unhandledrejection', e => window.__errs.push('REJ: ' + (e.reason && e.reason.message || e.reason)));
+
+const status = document.getElementById('status');
+function note(s){ status.textContent = s; }
+
+(async () => {
+  try {
+    note('正在加载模型…');
+    const app = new PIXI.Application({
+      backgroundAlpha: 0, autoDensity: true, resolution: devicePixelRatio,
+      resizeTo: window,
+    });
+    document.getElementById('stage').appendChild(app.view);
+    window.__apps.push(app);
+
+    // 成品模型均为专业调校, 不加幅度衰减(damp), 保持原味
+    const defs = [
+      { url: 'live2d/model/amadeus/Amadeus.model3.json', label: 'Amadeus', cx: 0.625, hideParts: ['bg'] },
+      { url: 'live2d/model/murasame/Murasame.model3.json', label: '丛雨', cx: 0.125 },
+      { url: 'live2d/model/atri/atri.model3.json', label: 'ATRI', cx: 0.375 },
+      { url: 'live2d/model/yuuka/Yuuka.model3.json', label: 'Yuuka', cx: 0.875 },
+    ];
+
+    const layout = (model, cx) => {
+      const w = model.internalModel.originalWidth, h = model.internalModel.originalHeight;
+      const s = Math.min(app.screen.width / 4 / w, app.screen.height / h) * 1.1;
+      model.scale.set(s);
+      model.anchor.set(0.5, 0.5);
+      model.position.set(app.screen.width * cx, app.screen.height / 2 + h * s * 0.08);
+    };
+
+    const loadOne = async ({ url, label, cx, hideParts }) => {
+      const attempt = (u) => Promise.race([
+        PIXI.live2d.Live2DModel.from(u, { autoInteract: true, autoUpdate: true, motionPreload: 'IDLE' }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('加载超时')), 45000)),
+      ]);
+      let model;
+      try { model = await attempt(url); }
+      catch (e1) {
+        note(`${label} 首次加载失败,重试…`);
+        model = await attempt(url + '?retry=1');
+      }
+      app.stage.addChild(model);
+      layout(model, cx);
+      addEventListener('resize', () => layout(model, cx));
+
+      const mm = model.internalModel.motionManager;
+      mm.on('motionStart', (g, i) => note(`${label} 动作: ${g} #${i}`));
+      model.on('hit', areas => note(`${label} 命中: ${areas.join(', ') || '身体'}`));
+
+      // 隐藏指定部件(如 VTuber 模型自带的背景板): 每帧在核心更新后强制透明
+      if (hideParts && hideParts.length) {
+        const im = model.internalModel;
+        const cm = im.coreModel;
+        const idxs = hideParts.map(n => cm.getDrawableIndex(n)).filter(i => i >= 0);
+        const origUpdate = im.update.bind(im);
+        im.update = function(...a) {
+          const r = origUpdate(...a);
+          for (const i of idxs) im.coreModel._model.drawables.opacities[i] = 0;
+          return r;
+        };
+      }
+      window.__models.push({ label, model });
+      return label;
+    };
+
+    const results = await Promise.allSettled(defs.map(loadOne));
+    const ok = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+    const bad = results.filter(r => r.status === 'rejected').map(r => r.reason && r.reason.message);
+    note(ok.length === defs.length
+      ? '就绪 —— 丛雨点不同部位有不同反应和配音，点击人物触发动作'
+      : `就绪 ${ok.length}/${defs.length} —— 失败: ${bad.join('; ')}`);
+  } catch (e) {
+    note('');
+    status.innerHTML = '<span class="err">加载失败:\n' + (e && e.message || e) + '</span>';
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>

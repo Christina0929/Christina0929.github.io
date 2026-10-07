@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精度对比 · bf16 vs NF4（同一张图同参数）</title>
+<!-- 对照实验页: 同一立绘、同一管线、同幅度参数, 唯一变量=See-through拆层模型的权重精度
+     左: bf16 全精度(现役)  右: NF4 4bit量化(实验) —— 必须单 PIXI.Application 单上下文 -->
+<script src="live2d/lib/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+<style>
+  html, body { margin: 0; height: 100%; background: #10131c; overflow: hidden;
+    font-family: system-ui, "Microsoft YaHei"; color: #aab; }
+  #stage { position: fixed; inset: 0; }
+  canvas { display: block; }
+  .name {
+    position: absolute; top: 18px; text-align: center; width: 50%;
+    font-size: 20px; letter-spacing: 2px; color: #e8e2d5; text-shadow: 0 2px 8px rgba(0,0,0,.6);
+    pointer-events: none;
+  }
+  .name .sub { font-size: 12px; color: #778; margin-top: 6px; letter-spacing: 0; }
+  #name-l { left: 0; } #name-r { left: 50%; }
+  #divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #232838; }
+  #status {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; color: #8892a8; background: rgba(20,24,36,.8);
+    padding: 6px 16px; border-radius: 14px; border: 1px solid #232838; z-index: 5;
+  }
+  .err { color: #e88; font: 14px/1.7 monospace; white-space: pre-wrap; max-width: 90%; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="name" id="name-l">bf16 全精度<div class="sub">现役版 · See-through bf16 blockswap</div></div>
+<div class="name" id="name-r">NF4 4bit 量化<div class="sub">实验版 · 同图同参数 · --no_group_offload</div></div>
+<div id="divider"></div>
+<div id="status">加载中…</div>
+<script>
+window.__errs = []; window.__models = []; window.__apps = [];
+addEventListener('error', e => window.__errs.push('ERR: ' + e.message));
+addEventListener('unhandledrejection', e => window.__errs.push('REJ: ' + (e.reason && e.reason.message || e.reason)));
+
+const status = document.getElementById('status');
+function note(s){ status.textContent = s; }
+
+(async () => {
+  try {
+    note('正在加载模型…');
+    const app = new PIXI.Application({
+      backgroundAlpha: 0, autoDensity: true, resolution: devicePixelRatio,
+      resizeTo: window,
+    });
+    document.getElementById('stage').appendChild(app.view);
+    window.__apps.push(app);
+
+    const defs = [
+      { url: 'live2d/model/wechat-girl/model.model3.json', label: 'bf16', cx: 0.25, damp: 0.4 },
+      { url: 'live2d/model/wechat-girl-nf4/model.model3.json', label: 'NF4', cx: 0.75, damp: 0.4 },
+    ];
+
+    const layout = (model, cx) => {
+      const w = model.internalModel.originalWidth, h = model.internalModel.originalHeight;
+      const s = Math.min(app.screen.width / 2 / w, app.screen.height / h) * 1.15;
+      model.scale.set(s);
+      model.anchor.set(0.5, 0.5);
+      model.position.set(app.screen.width * cx, app.screen.height / 2 + h * s * 0.08);
+    };
+
+    // 并行加载+独立容错(与主查看页同款)
+    const loadOne = async ({ url, label, cx, damp }) => {
+      const attempt = (u) => Promise.race([
+        PIXI.live2d.Live2DModel.from(u, { autoInteract: true, autoUpdate: true, motionPreload: 'IDLE' }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('加载超时')), 45000)),
+      ]);
+      let model;
+      try { model = await attempt(url); }
+      catch (e1) {
+        note(`${label} 首次加载失败,重试…`);
+        model = await attempt(url + '?retry=1');
+      }
+      app.stage.addChild(model);
+      layout(model, cx);
+      addEventListener('resize', () => layout(model, cx));
+
+      const mm = model.internalModel.motionManager;
+      mm.on('motionStart', (g, i) => note(`${label} 动作: ${g} #${i}`));
+      model.on('hit', areas => note(`${label} 命中: ${areas.join(', ') || '身体'}`));
+
+      if (damp && damp < 1) {
+        const fc = model.internalModel.focusController;
+        const origFocus = fc.focus.bind(fc);
+        fc.focus = (x, y) => origFocus(x * damp, y * damp);
+      }
+      window.__models.push({ label, model });
+      return label;
+    };
+
+    const results = await Promise.allSettled(defs.map(loadOne));
+    const ok = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+    const bad = results.filter(r => r.status === 'rejected').map(r => r.reason && r.reason.message);
+    note(ok.length === defs.length
+      ? '对比就绪 —— 看脸部细节/嘴线/发丝边缘的差异，点击可各自播动作'
+      : `就绪 ${ok.length}/${defs.length} —— 失败: ${bad.join('; ')}`);
+  } catch (e) {
+    note('');
+    status.innerHTML = '<span class="err">加载失败:\n' + (e && e.message || e) + '</span>';
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>
