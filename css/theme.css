@@ -66,6 +66,15 @@
   src: url('../fonts/web/Fraunces-var.woff2') format('woff2');
 }
 
+/* ---------- 英文花体：Great Vibes（OFL 开源，大标题专用，配描边加粗） ---------- */
+@font-face {
+  font-family: 'Great Vibes';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/web/GreatVibes.woff2') format('woff2');
+}
+
 /* ---------- 令牌 ---------- */
 :root {
   --accent: #2fa8b8;
