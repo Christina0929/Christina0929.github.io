@@ -75,6 +75,15 @@
   src: url('../fonts/web/GreatVibes.woff2') format('woff2');
 }
 
+/* ---------- 英文花体小标：Allura（OFL 开源） ---------- */
+@font-face {
+  font-family: 'Allura';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/web/Allura.woff2') format('woff2');
+}
+
 /* ---------- 令牌 ---------- */
 :root {
   --accent: #2fa8b8;
@@ -104,7 +113,7 @@
   --font-display: "Noto Serif SC", "LXGW WenKai", "KaiTi", serif;
   --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", serif;
   --font-num: "Noto Sans SC", "Cormorant Garamond", Georgia, serif;
-  --font-en: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+  --font-en: 'Allura', 'Segoe Script', cursive;   /* 英文点缀: Allura 花体 */
 }
 
 /* ---------- 色板（data-theme 切换，theme-switcher.js） ---------- */
@@ -392,10 +401,9 @@ body > nav.scrolled .inner { padding-top: 12px; padding-bottom: 12px; }
 .page-head h1 .en,
 .page-head h1[data-en]::after {
   font-family: var(--font-en);
-  font-size: .78rem;
-  font-weight: 700;
-  letter-spacing: .26em;
-  text-transform: uppercase;
+  font-size: 1.08rem;          /* Allura 花体: 放大+去大写+去宽字距 */
+  font-weight: 400;
+  letter-spacing: .04em;
   color: var(--accent);
 }
 .page-head h1[data-en]::after { content: attr(data-en); }

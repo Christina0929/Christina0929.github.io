@@ -44,6 +44,15 @@
       line-height: 1.1;
       user-select: none;
     }
+    .en-mark .char {
+      display: inline-block;
+      opacity: 0; transform: translateY(24px) rotate(6deg);
+      transition: opacity .7s ease, transform .7s cubic-bezier(.34,1.4,.5,1);
+      background: linear-gradient(120deg, var(--accent-ink) 10%, var(--accent) 45%, var(--accent-2) 90%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .en-mark .char.show { opacity: 1; transform: translateY(0) rotate(0); }
     .hero .ava {
       width: 88px; height: 88px;
       margin: -8px auto 16px;
@@ -86,7 +95,6 @@
     .hero .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
     .hero .stat .num { font-family: var(--font-body); /* 数字防抖动: 不用衬线展示体 */
       display: block;
-      font-family: var(--font-en);
       font-size: 1rem;
       font-weight: 800;
       color: var(--accent-ink);
@@ -102,7 +110,7 @@
     }
     .hero .scroll-hint {
       margin-top: 30px;
-      font-family: var(--font-en);
+      font-family: var(--font-mono, monospace);
       font-size: .72rem;
       letter-spacing: .3em;
       color: var(--muted);
@@ -128,10 +136,9 @@
     }
     .card > h2 .en {
       font-family: var(--font-en);
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .22em;
-      text-transform: uppercase;
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: .04em;
       color: var(--accent);
     }
     .card .sub {
@@ -262,7 +269,7 @@
   <main class="landing">
     <!-- Hero：大标语 + 数据 + 滚动提示 -->
     <section class="hero reveal">
-      <div class="en-mark" aria-hidden="true">Sunny Blog</div>
+      <div class="en-mark" aria-hidden="true" id="enMark">Sunny Blog</div>
       <div class="ava" id="hero-ava">
         <img src="sun-avatar.png" alt="">
         <span class="ava-music-dot">&#9834;</span>
@@ -367,6 +374,22 @@
   <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
 
   <script>
+    // Hero 花体逐字入场
+    (function () {
+      var mark = document.getElementById('enMark');
+      var txt = mark.textContent; mark.textContent = '';
+      for (var k = 0; k < txt.length; k++) {
+        var ch = document.createElement('span');
+        ch.className = 'char';
+        ch.textContent = txt[k] === ' ' ? ' ' : txt[k];
+        ch.style.transitionDelay = (0.15 + k * 0.09) + 's';
+        mark.appendChild(ch);
+      }
+      setTimeout(function () {
+        mark.querySelectorAll('.char').forEach(function (c) { c.classList.add('show'); });
+      }, 120);
+    })();
+
     // uptime
     const birth = new Date(2026, 7, 5, 9, 0, 0);
     const uptimeEl = document.getElementById('uptime');
@@ -382,7 +405,7 @@
     setInterval(tickUptime, 1000);
 
     // post count + last update（最近更新 = 文章最新日期 与 站点改版日 取较新者）
-    const SITE_LAST_UPDATE = '2026-09-27';   // 发版时手动更新这个日期
+    const SITE_LAST_UPDATE = '2026-10-07';   // 发版时手动更新这个日期
     fetch('blog.html')
       .then((r) => r.text())
       .then((html) => {
