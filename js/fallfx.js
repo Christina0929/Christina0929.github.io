@@ -81,8 +81,8 @@
         type: fx.type,
         x: spawnX(), y: rand(-30, -10),
         vx: rand(-6, 6), vy: rand(22, 48),
-        rot: rand(0, Math.PI * 2), vr: rand(-1.2, 1.2),
-        size: fx.type === 'leaf' ? rand(6, 10) : rand(4, 7),
+        rot: rand(0, Math.PI * 2), vr: rand(-0.5, 0.5),
+        size: fx.type === 'leaf' ? rand(9, 13) : rand(5, 8),
         phase: rand(0, Math.PI * 2), sway: rand(14, 30),
         color: fx.colors[Math.floor(Math.random() * fx.colors.length)],
         born: performance.now(), life: Infinity
@@ -144,10 +144,10 @@
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.rot);
-      ctx.globalAlpha = 0.75;
+      ctx.globalAlpha = 0.9;
       ctx.fillStyle = p.color;
       ctx.beginPath();
-      ctx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, p.size, p.size * 0.5, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
       ctx.globalAlpha = 1;
