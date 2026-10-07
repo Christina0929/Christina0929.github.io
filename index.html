@@ -83,7 +83,7 @@
       transition: transform .25s, box-shadow .25s;
     }
     .hero .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .hero .stat .num {
+    .hero .stat .num { font-family: var(--font-body); /* 数字防抖动: 不用衬线展示体 */
       display: block;
       font-family: var(--font-en);
       font-size: 1rem;

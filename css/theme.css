@@ -57,6 +57,15 @@
   src: url('../fonts/web/NotoSerifSC-Black.woff2') format('woff2');
 }
 
+/* ---------- 英文展示字体：Fraunces（OFL 开源，可变字重 600-900，拉丁子集 67KB） ---------- */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url('../fonts/web/Fraunces-var.woff2') format('woff2');
+}
+
 /* ---------- 令牌 ---------- */
 :root {
   --accent: #2fa8b8;
@@ -86,7 +95,7 @@
   --font-display: "Noto Serif SC", "LXGW WenKai", "KaiTi", serif;
   --font-hand: "LXGW WenKai", "KaiTi", "STKaiti", serif;
   --font-num: "Noto Sans SC", "Cormorant Garamond", Georgia, serif;
-  --font-en: "Noto Sans SC", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-en: 'Fraunces', 'Georgia', 'Times New Roman', serif;
 }
 
 /* ---------- 色板（data-theme 切换，theme-switcher.js） ---------- */
