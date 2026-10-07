@@ -57,20 +57,25 @@
   let lastSpawn = 0, lastFrame = 0;
 
   function spawnX() {
-    // 左右空白区任选；两侧都没有有效空白（窄屏）则全宽
-    const leftW = exclL - 6, rightW = innerWidth - exclR - 6;
-    if (leftW > 60 && rightW > 60) return Math.random() < 0.5 ? rand(8, leftW) : rand(exclR + 6, innerWidth - 8);
-    if (leftW > 60) return rand(8, leftW);
-    if (rightW > 60) return rand(exclR + 6, innerWidth - 8);
-    return rand(8, innerWidth - 8);
+    // 左右空白区任选；关键修复: 与内容边缘保持 26px 安全距离（叶片不再贴到卡片圆角上
+    // 形成"两曲线重合"的脏边），且窄于 56px 的侧带整边禁用（窗口不够宽就不在那边生成）
+    const PAD = 26, MIN_ZONE = 56;
+    const leftW = exclL - PAD, rightW = innerWidth - exclR - PAD;
+    const zones = [];
+    if (leftW >= MIN_ZONE) zones.push([8, leftW]);
+    if (rightW >= MIN_ZONE) zones.push([exclR + PAD, innerWidth - 8]);
+    if (!zones.length) return null;                 // 两侧都太窄: 这一粒放弃
+    const z = zones[Math.floor(Math.random() * zones.length)];
+    return rand(z[0], z[1]);
   }
 
   function spawn() {
+    const sx = spawnX();
+    if (sx === null) return;                        // 无合适空白区则跳过
     if (fx.type === 'meteor') {
-      const zoneX = spawnX();
       particles.push({
         type: 'meteor',
-        x: zoneX, y: rand(-40, innerHeight * 0.25),
+        x: sx, y: rand(-40, innerHeight * 0.25),
         vx: rand(-140, -70), vy: rand(120, 200),
         size: rand(1.2, 2),
         color: fx.colors[Math.floor(Math.random() * fx.colors.length)],
@@ -79,7 +84,7 @@
     } else {
       particles.push({
         type: fx.type,
-        x: spawnX(), y: rand(-30, -10),
+        x: sx, y: rand(-30, -10),
         vx: rand(-6, 6), vy: rand(22, 48),
         rot: rand(0, Math.PI * 2), vr: rand(-0.5, 0.5),
         size: fx.type === 'leaf' ? rand(9, 13) : rand(5, 8),
