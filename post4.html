@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="index, follow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>try{var t=localStorage.getItem("site-theme")||((document.cookie.match(/(?:^|; )site-theme=([^;]*)/))||[])[1]||"";if(t)document.documentElement.setAttribute("data-theme",decodeURIComponent(t))}catch(e){}</script>
+  <title>建站流水账：从零到上线 · 晴天小站</title>
+  <link rel="icon" href="sun-avatar-sm.png" type="image/png">
+  <link rel="stylesheet" href="css/theme.css?v=4">
+  <link rel="stylesheet" href="css/music-player.css?v=4">
+  <style data-page-css>
+
+    .container { max-width: 960px; margin: 0 auto; padding: 28px 24px 60px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 26px;
+      align-items: start;
+    }
+    .l-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+
+    /* 文章头：居中竖排（标题为主角，头像作落款） */
+    .post-head {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .post-head-main { min-width: 0; }
+    .post-ava {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 2px solid var(--card);
+      box-shadow: 0 0 0 1px var(--line-strong);
+      /* 静态化: 无限光晕动画移除 */
+      order: -1;
+    }
+    .post-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .post-tag {
+      display: inline-block;
+      font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace);
+      font-size: .68rem;
+      letter-spacing: .14em;
+      color: var(--accent-ink);
+      border: none;
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      border-radius: 999px;
+      padding: 3px 14px;
+      margin-bottom: 14px;
+    }
+    .post-head h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 4vw, 2.3rem);
+      font-weight: 900;
+      letter-spacing: .01em;
+      line-height: 1.28;
+      margin-bottom: 10px;
+    }
+    .post-meta { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); color: var(--muted); font-size: .7rem; letter-spacing: .1em; }
+    .post-meta .sep { margin: 0 8px; color: var(--line-strong); }
+
+    .post-body {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 26px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 2;
+    }
+    .post-body p { margin-bottom: 18px; }
+    .post-body > p:first-of-type { font-size: 1.08rem; color: var(--text); }
+    .post-body strong { color: var(--text); font-weight: 600; }
+    .post-body a { color: var(--accent-ink); border-bottom: 1px solid var(--line-strong); }
+    .post-body a:hover { border-bottom-color: var(--accent-ink); }
+
+    /* 继续阅读：编辑式行 */
+    .other { margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line); max-width: 700px; margin-left: auto; margin-right: auto; }
+    .other-title { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); font-size: .66rem; font-weight: 400; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .other-list { display: flex; flex-direction: column; }
+    .other-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 8px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 8px;
+      transition: background .18s, padding-left .2s;
+    }
+    .other-item:last-child { border-bottom: none; }
+    .other-item:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); padding-left: 14px; }
+    .other-item .o-name { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; flex: 1; }
+    .other-item .o-date { font-family: var(--font-mono, 'JetBrains Mono', Consolas, monospace); font-size: .66rem; color: var(--muted); flex-shrink: 0; letter-spacing: .1em; }
+    .other-item .o-arrow { color: var(--muted); flex-shrink: 0; transition: color .2s; }
+    .other-item:hover .o-arrow { color: var(--accent-ink); }
+
+    /* 上一篇 / 下一篇（3D 翻书翻面） */
+    .post-nav {
+      margin-top: 44px;
+      padding-top: 24px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      font-size: .9rem;
+      perspective: 1200px; /* 景深：让翻转有立体书页感 */
+    }
+    .post-nav a {
+      position: relative;
+      display: block;
+      width: 148px;
+      height: 52px;
+      color: var(--accent-ink);
+      font-weight: 600;
+      transform-style: preserve-3d;
+      transition: transform .6s cubic-bezier(.25,.6,.3,1);
+    }
+    .post-nav a .pg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      box-shadow: 0 1px 4px var(--shadow);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: .9rem;
+    }
+    .post-nav a .pg-front { color: var(--accent-ink); }
+    .post-nav a .pg-back {
+      transform: rotateY(180deg);
+      color: var(--muted);
+      font-size: .82rem;
+      border-color: var(--line-strong);
+      background: color-mix(in srgb, var(--card) 88%, var(--bg));
+    }
+    /* 翻书：悬停停留后整页翻过去，露出背面目标文章（JS 控制 .flip，防快速划动连转） */
+    .post-nav a.flip { transform: rotateY(180deg); text-decoration: none; }
+    /* 只有单个翻页按钮时（如"正在开发"置底、仅保留下一篇）靠右显示 */
+    .post-nav a:only-child { margin-left: auto; }
+    .post-nav .prev { color: var(--muted); font-weight: 400; }
+    .post-nav .prev .pg-front { color: var(--muted); }
+    .post-nav .prev:hover .pg-front { color: var(--text); }
+
+    /* 侧栏作者卡 */
+    .side-author { text-align: center; }
+    .side-author .ava {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      border: 1px solid var(--line-strong);
+    }
+    .side-author h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+    .side-author p { color: var(--muted); font-size: .82rem; line-height: 1.7; }
+
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .l-side { position: static; }
+    }
+    @media (max-width: 640px) {
+      .container { padding: 18px 14px 50px; }
+      .card { padding: 22px; }
+      .post-head { gap: 14px; }
+      .post-ava { width: 56px; height: 56px; }
+    }
+
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html"><span>晴天</span>小站</a>
+      <div class="right">
+        <div class="menu">
+          <a href="index.html">首页</a>
+          <a href="blog.html" class="active">博客</a>
+          <a href="bookmarks.html">书签</a>
+          <a href="collection.html" class="coll-a">收藏</a>
+          <a href="about.html">关于我</a>
+          <a href="contact.html">联系我</a>
+          <button class="cl-toggle" id="cl-toggle">日志</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="layout">
+      <div class="l-main">
+        <article class="card reveal">
+          <nav class="crumbs" aria-label="面包屑">
+            <a href="index.html">首页</a><span class="sep">/</span>
+            <a href="blog.html">博客</a><span class="sep">/</span>
+            <span class="cur">建站流水账：从零到上线</span>
+          </nav>
+
+          <header class="post-head">
+            <div class="post-ava"><img src="sun-avatar.png" alt=""></div>
+            <div class="post-head-main">
+              <span class="post-tag">建站心得</span>
+              <h1 data-en="Post">建站流水账：从零到上线</h1>
+              <p class="post-meta">2026-10-07 <span class="sep">/</span> 建站 <span class="sep">/</span> 6 min read</p>
+            </div>
+          </header>
+
+          <div class="post-body">
+            <p class="lead">这篇文章整理一下这个站是怎么搭起来的。不是教程，更像流水账——毕竟我也是边搜边做磕磕绊绊过来的，有些坑现在想起来还想笑。</p>
+            <h3>为什么折腾这个站</h3>
+            <p>想有个自己的角落。社交平台的账号说没就没，主页排版永远差强人意。自己的网站就不一样了：想写什么写什么，想放什么放什么，域名后面那一串是自己。</p>
+            <h3>技术选型：不会框架，那就不用</h3>
+            <p>网上的教程开口就是 React Vue 三件套，我看两集就困。我的需求其实很简单：几个页面、一个列表、能留言。纯 HTML + CSS + JS 完全够用——后来证明这个决定无比正确：没有构建、没有依赖地狱，坏了打开文件就能看。</p>
+            <p>托管选了 GitHub Pages：免费、自带 HTTPS、git push 之后一两分钟自动部署。对个人小站来说，这就是天花板了。</p>
+            <h3>我的流程：写 → 看 → 存 → 发</h3>
+            <p>1. 本地改文件，用 python -m http.server 起个服务实时看；<br>2. 浏览器 F12 当显微镜，手机视图也要过一遍；<br>3. 满意了 git commit——小步提交，每一步都能后悔；<br>4. git push，等 Pages 自动上线。</p>
+            <p>听着平淡，但「每一步都能后悔」这条救过我无数次。</p>
+            <blockquote>网站不是做完的，是养出来的。</blockquote>
+            <h3>踩过的坑（都是真金白银的时间）</h3>
+            <p>字体：随手放的字体全家桶 61MB，首屏慢到能泡杯咖啡。后来用 fontTools 做子集化，只保留用到的字，砍到 3.3MB。音乐：播放器每次加载都预载整首歌（2~9MB），改成点播放才加载。看板娘：可爱是可爱，满帧渲染 GPU 直冒烟，限帧 24 之后世界都清净了。缓存：改了代码浏览器死活不认新文件，给资源引用加版本号 ?v=4，一劳永逸。还有 Chrome 卡顿，最后发现是硬件加速没开——就这么一个开关。</p>
+            <h3>心得</h3>
+            <p>别急着上框架，先想清楚要什么；小步提交，出问题知道退回哪一步；改动先本地过目，确认了再上线（这条是血泪教训）；AI 是很好的结对搭子——它写代码我拍板，效率翻倍，但拍板的责任在人。</p>
+            <p>这个站还会慢慢养下去。下一篇见。</p>
+          </div>
+
+          <section class="other">
+            <h3 class="other-title">继续阅读</h3>
+            <div class="other-list">
+              <a class="other-item" href="post1.html"><span class="o-name">开站大吉 '◡'</span><span class="o-date">2026-08-05</span><span class="o-arrow">→</span></a>
+              <a class="other-item" href="post3.html"><span class="o-name">正在开发</span><span class="o-date">2026-08-05</span><span class="o-arrow">→</span></a>
+            </div>
+          </section>
+
+          <nav class="post-nav">
+            <a href="post1.html">
+              <span class="pg pg-front">← 上一篇</span>
+              <span class="pg pg-back">开站大吉</span>
+            </a>
+            <a href="post3.html">
+              <span class="pg pg-front">下一篇 →</span>
+              <span class="pg pg-back">正在开发</span>
+            </a>
+          </nav>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <div class="cl-panel" id="cl-panel">
+    <h3>站点日志</h3>
+    <div id="cl-timeline"></div>
+  </div>
+
+  <div class="music-card collapsed" id="music-card">
+    <button class="music-card-close" id="mc-close" aria-label="收起播放器" title="收起">&#10005;</button>
+    <div class="mc-disc" id="mc-disc">
+      <div class="mc-ring"></div>
+      <div class="mc-center"><img src="sun-avatar-sm.png" alt=""></div>
+    </div>
+    <div class="mc-info">
+      <div class="mc-name" id="mc-name">--</div>
+      <div class="mc-artist" id="mc-artist">--</div>
+    </div>
+    <div class="mc-controls">
+      <button class="mc-btn" id="mc-prev">&#9198;</button>
+      <button class="mc-btn play" id="mc-play">&#9654;</button>
+      <button class="mc-btn" id="mc-next">&#9197;</button>
+      <button class="mc-btn mc-shuffle" id="mc-shuffle" title="随机换一首">&#8635;</button>
+    </div>
+    <div class="mc-progress" id="mc-progress"><div class="bar" id="mc-bar"></div></div>
+    <div class="mc-time"><span id="mc-current">0:00</span><span id="mc-total">0:00</span></div>
+    <div class="mc-volume">
+      <span class="mc-vol-icon" id="mc-vol-icon">&#128266;</span>
+      <input type="range" class="mc-vol-slider" id="mc-vol" min="0" max="100" value="80">
+    </div>
+  </div>
+
+  <footer>© <span id="year"></span> <span class="brand">晴天</span>小站 · Ciallo～(∠・ω< )⌒☆</footer>
+
+  <script src="js/common.js?v=4"></script>
+  <script>
+    // 上一篇/下一篇翻书：短停留才翻面，防快速划过时连续翻转
+    document.querySelectorAll('.post-nav a').forEach((a) => {
+      let t = null;
+      a.addEventListener('mouseenter', () => {
+        clearTimeout(t);
+        t = setTimeout(() => a.classList.add('flip'), 120);
+      });
+      a.addEventListener('mouseleave', () => {
+        clearTimeout(t);
+        a.classList.remove('flip');
+      });
+    });
+  </script>
+  <!-- Live2D 看板娘 -->
+  <script type="module" src="live2d/kandao.js"></script>
+  <script src="js/music-player.js?v=4"></script>
+  <script src="js/changelog.js?v=4"></script>
+  <script src="js/scrollfx.js?v=4" defer></script>
+  <script src="js/theme-switcher.js?v=4" defer></script>
+  <script src="js/fallfx.js?v=4" defer></script>
+  <script src="js/pjax.js?v=4"></script></body>
+</html>
