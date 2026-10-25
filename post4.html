@@ -80,6 +80,18 @@
       line-height: 2;
     }
     .post-body p { margin-bottom: 18px; }
+    .post-body ol.flow { list-style: none; counter-reset: step; margin: 4px 0 20px; padding: 0; }
+    .post-body ol.flow li {
+      counter-increment: step; position: relative;
+      padding: 8px 0 8px 44px; border-bottom: 1px dashed var(--line);
+      color: var(--muted);
+    }
+    .post-body ol.flow li::before {
+      content: "0" counter(step);
+      position: absolute; left: 0; top: 9px;
+      font-family: var(--font-mono, monospace); font-size: .72rem;
+      color: var(--accent); letter-spacing: .05em;
+    }
     .post-body > p:first-of-type { font-size: 1.08rem; color: var(--text); }
     .post-body strong { color: var(--text); font-weight: 600; }
     .post-body a { color: var(--accent-ink); border-bottom: 1px solid var(--line-strong); }
@@ -239,7 +251,12 @@
             <p>网上的教程开口就是 React Vue 三件套，我看两集就困。我的需求其实很简单：几个页面、一个列表、能留言。纯 HTML + CSS + JS 完全够用——后来证明这个决定无比正确：没有构建、没有依赖地狱，坏了打开文件就能看。</p>
             <p>托管选了 GitHub Pages：免费、自带 HTTPS、git push 之后一两分钟自动部署。对个人小站来说，这就是天花板了。</p>
             <h3>我的流程：写 → 看 → 存 → 发</h3>
-            <p>1. 本地改文件，用 python -m http.server 起个服务实时看；<br>2. 浏览器 F12 当显微镜，手机视图也要过一遍；<br>3. 满意了 git commit——小步提交，每一步都能后悔；<br>4. git push，等 Pages 自动上线。</p>
+            <ol class="flow">
+              <li>本地改文件，用 python -m http.server 起个服务实时看</li>
+              <li>浏览器 F12 当显微镜，手机视图也要过一遍</li>
+              <li>满意了 git commit——小步提交，每一步都能后悔</li>
+              <li>git push，等 Pages 自动上线</li>
+            </ol>
             <p>听着平淡，但「每一步都能后悔」这条救过我无数次。</p>
             <blockquote>网站不是做完的，是养出来的。</blockquote>
             <h3>踩过的坑（都是真金白银的时间）</h3>
