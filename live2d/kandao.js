@@ -13,9 +13,12 @@ import './lib/waifu-tips.js';
   // 旧版静态看板娘用 waifu-disabled 永久隐藏；官方 widget 遇此键会直接不渲染且无开关，
   // 为避免用户被"永久隐藏"卡死，载入时清理一次
   localStorage.removeItem('waifu-disabled');
-  // 恢复单模型（Konata）后，清理可能残留的多模型切换标记（modelId=1/2），
-  // 避免官方引擎按序号找不存在的模型报错。保留 modelId 也不会出错，这里顺手归 0。
-  localStorage.removeItem('modelId');
+  // 多模型时代（0=Konata, 1=ATRI）：只清理越界的 modelId，合法值保留用于记忆
+  const savedModelId = parseInt(localStorage.getItem('modelId'), 10);
+  if (isNaN(savedModelId) || savedModelId < 0 || savedModelId > 1) {
+    localStorage.setItem('modelId', '0');
+  }
+  localStorage.setItem('kandao-model', savedModelId === 1 ? 'atri' : 'konata');
 
   // ---------- 注入官方 waifu.css（工具按钮/气泡/隐藏动画的基座样式） ----------
   const link = document.createElement('link');
@@ -101,6 +104,14 @@ import './lib/waifu-tips.js';
   // ---------- 启动官方 Live2D widget ----------
   // waifuPath 以页面根为基准；模型路径在 waifu-tips.json 的 models 中声明
   // drag:false → 关掉官方鼠标拖拽，改用下方自研（支持触屏 + 避免 bottom:0 拉伸）
+  // 载入前按记忆定位模型（0=Konata 默认，1=ATRI）
+  if (localStorage.getItem('kandao-model') === 'atri') {
+    localStorage.setItem('modelId', '1');
+    localStorage.setItem('modelTexturesId', '0');
+  } else {
+    localStorage.setItem('modelId', '0');
+  }
+
   window.initWidget({
     waifuPath: 'live2d/lib/waifu-tips.json',
     cubism2Path: 'live2d/lib/live2d.min.js',
@@ -246,6 +257,33 @@ import './lib/waifu-tips.js';
       setIcon(next);
     });
     tool.appendChild(btn);
+
+    // ---- ATRI 模型切换按钮（第三个，与动态/静态并列） ----
+    if (!document.getElementById('waifu-tool-atri')) {
+      const abtn = document.createElement('span');
+      abtn.id = 'waifu-tool-atri';
+      abtn.title = '切换看板娘：ATRI / Konata';
+      // 机器人头图标（ATRI 是机器人少女），与太阳/月亮同粗细风格
+      abtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2a1 1 0 0 1 1 1v1.1A7 7 0 0 1 19 11h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.1a7 7 0 0 1-13.8 0H4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 6-6.9V3a1 1 0 0 1 1-1zm-2.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>';
+      abtn.addEventListener('click', () => {
+        const cur = localStorage.getItem('kandao-model') || 'konata';
+        const toAtri = cur !== 'atri';
+        localStorage.setItem('kandao-model', toAtri ? 'atri' : 'konata');
+        localStorage.setItem('modelId', toAtri ? '1' : '0');
+        localStorage.setItem('modelTexturesId', '0');
+        // 若处于静态立绘模式，先切回动态画布
+        const img = document.getElementById('kandao-static-img');
+        if (img && img.classList.contains('show')) {
+          setStatic(false);
+          const modeBtn = document.getElementById('waifu-tool-mode');
+          if (modeBtn) modeBtn.innerHTML = icons.sun;
+        }
+        if (window.__live2dModel) window.__live2dModel.loadModel('');
+        else location.reload(); // widget 未就绪时兜底：刷新按记忆加载
+        abtn.style.opacity = toAtri ? '1' : '.55';
+      });
+      tool.appendChild(abtn);
+    }
     return true;
   }
 
